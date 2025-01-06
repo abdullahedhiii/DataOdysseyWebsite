@@ -40,7 +40,7 @@ const LandingPage = () => {
             <div className="relative">
               <div className="w-full h-[500px] bg-gradient-to-br from-red-600/20 to-transparent rounded-lg overflow-hidden">
                 <img 
-                  src="images/main.png" 
+                  src="/images/main.png" 
                   alt="SQL Competition"
                   className="w-full h-full object-cover mix-blend-overlay"
                 />
@@ -60,7 +60,9 @@ const LandingPage = () => {
             <button className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
               Start Competing
             </button>
-            <button className="px-6 py-3 border border-red-600 text-red-600 rounded-lg hover:bg-red-600/10 transition-colors">
+            <button className="px-6 py-3 border border-red-600 text-red-600 rounded-lg hover:bg-red-600/10 transition-colors"
+             onClick={() => window.open("/documents/DataDungeon.pdf", "_blank")}
+            >
               Read the Rules
             </button>
           </div>
