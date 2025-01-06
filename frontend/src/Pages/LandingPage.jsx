@@ -1,8 +1,11 @@
 import React from 'react';
 import { FiArrowRight, FiLock, FiAward, FiTrendingUp, FiUsers } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 
 const LandingPage = () => {
-  return (
+    const navigate = useNavigate();
+
+    return (
     <div className="min-h-screen bg-black text-white">
       <div className="container mx-auto px-4 py-16">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
@@ -57,7 +60,9 @@ const LandingPage = () => {
             Whether you're a beginner or an expert, this SQL competition is designed to improve your skills in solving real-world database problems. Compete against the best and climb the leaderboard to earn recognition in the tech community.
           </p>
           <div className="flex justify-center gap-8">
-            <button className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+            <button className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+             onClick={() => navigate("/login")}
+            >
               Start Competing
             </button>
             <button className="px-6 py-3 border border-red-600 text-red-600 rounded-lg hover:bg-red-600/10 transition-colors"
