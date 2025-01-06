@@ -66,7 +66,7 @@ const LandingPage = () => {
               Start Competing
             </button>
             <button className="px-6 py-3 border border-red-600 text-red-600 rounded-lg hover:bg-red-600/10 transition-colors"
-             onClick={() => window.open("/documents/DataDungeon.pdf", "_blank")}
+             onClick={() => window.open("/documents/Rules.pdf", "_blank")}
             >
               Read the Rules
             </button>

@@ -3,18 +3,18 @@ import { createBrowserRouter, RouterProvider, Route, Outlet } from 'react-router
 import LandingPage from './Pages/LandingPage';
 import Login from './Pages/Login';
 import Navbar from './Components/Navbar';
+import LeaderBoard from './Pages/LeaderBoard';
+import QueryPage from './Pages/QueryPage';
 
-// Layout component to wrap common elements like Navbar
 const Layout = () => {
   return (
     <>
       <Navbar />
-      <Outlet /> {/* Renders the matched route's element */}
+      <Outlet /> 
     </>
   );
 }
 
-// Define the routes
 const router = createBrowserRouter([
   {
     path: "/",
@@ -22,12 +22,20 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <LandingPage />, // Default route for the root path
+        element: <LandingPage />, 
       },
       {
         path: "login",
         element: <Login />,
       },
+      {
+        path: "leaderboard",
+        element: <LeaderBoard/>
+      },
+      {
+        path: "competition",
+        element: <QueryPage/>
+      }
     ],
   },
 ]);

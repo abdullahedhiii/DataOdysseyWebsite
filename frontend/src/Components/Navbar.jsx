@@ -6,24 +6,20 @@ const Navbar = () => {
 
   return (
     <nav className="bg-black border-b border-gray-800">
-      {/* Desktop Navbar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Left side - Data Dungeon */}
           <div className="flex-shrink-0">
             <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-red-500 bg-clip-text text-transparent">
               Data Dungeon
             </h1>
           </div>
 
-          {/* Right side - ProCom'25 */}
           <div className="hidden md:block">
             <h2 className="text-xl font-semibold text-white">
               ProCom<span className="text-red-600">'25</span>
             </h2>
           </div>
 
-          {/* Mobile menu button */}
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -39,7 +35,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile menu */}
       <div className={`md:hidden ${isMenuOpen ? 'block' : 'hidden'}`}>
         <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
           <div className="flex items-center justify-center py-2">
@@ -50,7 +45,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Decorative gradient line */}
       <div className="h-[1px] bg-gradient-to-r from-red-600/0 via-red-600 to-red-600/0"></div>
     </nav>
   );
