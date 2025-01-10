@@ -10,10 +10,26 @@ const Login = () => {
     username: ''
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // axios.
-    // post('/api/login')
+    try{
+      console.log('sending ',formData);
+          const response = isLogin ? await axios.post('/api/login',formData) : await axios.post('/api/register',formData);
+          if(response.status === 200){
+              isLogin ?  window.alert('logged in') : window.alert('registered successfully');
+              if(!isLogin){
+                setIsLogin(true);
+              }
+          }
+    }
+    catch(err){
+      isLogin ?  window.alert('log in fail') : window.alert('registration failed');
+     }
+     setFormData({
+      email: '',
+      password: '',
+      username: ''
+     })
   };
 
   const handleChange = (e) => {
@@ -26,7 +42,6 @@ const Login = () => {
   return (
     <div className="min-h-screen bg-black flex items-center justify-center px-4">
       <div className="max-w-md w-full space-y-8">
-        {/* Header */}
         <div className="text-center">
           <h2 className="text-4xl font-bold text-white">
             {isLogin ? 'Welcome Back' : 'Join the Competition'}
@@ -38,7 +53,6 @@ const Login = () => {
           </p>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
           <div className="space-y-4">
             {!isLogin && (
