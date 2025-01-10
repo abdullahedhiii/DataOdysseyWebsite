@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FiMail, FiLock, FiUser, FiArrowRight } from 'react-icons/fi';
+import axios from 'axios';
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -11,7 +12,8 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
+    // axios.
+    // post('/api/login')
   };
 
   const handleChange = (e) => {
@@ -121,10 +123,10 @@ const Login = () => {
               type="submit"
               className="group relative w-full flex justify-center py-3 px-4 border border-transparent rounded-lg text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
             >
-              <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                <FiArrowRight className="h-5 w-5 text-red-500 group-hover:text-red-400" />
-              </span>
               {isLogin ? 'Sign in' : 'Sign up'}
+              <span className="absolute inset-y-0 right-0 flex items-center p-3">
+                <FiArrowRight className="h-5 w-5 text-red-50 group-hover:text-red-400" />
+              </span>
             </button>
           </div>
         </form>
