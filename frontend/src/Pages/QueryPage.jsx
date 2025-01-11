@@ -16,17 +16,37 @@ const QueryPage = () => {
     setSelectedFile(event.target.files[0]);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault(); 
     console.log('Submitting:', { selectedDialect, selectedFile });
+  
+    const formData = new FormData();
+    formData.append('teamName',user.teamName);
+    formData.append('email',user.email);
+    formData.append('dialect', selectedDialect);
+    formData.append('file', selectedFile);
+  
+    try {
+      //here response will contain whether the submitted query is correct or accordingly points,leaderboard will be updated
+      const response = await axios.post('/api/submitFile', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+  
+      alert('File uploaded successfully!');
+    } catch (err) {
+      alert('Failed to upload file: ' + err.message);
+    }
   };
+  
 
   useEffect(()=>{
 
     // checking this condition was leading to some malfunctioning due to react's behaviour of sheduling state change
     // if(!user.loggedIn) navigate('/login');
     // else{}
-    
+    console.log(user.loggedIn,"checking navigatiin");
     if(!user.loggedIn) navigate('/login')
     else{
       axios
@@ -52,7 +72,7 @@ const QueryPage = () => {
           </h2>
           <div className="aspect-video relative bg-gray-800 rounded-lg overflow-hidden">
             <img 
-              src="/placeholder.svg?height=400&width=800" 
+              src="/images/sample_map.jpg" 
               alt="Competition Map"
               className="w-full h-full object-cover"
             />
@@ -123,7 +143,7 @@ const QueryPage = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-400 mb-2">
-                Upload Solution File
+                Upload Solution File(eg: sol1.txt or sol1.sql)
               </label>
               <div className="flex items-center justify-center w-full">
                 <label className="w-full flex flex-col items-center px-4 py-6 bg-gray-800 text-white rounded-lg tracking-wide border border-gray-700 cursor-pointer hover:border-red-500 transition-colors">

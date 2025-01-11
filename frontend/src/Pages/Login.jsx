@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { FiMail, FiLock, FiUser, FiArrowRight } from 'react-icons/fi';
 import axios from 'axios';
 import { useUserContext } from '../Contexts/userContext';
@@ -14,6 +14,10 @@ const Login = () => {
     username: ''
   });
   const {user, logUserIn, registerUser} = useUserContext();
+  
+  useEffect(() => {
+    if(user.loggedIn) navigate("/competition");
+  },[user,user.loggedIn])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,7 +27,7 @@ const Login = () => {
         if(!isLogin){
           setIsLogin(true);
         }
-        else navigate('/competition')
+        //else navigate("/competition")
     }
     catch(err){
       isLogin ?  window.alert('log in fail') : window.alert('registration failed');

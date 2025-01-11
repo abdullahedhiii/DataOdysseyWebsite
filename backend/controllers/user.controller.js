@@ -4,6 +4,10 @@ const jwt = require('jsonwebtoken');
 
 require('dotenv').config(); 
 
+module.exports.submitQuery = (req,res) => {
+//testing here
+console.log('submit query endpoint hittt',req.body);
+}
 
 module.exports.loginUser = (req, res) => {
     
