@@ -6,7 +6,7 @@ require('dotenv').config();
 
 
 module.exports.loginUser = (req, res) => {
-    console.log('login endpoint hit');
+    
     try{
         const q = 'SELECT * FROM Participants WHERE email = ?';
 
@@ -62,7 +62,7 @@ module.exports.logoutUser = (req,res) =>{
 }
 
 module.exports.registerUser = (req,res) => {
-    console.log('received data ',req.body);
+
     try{
         const {email,password,username} = req.body; 
         
@@ -75,7 +75,7 @@ module.exports.registerUser = (req,res) => {
             const hash = bcrypt.hashSync(password, salt);
             
             console.log('inserting into table ',username,email,hash);
-            const qInsert = "INSERT INTO Participants (teamName,email,password) VALUES (?,?,?)";
+            const qInsert = "INSERT INTO Participants (userName,email,password) VALUES (?,?,?)";
             const values = [username,email, hash];
             
             db.query(qInsert, values, (err, data) => {

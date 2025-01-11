@@ -9,7 +9,7 @@ const LandingPage = () => {
     <div className="min-h-screen bg-black text-white">
       <div className="container mx-auto px-4 py-16">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
-          <div className="flex-1 text-white">
+          <div className="flex-1 text-white z-10">
             <h1 className="text-5xl lg:text-7xl font-bold mb-6">
               Level Up Your <span className="text-red-600">Data Retrieval</span> Skills
             </h1>
@@ -39,7 +39,7 @@ const LandingPage = () => {
 
           </div>
 
-          <div className="flex-1">
+          <div className="flex-1 absolute lg:static">
             <div className="relative">
               <div className="w-full h-[500px] bg-gradient-to-br from-red-600/20 to-transparent rounded-lg overflow-hidden">
                 <img 

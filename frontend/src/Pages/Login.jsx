@@ -1,26 +1,29 @@
 import React, { useState } from 'react';
 import { FiMail, FiLock, FiUser, FiArrowRight } from 'react-icons/fi';
 import axios from 'axios';
+import { useUserContext } from '../Contexts/userContext';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+
   const [isLogin, setIsLogin] = useState(true);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     username: ''
   });
+  const {user, logUserIn, registerUser} = useUserContext();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try{
-      console.log('sending ',formData);
-          const response = isLogin ? await axios.post('/api/login',formData) : await axios.post('/api/register',formData);
-          if(response.status === 200){
-              isLogin ?  window.alert('logged in') : window.alert('registered successfully');
-              if(!isLogin){
-                setIsLogin(true);
-              }
-          }
+        // const response = isLogin ? await axios.post('/api/login',formData) : await axios.post('/api/register',formData);
+        isLogin ? logUserIn(formData) : registerUser(formData);
+        if(!isLogin){
+          setIsLogin(true);
+        }
+        else navigate('/competition')
     }
     catch(err){
       isLogin ?  window.alert('log in fail') : window.alert('registration failed');

@@ -1,36 +1,17 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { FiUpload, FiMap, FiCode, FiCheck, FiFileText, FiDownload } from 'react-icons/fi';
+import { useUserContext } from '../Contexts/userContext';
+import { useNavigate } from 'react-router-dom';
 
 const QueryPage = () => {
   const [selectedDialect, setSelectedDialect] = useState('MySQL');
   const [selectedFile, setSelectedFile] = useState(null);
-
-  // Dummy
-  const queries = [
-    {
-      id: 1,
-      title: "Identifying the Clutch Performers",
-      difficulty: "Medium",
-      description: `During the competition, organizers want to identify users 
-      who made a significant comeback by being outside the top 10 in the first half but finishing 
-      in the top 5 by the end. This will highlight participants who showed exceptional performance under pressure.`,
-    },
-    {
-      id: 2,
-      title: "Detecting Problem Masters",
-      difficulty: "Hard",
-      description: `The organizers want to reward users who solved the hardest problems (those solved by the least number of participants). 
-      The query should list the hardest problems and the users who solved them.`
-      ,
-    },
-    {
-      id: 3,
-      title: "Tracking Time Efficiency of Top Participants",
-      difficulty: "Medium",
-      description: "To highlight time efficiency, the organizers want to find the fastest participant in solving at least 5 problems while maintaining a position in the top 10 scorers.",
-    },
-  ];
-
+  const {user} = useUserContext();
+  const navigate = useNavigate();
+  const [queries,setQueries] = useState([]);
+  
+  
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
   };
@@ -39,6 +20,27 @@ const QueryPage = () => {
     e.preventDefault();
     console.log('Submitting:', { selectedDialect, selectedFile });
   };
+
+  useEffect(()=>{
+
+    // checking this condition was leading to some malfunctioning due to react's behaviour of sheduling state change
+    // if(!user.loggedIn) navigate('/login');
+    // else{}
+    
+    if(!user.loggedIn) navigate('/login')
+    else{
+      axios
+      .get('/api/queries/' + user.level, {withCredentials:true, headers : {"Content-Type":"application/json"}})
+      .then(res => {
+        setQueries(res.data.queries);
+        alert('found ' + res.data.queries.length + ' queries for your level')
+      })
+      .catch(err => {
+        console.log(err.message)
+      })    
+    }
+    // axios.get()
+  },[])
 
   return (
     <div className="min-h-screen bg-black px-4 py-8">
@@ -71,7 +73,7 @@ const QueryPage = () => {
                 <h3 className="text-xl font-semibold text-white">{query.title}</h3>
                 <span className={`px-3 py-1 rounded-full text-sm ${
                   query.difficulty === 'Hard' ? 'bg-red-500/20 text-red-500' :
-                  'bg-yellow-500/20 text-yellow-500'
+                  (query.difficulty === 'Easy' ? 'bg-green-500/20 text-green-500' : 'bg-yellow-500/20 text-yellow-500')
                 }`}>
                   {query.difficulty}
                 </span>
