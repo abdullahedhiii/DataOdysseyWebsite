@@ -32,3 +32,10 @@ module.exports.sendQueries = (req,res) => {
         res.status(500).json({message : err.message});
     }
 }
+
+module.exports.submitQuery = (req,res) => {
+    //testing here
+    res.status(200).json({message:'submission successfull'});
+    console.log('submit query endpoint hittt',req.body);
+}
+    

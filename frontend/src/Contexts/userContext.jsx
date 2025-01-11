@@ -8,11 +8,9 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState({teamName: '',email: '',member_count:1,level:1,loggedIn:false});
 
   const logUserIn = async (formData) => {
-    console.log('received ', formData);
     
     try{
       const response = await axios.post('/api/login',JSON.stringify(formData),{headers:{ "Content-Type":"application/json"}, withCredentials:true})
-      console.log(response.data,response.cookie);
       setUser((prev) => ({
           ...response.data,
           loggedIn:true

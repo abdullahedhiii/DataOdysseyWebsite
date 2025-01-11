@@ -4,11 +4,6 @@ const jwt = require('jsonwebtoken');
 
 require('dotenv').config(); 
 
-module.exports.submitQuery = (req,res) => {
-//testing here
-console.log('submit query endpoint hittt',req.body);
-}
-
 module.exports.loginUser = (req, res) => {
     
     try{
@@ -30,6 +25,7 @@ module.exports.loginUser = (req, res) => {
             }
 
             const { password, ...other } = user;
+            console.log('login ',user);
             
 
             const token = jwt.sign(
@@ -78,8 +74,7 @@ module.exports.registerUser = (req,res) => {
             const salt = bcrypt.genSaltSync(10);
             const hash = bcrypt.hashSync(password, salt);
             
-            console.log('inserting into table ',username,email,hash);
-            const qInsert = "INSERT INTO Participants (userName,email,password) VALUES (?,?,?)";
+            const qInsert = "INSERT INTO Participants (teamName,email,password) VALUES (?,?,?)";
             const values = [username,email, hash];
             
             db.query(qInsert, values, (err, data) => {

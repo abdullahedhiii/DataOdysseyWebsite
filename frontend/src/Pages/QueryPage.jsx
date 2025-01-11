@@ -32,6 +32,7 @@ const QueryPage = () => {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
+        withCredentials:true
       });
   
       alert('File uploaded successfully!');
@@ -133,6 +134,7 @@ const QueryPage = () => {
                 value={selectedDialect}
                 onChange={(e) => setSelectedDialect(e.target.value)}
                 className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:border-red-500"
+                required
               >
                 <option value="MySQL">MySQL</option>
                 <option value="Oracle">Oracle</option>
@@ -155,6 +157,7 @@ const QueryPage = () => {
                     type="file"
                     className="hidden"
                     onChange={handleFileChange}
+                    required
                   />
                 </label>
               </div>

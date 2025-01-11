@@ -3,11 +3,14 @@ const app = express();
 const cors = require('cors');
 const authentication = require('./middlewares/authenticate');
 const userRoutes = require('./routes/user.routes');
-const competitionRoutes = require('./routes/competition.routes')
+const competitionRoutes = require('./routes/competition.routes');
+const cookieParser = require("cookie-parser");
+
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); 
+app.use(cookieParser());
 
 app.use(authentication);
 
