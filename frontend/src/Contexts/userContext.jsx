@@ -6,6 +6,18 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
     
   const [user, setUser] = useState({teamName: '',email: '',member_count:1,level:1,loggedIn:false});
+  
+  const logUserOut = async () => {
+    try {
+      await axios.get('/api/logout', { withCredentials: true });
+      
+      setUser({teamName: '',email: '',member_count:1,level:1,loggedIn:false});
+
+      alert('Successfully logged out');
+    } catch (err) {
+      alert('Error logging out: ' + err.message);
+    }
+  };
 
   const logUserIn = async (formData) => {
     
@@ -38,7 +50,9 @@ export const UserProvider = ({ children }) => {
       user, 
       setUser, 
       logUserIn, 
-      registerUser }}>
+      registerUser,
+      logUserOut
+     }}>
       {children}
     </UserContext.Provider>
   );

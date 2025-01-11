@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { FiMenu, FiX } from 'react-icons/fi';
+import { FiMenu, FiX, FiLogOut } from 'react-icons/fi';
+import { useUserContext } from '../Contexts/userContext';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, logUserOut } = useUserContext();
 
   return (
     <nav className="bg-black border-b border-gray-800">
@@ -14,10 +16,19 @@ const Navbar = () => {
             </h1>
           </div>
 
-          <div className="hidden md:block">
+          <div className="hidden md:flex items-center gap-6">
             <h2 className="text-xl font-semibold text-white">
               ProCom<span className="text-red-600">'25</span>
             </h2>
+            {user.loggedIn && (
+              <button
+                onClick={logUserOut}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors"
+              >
+                <FiLogOut className="h-4 w-4" />
+                Logout
+              </button>
+            )}
           </div>
 
           <div className="md:hidden">
@@ -37,10 +48,19 @@ const Navbar = () => {
 
       <div className={`md:hidden ${isMenuOpen ? 'block' : 'hidden'}`}>
         <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-          <div className="flex items-center justify-center py-2">
+          <div className="flex flex-col items-center gap-4 py-2">
             <h2 className="text-xl font-semibold text-white">
               ProCom<span className="text-red-600">'25</span>
             </h2>
+            {user.loggedIn && (
+              <button
+                onClick={logUserOut}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors w-full justify-center"
+              >
+                <FiLogOut className="h-4 w-4" />
+                Logout
+              </button>
+            )}
           </div>
         </div>
       </div>

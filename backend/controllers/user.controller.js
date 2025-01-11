@@ -46,6 +46,7 @@ module.exports.loginUser = (req, res) => {
 
 
 module.exports.logoutUser = (req,res) =>{
+    console.log('log out hitt');
     try{
         res.cookie('access_token',{ 
           httpOnly: true, 
@@ -54,10 +55,10 @@ module.exports.logoutUser = (req,res) =>{
           expires: new Date(0)
         });
 
-        res.status(200).send({ message: 'Logged out successfully' });
+        return res.status(200).send({ message: 'Logged out successfully' });
     }
     catch(err){
-        res.status(500).send({ message: err.message });
+        return res.status(500).send({ message: err.message });
     }
 }
 
@@ -86,6 +87,6 @@ module.exports.registerUser = (req,res) => {
         });
     
     }catch(err){
-        res.status(500).json({message : err.message})
+        return res.status(500).json({message : err.message})
     }
 }

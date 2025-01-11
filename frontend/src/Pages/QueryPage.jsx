@@ -48,7 +48,7 @@ const QueryPage = () => {
     // if(!user.loggedIn) navigate('/login');
     // else{}
     console.log(user.loggedIn,"checking navigatiin");
-    if(!user.loggedIn) navigate('/login')
+    if(!user.loggedIn) navigate('/')
     else{
       axios
       .get('/api/queries/' + user.level, {withCredentials:true, headers : {"Content-Type":"application/json"}})
@@ -61,7 +61,7 @@ const QueryPage = () => {
       })    
     }
     // axios.get()
-  },[])
+  },[user,user.loggedIn])
 
   return (
     <div className="min-h-screen bg-black px-4 py-8">

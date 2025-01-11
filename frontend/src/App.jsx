@@ -5,12 +5,14 @@ import Login from './Pages/Login';
 import Navbar from './Components/Navbar';
 import LeaderBoard from './Pages/LeaderBoard';
 import QueryPage from './Pages/QueryPage';
+import Footer from './Components/Footer';
 
 const Layout = () => {
   return (
     <>
       <Navbar />
       <Outlet /> 
+      <Footer/>
     </>
   );
 }
