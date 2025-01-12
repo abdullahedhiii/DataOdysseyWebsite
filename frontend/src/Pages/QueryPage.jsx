@@ -1,67 +1,77 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { FiUpload, FiMap, FiCode, FiCheck, FiFileText, FiDownload } from 'react-icons/fi';
-import { useUserContext } from '../Contexts/userContext';
-import { useNavigate } from 'react-router-dom';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import {
+  FiUpload,
+  FiMap,
+  FiCode,
+  FiCheck,
+  FiFileText,
+  FiDownload,
+} from "react-icons/fi";
+import { useUserContext } from "../Contexts/userContext";
+import { useNavigate } from "react-router-dom";
+import SubmissionWindow from "../Components/SubmissionWindow";
 
 const QueryPage = () => {
-  const [selectedDialect, setSelectedDialect] = useState('MySQL');
+  const [selectedDialect, setSelectedDialect] = useState("MySQL");
   const [selectedFile, setSelectedFile] = useState(null);
-  const {user} = useUserContext();
+  const [selectedQuery, setSelectedQuery] = useState([]);
+  const { user } = useUserContext();
   const navigate = useNavigate();
-  const [queries,setQueries] = useState([]);
-  
-  
+  const [queries, setQueries] = useState([]);
+  const [showSubmissionWindow, setShowSubmissionWindow] = useState(false);
+
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); 
-    console.log('Submitting:', { selectedDialect, selectedFile });
-  
+    e.preventDefault();
+    console.log("Submitting:", { selectedDialect, selectedFile });
+
     const formData = new FormData();
-    formData.append('teamName',user.teamName);
-    formData.append('email',user.email);
-    formData.append('dialect', selectedDialect);
-    formData.append('file', selectedFile);
-  
+    formData.append("teamName", user.teamName);
+    formData.append("email", user.email);
+    formData.append("dialect", selectedDialect);
+    formData.append("file", selectedFile);
+
     try {
       //here response will contain whether the submitted query is correct or accordingly points,leaderboard will be updated
-      const response = await axios.post('/api/submitFile', formData, {
+      const response = await axios.post("/api/submitFile", formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
-        withCredentials:true
+        withCredentials: true,
       });
-  
-      alert('File uploaded successfully!');
+      setShowSubmissionWindow(true);
+      alert("File uploaded successfully!");
     } catch (err) {
-      alert('Failed to upload file: ' + err.message);
+      alert("Failed to upload file: " + err.message);
     }
   };
-  
 
-  useEffect(()=>{
-
+  useEffect(() => {
     // checking this condition was leading to some malfunctioning due to react's behaviour of sheduling state change
     // if(!user.loggedIn) navigate('/login');
     // else{}
-    console.log(user.loggedIn,"checking navigatiin");
-    if(!user.loggedIn) navigate('/')
-    else{
+    console.log(user.loggedIn, "checking navigatiin");
+    if (!user.loggedIn) navigate("/");
+    else {
       axios
-      .get('/api/queries/' + user.level, {withCredentials:true, headers : {"Content-Type":"application/json"}})
-      .then(res => {
-        setQueries(res.data.queries);
-        alert('found ' + res.data.queries.length + ' queries for your level')
-      })
-      .catch(err => {
-        console.log(err.message)
-      })    
+        .get("/api/queries/" + user.level, {
+          withCredentials: true,
+          headers: { "Content-Type": "application/json" },
+        })
+        .then((res) => {
+          setQueries(res.data.queries);
+          alert("found " + res.data.queries.length + " queries for your level");
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
     }
     // axios.get()
-  },[user,user.loggedIn])
+  }, [user, user.loggedIn]);
 
   return (
     <div className="min-h-screen bg-black px-4 py-8">
@@ -72,8 +82,8 @@ const QueryPage = () => {
             Competition Map
           </h2>
           <div className="aspect-video relative bg-gray-800 rounded-lg overflow-hidden">
-            <img 
-              src="/images/sample_map.jpg" 
+            <img
+              src="/images/sample_map.jpg"
               alt="Competition Map"
               className="w-full h-full object-cover"
             />
@@ -86,16 +96,28 @@ const QueryPage = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {queries.map((query) => (
-            <div 
+            <div
               key={query.id}
-              className="bg-gray-900 rounded-xl p-6 border border-gray-800 hover:border-red-500 transition-colors"
+              className={`bg-gray-900 rounded-xl p-6 border transition-colors ${
+                selectedQuery.id === query.id
+                  ? "border-red-500" // Permanent red border if selected
+                  : "border-gray-800 hover:border-red-500" // Hover red border if not selected
+              }`}
+              onClick={() => setSelectedQuery(query)} // Mark query as selected when clicked
             >
               <div className="flex justify-between items-start mb-4">
-                <h3 className="text-xl font-semibold text-white">{query.title}</h3>
-                <span className={`px-3 py-1 rounded-full text-sm ${
-                  query.difficulty === 'Hard' ? 'bg-red-500/20 text-red-500' :
-                  (query.difficulty === 'Easy' ? 'bg-green-500/20 text-green-500' : 'bg-yellow-500/20 text-yellow-500')
-                }`}>
+                <h3 className="text-xl font-semibold text-white">
+                  {query.title}
+                </h3>
+                <span
+                  className={`px-3 py-1 rounded-full text-sm ${
+                    query.difficulty === "Hard"
+                      ? "bg-red-500/20 text-red-500"
+                      : query.difficulty === "Easy"
+                      ? "bg-green-500/20 text-green-500"
+                      : "bg-yellow-500/20 text-yellow-500"
+                  }`}
+                >
                   {query.difficulty}
                 </span>
               </div>
@@ -103,17 +125,17 @@ const QueryPage = () => {
                 {query.description}
               </pre>
               <div className="flex justify-between items-center">
-                <button 
+                <button
                   className="text-red-500 hover:text-red-400 flex items-center gap-2"
-                  onClick={() => console.log('Download PDF')}
+                  onClick={() => console.log("Download PDF")}
                 >
                   <FiDownload /> PDF
                 </button>
-                <button 
+                <button
                   className="text-white hover:text-red-500 flex items-center gap-2"
-                  onClick={() => console.log('View Full')}
+                  onClick={() => setSelectedQuery(query)}
                 >
-                  <FiFileText /> View Full
+                  <FiFileText /> Mark Selected
                 </button>
               </div>
             </div>
@@ -151,7 +173,7 @@ const QueryPage = () => {
                 <label className="w-full flex flex-col items-center px-4 py-6 bg-gray-800 text-white rounded-lg tracking-wide border border-gray-700 cursor-pointer hover:border-red-500 transition-colors">
                   <FiUpload className="w-8 h-8" />
                   <span className="mt-2 text-base">
-                    {selectedFile ? selectedFile.name : 'Select a file'}
+                    {selectedFile ? selectedFile.name : "Select a file"}
                   </span>
                   <input
                     type="file"
@@ -173,7 +195,13 @@ const QueryPage = () => {
           </form>
         </div>
       </div>
-
+      {showSubmissionWindow && (
+        <SubmissionWindow 
+          fileName={selectedFile.name} 
+          query={selectedQuery} 
+          dialect={selectedDialect}
+        />
+      )}
       <div className="fixed top-0 right-0 w-96 h-96 bg-red-600/10 rounded-full blur-3xl -z-10"></div>
       <div className="fixed bottom-0 left-0 w-96 h-96 bg-red-600/10 rounded-full blur-3xl -z-10"></div>
     </div>

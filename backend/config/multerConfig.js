@@ -10,18 +10,18 @@ if (!fs.existsSync(uploadDirectory)) {
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'submittedQueries/'); 
+    cb(null, uploadDirectory); 
   },
   filename: (req, file, cb) => {
-
-    const teamName = req.body.teamName ;
+    const teamName = req.body.teamName;
     const formattedName = teamName.replace(/\s+/g, '_');
     const originalName = file.originalname;
-    console.log('these are values ',teamName,formattedName,originalName, ' extracted from ',req.body);
-    
-    cb(null, `${formattedName}_${originalName}_${req.body.dialect}`); //if name is edhi then it saves edhi_solA_MySQL
+    console.log('these are values ', teamName, formattedName, originalName, ' extracted from ', req.body);
+
+    cb(null, `${formattedName}_${req.body.dialect}_${originalName}`); // edhi_MySQL_sol1.txt
   },
 });
+
 
 const fileFilter = (req, file, cb) => {
   const allowedFileTypes = ['.txt','.sql']; 
