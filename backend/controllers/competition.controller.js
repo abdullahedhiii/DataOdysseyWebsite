@@ -1,3 +1,5 @@
+const socket = require('../socket');
+
 module.exports.sendQueries = (req,res) => {
     
     try{
@@ -36,6 +38,11 @@ module.exports.sendQueries = (req,res) => {
 module.exports.submitQuery = (req,res) => {
     //testing here
     console.log('submit query endpoint hittt',req.body);
+    const {email} = req.body;
+    const io = socket.getIO(); 
+    const status = "Submitted";
+    io.emit('fileStatusUpdated', { email, status });
+
     return res.status(200).json({message:'submission successfull'});
 }
     

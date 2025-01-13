@@ -1,9 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FiClock, FiFileText, FiFlag, FiAlertCircle } from 'react-icons/fi';
 import { useUserContext } from '../Contexts/userContext';
+const socket = io('http://localhost:8800', { withCredentials: true });
 
-const SubmissionWindow = ({ fileName, query,dialect }) => {
+const SubmissionWindow = ({ fileName, query,dialect,status }) => {
+    useEffect(() => {
+       if(!socket){
+        socket =  io('http://localhost:8800', { withCredentials: true });
+        socket.on("fileStatusUpdated", (queryStatus) => {
+        handleStatusUpdate(updatedOrder); });
+       }
+       
+       return () => {
+        if(socket) {
+          socket.disconnect();
+          socket = null;
+        }
+      }
+
+    },[]);
+    
     const {user} = useUserContext();
+    
     return (
     <div className="fixed top-0 right-0 h-screen w-80 bg-gray-900 border-l border-gray-800 shadow-xl overflow-y-auto">
       <div className="p-6 border-b border-gray-800">
@@ -61,16 +79,16 @@ const SubmissionWindow = ({ fileName, query,dialect }) => {
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-              <p className="text-sm text-white">File Received</p>
+              <p className="text-sm text-white">{status}</p>
             </div>
-            <div className="flex items-center gap-3">
+            {/* <div className="flex items-center gap-3">
               <div className="w-3 h-3 bg-yellow-500 rounded-full animate-pulse"></div>
               <p className="text-sm text-white">Running Tests</p>
-            </div>
-            <div className="flex items-center gap-3">
+            </div> */}
+            {/* <div className="flex items-center gap-3">
               <div className="w-3 h-3 bg-gray-600 rounded-full"></div>
               <p className="text-sm text-gray-400">Evaluation Pending</p>
-            </div>
+            </div> */}
           </div>
         </div>
 

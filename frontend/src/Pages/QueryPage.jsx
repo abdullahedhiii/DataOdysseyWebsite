@@ -200,6 +200,7 @@ const QueryPage = () => {
           fileName={selectedFile.name} 
           query={selectedQuery} 
           dialect={selectedDialect}
+          status = "submitting"
         />
       )}
       <div className="fixed top-0 right-0 w-96 h-96 bg-red-600/10 rounded-full blur-3xl -z-10"></div>
