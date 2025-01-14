@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { FiMenu, FiX, FiLogOut, FiAward } from 'react-icons/fi';
+import { FiMenu, FiX, FiLogOut, FiAward,FiHome} from 'react-icons/fi';
 import { useUserContext } from '../Contexts/userContext';
+import Dashboard from './Dashboard';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
- // const [isLeaderboardOpen,setOpen] = useState(false);
+  const [openDashboard,setDashboard] = useState(false);
   const { user, logUserOut } = useUserContext();
 
   return (
@@ -19,6 +20,14 @@ const Navbar = () => {
 
           <div className="hidden md:flex justify-center flex-1">
             {user.loggedIn && (
+              <>
+              <button
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white hover:text-red-500 transition-colors"
+                onClick={() => setDashboard(true)}
+              >
+                <FiHome className="h-4 w-4"/>
+                dashboard
+              </button>
               <a
                 href="/leaderboard"
                 target='_blank'
@@ -28,9 +37,10 @@ const Navbar = () => {
                 <FiAward className="h-4 w-4" />
                 Leaderboard
               </a>
+
+              </>
             )}
           </div>
-
           <div className="hidden md:flex items-center gap-6">
             <h2 className="text-xl font-semibold text-white">
               ProCom<span className="text-red-600">'25</span>
@@ -89,7 +99,12 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-
+      
+      {openDashboard && 
+      <Dashboard
+        onClose={() => setDashboard(false)}
+      />
+}
       <div className="h-[1px] bg-gradient-to-r from-red-600/0 via-red-600 to-red-600/0"></div>
     </nav>
   );
