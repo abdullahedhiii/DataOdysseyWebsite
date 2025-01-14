@@ -1,31 +1,29 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FiClock, FiFileText, FiFlag, FiAlertCircle } from 'react-icons/fi';
 import { useUserContext } from '../Contexts/userContext';
-const socket = io('http://localhost:8800', { withCredentials: true });
 
-const SubmissionWindow = ({ fileName, query,dialect,status }) => {
-    useEffect(() => {
-       if(!socket){
-        socket =  io('http://localhost:8800', { withCredentials: true });
-        socket.on("fileStatusUpdated", (queryStatus) => {
-        handleStatusUpdate(updatedOrder); });
-       }
-       
-       return () => {
-        if(socket) {
-          socket.disconnect();
-          socket = null;
-        }
-      }
+const SubmissionWindow = ({ fileName, query,dialect, toggleWindow }) => {
 
-    },[]);
-    
-    const {user} = useUserContext();
-    
+  const [status,setStatus] = useState('submitting');
+  const {user,socket} = useUserContext();
+
+  const statusChanger =  (queryStatus) => {
+    if(queryStatus.email === user.email && queryStatus.status !== status){
+      setStatus(prev => queryStatus.status);
+    }
+  }
+
+  useEffect(()=>{
+    socket.on('fileStatusUpdated',statusChanger)
+  },[])
+        
     return (
     <div className="fixed top-0 right-0 h-screen w-80 bg-gray-900 border-l border-gray-800 shadow-xl overflow-y-auto">
       <div className="p-6 border-b border-gray-800">
-        <h2 className="text-xl font-bold text-white mb-2">Submission Details</h2>
+        <div className='flex flex-wrap-reverse justify-between'>
+          <h2 className="text-xl font-bold text-white mb-2">Submission Details</h2>
+          <button onClick={toggleWindow} className='mb-2 hover:text-red-500'>✖</button>
+        </div>
         <p className="text-sm text-gray-400">Status: Pending Evaluation</p>
       </div>
 
@@ -78,7 +76,7 @@ const SubmissionWindow = ({ fileName, query,dialect,status }) => {
           
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+              <div className={`w-3 h-3 ${(status === 'submitting' ||status === 'submitted' || status === 'accepted') ? 'bg-green-500' : ( status === 'pending' ? 'bg-orange-500/90' : 'bg-red-500')} rounded-full`}></div>
               <p className="text-sm text-white">{status}</p>
             </div>
             {/* <div className="flex items-center gap-3">
@@ -91,10 +89,10 @@ const SubmissionWindow = ({ fileName, query,dialect,status }) => {
             </div> */}
           </div>
         </div>
-
+        { status !== 'accepted' &&      
         <div className="flex justify-center">
           <div className="w-8 h-8 border-4 border-red-500 border-t-transparent rounded-full animate-spin"></div>
-        </div>
+        </div>}
       </div>
 
       <div className="absolute bottom-0 right-0 w-64 h-64 bg-red-600/10 rounded-full blur-3xl -z-10"></div>

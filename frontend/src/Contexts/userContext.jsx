@@ -1,12 +1,28 @@
 import axios from "axios";
-import React, { createContext, useContext, useState } from "react";
+import { io } from "socket.io-client";
+import React, { createContext, useContext, useState, useEffect } from "react";
 
 const UserContext = createContext();
+let socket;
 
 export const UserProvider = ({ children }) => {
     
   const [user, setUser] = useState({teamName: '',email: '',member_count:1,level:1,loggedIn:false});
+
   
+  useEffect(() => {
+    if(!socket){
+      socket = io('http://localhost:8800', { withCredentials: true });
+    }
+    console.log('socket set and initialized');
+    
+    return ()=>{
+      console.log('disconnecting socket');
+      socket.disconnect();
+      socket = null;
+    }
+     
+  },[]);
   const logUserOut = async () => {
     try {
       await axios.get('/api/logout', { withCredentials: true });
@@ -51,7 +67,8 @@ export const UserProvider = ({ children }) => {
       setUser, 
       logUserIn, 
       registerUser,
-      logUserOut
+      logUserOut,
+      socket
      }}>
       {children}
     </UserContext.Provider>

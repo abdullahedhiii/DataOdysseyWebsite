@@ -16,8 +16,6 @@ const storage = multer.diskStorage({
     const teamName = req.body.teamName;
     const formattedName = teamName.replace(/\s+/g, '_');
     const originalName = file.originalname;
-    console.log('these are values ', teamName, formattedName, originalName, ' extracted from ', req.body);
-
     cb(null, `${formattedName}_${req.body.dialect}_${originalName}`); // edhi_MySQL_sol1.txt
   },
 });

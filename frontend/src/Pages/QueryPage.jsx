@@ -28,14 +28,15 @@ const QueryPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Submitting:", { selectedDialect, selectedFile });
-
-    const formData = new FormData();
-    formData.append("teamName", user.teamName);
-    formData.append("email", user.email);
-    formData.append("dialect", selectedDialect);
-    formData.append("file", selectedFile);
-
+    
     try {
+      const formData = new FormData();
+      formData.append("teamName", user.teamName);
+      formData.append("email", user.email);
+      formData.append("dialect", selectedDialect);
+      formData.append("query", selectedQuery.id);
+      formData.append("file", selectedFile);
+      
       //here response will contain whether the submitted query is correct or accordingly points,leaderboard will be updated
       const response = await axios.post("/api/submitFile", formData, {
         headers: {
@@ -44,17 +45,12 @@ const QueryPage = () => {
         withCredentials: true,
       });
       setShowSubmissionWindow(true);
-      alert("File uploaded successfully!");
     } catch (err) {
       alert("Failed to upload file: " + err.message);
     }
   };
 
   useEffect(() => {
-    // checking this condition was leading to some malfunctioning due to react's behaviour of sheduling state change
-    // if(!user.loggedIn) navigate('/login');
-    // else{}
-    console.log(user.loggedIn, "checking navigatiin");
     if (!user.loggedIn) navigate("/");
     else {
       axios
@@ -64,13 +60,13 @@ const QueryPage = () => {
         })
         .then((res) => {
           setQueries(res.data.queries);
+          setSelectedQuery(res.data.queries[0]);
           alert("found " + res.data.queries.length + " queries for your level");
         })
         .catch((err) => {
           console.log(err.message);
         });
     }
-    // axios.get()
   }, [user, user.loggedIn]);
 
   return (
@@ -148,23 +144,22 @@ const QueryPage = () => {
             Submit Solution
           </h2>
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-2">
-                Select Language
-              </label>
-              <select
-                value={selectedDialect}
-                onChange={(e) => setSelectedDialect(e.target.value)}
-                className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:border-red-500"
-                required
-              >
-                <option value="MySQL">MySQL</option>
-                <option value="Oracle">Oracle</option>
-                <option value="NoSQL">NoSQL</option>
-                <option value="Postgres">Postgres</option>
-              </select>
-            </div>
-
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-2">
+                  Select Query
+                </label>
+                <select
+                  value={selectedDialect}
+                  onChange={(e) => setSelectedDialect(e.target.value)}
+                  className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:border-red-500"
+                  required
+                  >
+                  <option value="MySQL">MySQL</option>
+                  <option value="Oracle">Oracle</option>
+                  <option value="NoSQL">NoSQL</option>
+                  <option value="Postgres">Postgres</option>
+                </select>
+              </div>
             <div>
               <label className="block text-sm font-medium text-gray-400 mb-2">
                 Upload Solution File(eg: sol1.txt or sol1.sql)
@@ -201,6 +196,7 @@ const QueryPage = () => {
           query={selectedQuery} 
           dialect={selectedDialect}
           status = "submitting"
+          toggleWindow = {()=>{setShowSubmissionWindow(prev => !prev);}}
         />
       )}
       <div className="fixed top-0 right-0 w-96 h-96 bg-red-600/10 rounded-full blur-3xl -z-10"></div>
