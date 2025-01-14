@@ -1,42 +1,67 @@
 import React, { useState, useEffect } from "react";
-import { FiAward, FiTrendingUp, FiClock, FiCheck, FiX } from "react-icons/fi";
+import { FiAward, FiTrendingUp, FiClock, FiTarget } from "react-icons/fi";
 
 const LeaderBoard = () => {
   const leaderboardData = [
     {
       rank: 1,
-      username: "CodeMaster",
-      score: 800,
-      problems: { A: true, B: true, C: true, D: true, E: true, F: true, G: true, H: true },
-      totalTime: "2:45:30",
+      teamName: "SQL Masters",
+      currentLevel: 5,
+      queriesSolved: {
+        hard: 3,
+        medium: 4,
+        easy: 2
+      },
+      submissions: 11,
+      totalScore: 800
     },
     {
       rank: 2,
-      username: "ByteWarrior",
-      score: 700,
-      problems: { A: true, B: true, C: true, D: true, E: true, F: true, G: false, H: false },
-      totalTime: "3:15:20",
+      teamName: "Query Questers",
+      currentLevel: 4,
+      queriesSolved: {
+        hard: 2,
+        medium: 4,
+        easy: 2
+      },
+      submissions:10,
+      totalScore: 650
     },
     {
       rank: 3,
-      username: "AlgoNinja",
-      score: 600,
-      problems: { A: true, B: true, C: true, D: true, E: true, F: false, G: false, H: false },
-      totalTime: "3:30:45",
+      teamName: "Data Dragons",
+      currentLevel: 3,
+      queriesSolved: {
+        hard: 2,
+        medium: 3,
+        easy: 2
+      },
+      submissions:7,
+      totalScore: 550
     },
     {
       rank: 4,
-      username: "DataWizard",
-      score: 500,
-      problems: { A: true, B: true, C: true, D: true, E: false, F: false, G: false, H: false },
-      totalTime: "3:45:15",
+      teamName: "Schema Slayers",
+      currentLevel: 3,
+      queriesSolved: {
+        hard: 1,
+        medium: 3,
+        easy: 2
+      },
+      submissions:9,
+      totalScore: 400
     },
     {
       rank: 5,
-      username: "BinaryBoss",
-      score: 400,
-      problems: { A: true, B: true, C: true, D: false, E: false, F: false, G: false, H: false },
-      totalTime: "4:00:00",
+      teamName: "Table Titans",
+      currentLevel: 2,
+      queriesSolved: {
+        hard: 1,
+        medium: 2,
+        easy: 2
+      },
+      submissions:14,
+      totalScore: 350
     },
   ];
 
@@ -74,10 +99,10 @@ const LeaderBoard = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           <div className="bg-gray-900 rounded-xl p-6 border border-gray-800">
             <div className="flex items-center gap-4">
-              <FiAward className="text-red-500 text-3xl" />
+              <FiTarget className="text-red-500 text-3xl" />
               <div>
-                <p className="text-gray-400">Total Queries to solve</p>
-                <p className="text-2xl font-bold text-white">8</p>
+                <p className="text-gray-400">Max Level</p>
+                <p className="text-2xl font-bold text-white">5</p>
               </div>
             </div>
           </div>
@@ -85,8 +110,8 @@ const LeaderBoard = () => {
             <div className="flex items-center gap-4">
               <FiTrendingUp className="text-red-500 text-3xl" />
               <div>
-                <p className="text-gray-400">Dialects supported</p>
-                <p className="text-2xl font-bold text-white">Oracle,MySQL,Postgres</p>
+                <p className="text-gray-400">Total Teams</p>
+                <p className="text-2xl font-bold text-white">{leaderboardData.length}</p>
               </div>
             </div>
           </div>
@@ -107,53 +132,54 @@ const LeaderBoard = () => {
               <thead>
                 <tr className="bg-gray-800">
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-400">Rank</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-400">Username</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-400">Problems</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-400">Score</th>
-                  <th className="px-6 py-4 text-right text-sm font-semibold text-gray-400">Time</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-400">Team Name</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-400">Level</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-red-400">Hard</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-yellow-400">Medium</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-green-400">Easy</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-400">Submissions</th>
+                  <th className="px-6 py-4 text-right text-sm font-semibold text-gray-400">Total Score</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-800">
-                {leaderboardData.map((player) => (
-                  <tr key={player.rank} className="hover:bg-gray-800/50 transition-colors">
+                {leaderboardData.map((team) => (
+                  <tr key={team.rank} className="hover:bg-gray-800/50 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
-                        {player.rank <= 3 && (
+                        {team.rank <= 3 && (
                           <FiAward
                             className={`${
-                              player.rank === 1
+                              team.rank === 1
                                 ? "text-yellow-500"
-                                : player.rank === 2
+                                : team.rank === 2
                                 ? "text-gray-400"
                                 : "text-yellow-700"
                             }`}
                           />
                         )}
-                        <span className="text-white font-medium">#{player.rank}</span>
+                        <span className="text-white font-medium">#{team.rank}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-white font-medium">{player.username}</span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex justify-center gap-2">
-                        {Object.entries(player.problems).map(([problem, solved]) => (
-                          <div
-                            key={problem}
-                            className={`w-8 h-8 rounded-md flex items-center justify-center ${
-                              solved ? "bg-green-500/20 text-green-500" : "bg-red-500/20 text-red-500"
-                            }`}
-                          >
-                            {solved ? <FiCheck /> : <FiX />}
-                          </div>
-                        ))}
-                      </div>
+                      <span className="text-white font-medium">{team.teamName}</span>
                     </td>
                     <td className="px-6 py-4 text-center">
-                      <span className="text-white font-medium">{player.score}</span>
+                      <span className="text-white font-medium">{team.currentLevel}</span>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <span className="text-red-400 font-medium">{team.queriesSolved.hard}</span>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <span className="text-yellow-400 font-medium">{team.queriesSolved.medium}</span>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <span className="text-green-400 font-medium">{team.queriesSolved.easy}</span>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <span className="text-white font-medium">{team.submissions}</span>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <span className="text-gray-400">{player.totalTime}</span>
+                      <span className="text-white font-medium">{team.totalScore}</span>
                     </td>
                   </tr>
                 ))}

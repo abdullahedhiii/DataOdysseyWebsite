@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { FiMenu, FiX, FiLogOut } from 'react-icons/fi';
+import { FiMenu, FiX, FiLogOut, FiAward } from 'react-icons/fi';
 import { useUserContext } from '../Contexts/userContext';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+ // const [isLeaderboardOpen,setOpen] = useState(false);
   const { user, logUserOut } = useUserContext();
 
   return (
@@ -14,6 +15,20 @@ const Navbar = () => {
             <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-red-500 bg-clip-text text-transparent">
               Data Odyssey
             </h1>
+          </div>
+
+          <div className="hidden md:flex justify-center flex-1">
+            {user.loggedIn && (
+              <a
+                href="/leaderboard"
+                target='_blank'
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white hover:text-red-500 transition-colors"
+                onClick={() => setOpen(true)}
+              >
+                <FiAward className="h-4 w-4" />
+                Leaderboard
+              </a>
+            )}
           </div>
 
           <div className="hidden md:flex items-center gap-6">
@@ -53,13 +68,23 @@ const Navbar = () => {
               ProCom<span className="text-red-600">'25</span>
             </h2>
             {user.loggedIn && (
-              <button
-                onClick={logUserOut}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors w-full justify-center"
-              >
-                <FiLogOut className="h-4 w-4" />
-                Logout
-              </button>
+              <>
+                <a
+                  href="/leaderboard"
+                  target='_blank'
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white hover:text-red-500 transition-colors w-full justify-center"
+                >
+                  <FiAward className="h-4 w-4" />
+                  Leaderboard
+                </a>
+                <button
+                  onClick={logUserOut}
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors w-full justify-center"
+                >
+                  <FiLogOut className="h-4 w-4" />
+                  Logout
+                </button>
+              </>
             )}
           </div>
         </div>

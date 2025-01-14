@@ -6,6 +6,7 @@ import Navbar from './Components/Navbar';
 import LeaderBoard from './Pages/LeaderBoard';
 import QueryPage from './Pages/QueryPage';
 import Footer from './Components/Footer';
+import Banner from './Components/Banner';
 
 const Layout = () => {
   return (
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
       {
         path: "competition",
         element: <QueryPage/>
+      },
+      {
+        path: "upcomingCompetition",
+        element: <Banner/>
       }
     ],
   },
