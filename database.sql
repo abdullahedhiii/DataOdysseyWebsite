@@ -1,14 +1,21 @@
 create database data_dungeon;
 use data_dungeon;
 
+drop table solutions;
+drop table queries;
+drop table participants;
+
 CREATE TABLE participants (
  teamName VARCHAR(30), 
- email VARCHAR(30) PRIMARY KEY, 
+ email VARCHAR(30) , 
  password VARCHAR(100),
  member_count INT DEFAULT 1,
  level INTEGER default 1 
  );
- 
+ALTER TABLE participants ADD COLUMN team_id INT AUTO_INCREMENT PRIMARY KEY; 
+ALTER TABLE participants auto_increment = 10010;
+
+select * from participants;
 CREATE TABLE queries (
     queryId INTEGER PRIMARY KEY AUTO_INCREMENT,
     description varchar(300) not null,
@@ -20,10 +27,10 @@ ALTER TABLE queries AUTO_INCREMENT = 4609;
 
 CREATE TABLE solutions (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    email varchar(30),
+    team_id int,
     queryId INTEGER,
     status VARCHAR(15) NOT NULL DEFAULT 'submitted' CHECK (status IN ('submitted', 'pending', 'accepted')),
-    CONSTRAINT solverRef FOREIGN KEY (email) REFERENCES participants(email),
+    CONSTRAINT solverRef FOREIGN KEY (team_id) REFERENCES participants(team_id),
     CONSTRAINT QuestionRef FOREIGN KEY (queryId) REFERENCES queries(queryId)
 );
 ALTER TABLE solutions AUTO_INCREMENT  = 4392;
