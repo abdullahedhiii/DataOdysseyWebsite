@@ -32,12 +32,17 @@ const Navbar = () => {
                 href="/leaderboard"
                 target='_blank'
                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white hover:text-red-500 transition-colors"
-                onClick={() => setOpen(true)}
               >
                 <FiAward className="h-4 w-4" />
                 Leaderboard
               </a>
-
+              <a
+                href="/competition"
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white hover:text-red-500 transition-colors"
+              >
+                <FiAward className="h-4 w-4" />
+                Competition
+              </a>
               </>
             )}
           </div>

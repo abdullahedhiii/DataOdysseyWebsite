@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { FiAward, FiTrendingUp, FiClock, FiTarget } from "react-icons/fi";
+import { useUserContext } from "../Contexts/userContext";
 
 const LeaderBoard = () => {
+  const {user} = useUserContext();
   const leaderboardData = [
     {
       rank: 1,
+      team_id : 10100,
       teamName: "SQL Masters",
       currentLevel: 5,
       queriesSolved: {
@@ -17,6 +20,7 @@ const LeaderBoard = () => {
     },
     {
       rank: 2,
+      team_id:10101,
       teamName: "Query Questers",
       currentLevel: 4,
       queriesSolved: {
@@ -29,6 +33,7 @@ const LeaderBoard = () => {
     },
     {
       rank: 3,
+      team_id:10102,
       teamName: "Data Dragons",
       currentLevel: 3,
       queriesSolved: {
@@ -41,6 +46,7 @@ const LeaderBoard = () => {
     },
     {
       rank: 4,
+      team_id : 10103,
       teamName: "Schema Slayers",
       currentLevel: 3,
       queriesSolved: {
@@ -53,6 +59,7 @@ const LeaderBoard = () => {
     },
     {
       rank: 5,
+      team_id : 10104,
       teamName: "Table Titans",
       currentLevel: 2,
       queriesSolved: {
@@ -142,47 +149,55 @@ const LeaderBoard = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-800">
-                {leaderboardData.map((team) => (
-                  <tr key={team.rank} className="hover:bg-gray-800/50 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        {team.rank <= 3 && (
-                          <FiAward
-                            className={`${
-                              team.rank === 1
-                                ? "text-yellow-500"
-                                : team.rank === 2
-                                ? "text-gray-400"
-                                : "text-yellow-700"
-                            }`}
-                          />
-                        )}
-                        <span className="text-white font-medium">#{team.rank}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="text-white font-medium">{team.teamName}</span>
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <span className="text-white font-medium">{team.currentLevel}</span>
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <span className="text-red-400 font-medium">{team.queriesSolved.hard}</span>
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <span className="text-yellow-400 font-medium">{team.queriesSolved.medium}</span>
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <span className="text-green-400 font-medium">{team.queriesSolved.easy}</span>
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <span className="text-white font-medium">{team.submissions}</span>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <span className="text-white font-medium">{team.totalScore}</span>
-                    </td>
-                  </tr>
-                ))}
+                {leaderboardData.map((team) => {
+                  const isUserTeam = team.team_id === user?.team_id;
+                  return (
+                    <tr
+                      key={team.rank}
+                      className={`hover:bg-gray-800/50 transition-colors ${
+                        isUserTeam ? "bg-red-600" : ""
+                      }`} // Apply highlight color if team matches user's team_id
+                    >
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          {team.rank <= 3 && (
+                            <FiAward
+                              className={`${
+                                team.rank === 1
+                                  ? "text-yellow-500"
+                                  : team.rank === 2
+                                  ? "text-gray-400"
+                                  : "text-yellow-700"
+                              }`}
+                            />
+                          )}
+                          <span className="text-white font-medium">#{team.rank}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-white font-medium">{team.teamName}</span>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <span className="text-white font-medium">{team.currentLevel}</span>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <span className="text-red-400 font-medium">{team.queriesSolved.hard}</span>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <span className="text-yellow-400 font-medium">{team.queriesSolved.medium}</span>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <span className="text-green-400 font-medium">{team.queriesSolved.easy}</span>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <span className="text-white font-medium">{team.submissions}</span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <span className="text-white font-medium">{team.totalScore}</span>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

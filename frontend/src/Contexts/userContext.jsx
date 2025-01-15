@@ -7,7 +7,7 @@ let socket;
 
 export const UserProvider = ({ children }) => {
     
-  const [user, setUser] = useState({teamName: '',email: '',member_count:1,level:1,loggedIn:false});
+  const [user, setUser] = useState({teamName: '',email: '',member_count:1,level:1,team_id: 0,loggedIn:false});
 
   
   useEffect(() => {

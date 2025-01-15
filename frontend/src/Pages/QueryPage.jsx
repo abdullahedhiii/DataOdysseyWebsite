@@ -49,6 +49,7 @@ const QueryPage = () => {
   };
 
   useEffect(() => {
+    console.log('in competition page ',user);
     if (!user.loggedIn) navigate("/");
     else {
       axios

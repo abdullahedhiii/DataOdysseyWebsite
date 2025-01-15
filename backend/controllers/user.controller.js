@@ -29,9 +29,9 @@ module.exports.loginUser = (req, res) => {
             
 
             const token = jwt.sign(
-                { id: user.praticipantId }, 
+                { id: user.email }, 
                 process.env.JWT_SECRET, 
-                { expiresIn: 600 }
+                { expiresIn: 6000 }
             );
             
             res.status(200).cookie("access_token", token, {
@@ -90,3 +90,29 @@ module.exports.registerUser = (req,res) => {
         return res.status(500).json({message : err.message})
     }
 }
+
+
+module.exports.retrieveCookie = (req, res) => {
+    const token = req.cookies.access_token;
+
+    if (!token) {
+        return res.status(401).json({ message: 'Not authenticated' });
+    }
+    
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        if (err) {
+            return res.status(403).json({ message: 'Token expired or invalid' });
+        }
+
+        const account_query = 'SELECT * FROM Participants WHERE email = ?';
+        
+        db.query(account_query, [decoded.id], (err, result) => {
+            if (err) {
+                console.log('error here',err);
+                return res.status(400).json({ message: 'Error retrieving user data' });
+            }
+            const { password, ...other } = result[0];
+            return res.json(other);  
+        });
+    });
+};
