@@ -32,6 +32,7 @@ const QueryPage = () => {
       const formData = new FormData();
       formData.append("teamName", user.teamName);
       formData.append("email", user.email);
+      formData.append("team_id", user.team_id);
       formData.append("dialect", selectedDialect);
       formData.append("query", selectedQuery.id);
       formData.append("file", selectedFile);
@@ -47,6 +48,58 @@ const QueryPage = () => {
       alert("Failed to upload file: " + err.message);
     }
   };
+
+  let scale = 1; // Initial zoom level
+  let offsetX = 0; // Horizontal offset
+  let offsetY = 0; // Vertical offset
+  
+  const zoomToLevel = (newScale, centerX = 0.5, centerY = 0.5) => {
+    scale = newScale;
+    const mapImage = document.getElementById('map-image');
+    const mapWrapper = document.getElementById('map-wrapper');
+  
+    mapImage.scrollIntoView({behavior:"smooth"})
+
+  // Calculate offsets to center based on the given coordinates
+  const containerWidth = mapWrapper.offsetWidth;
+  const containerHeight = mapWrapper.offsetHeight;
+  const imageWidth = mapImage.naturalWidth * scale;
+  const imageHeight = mapImage.naturalHeight * scale;
+
+  offsetX = (containerWidth / 2 - centerX * imageWidth);
+  offsetY = (containerHeight / 2 - centerY * imageHeight);
+
+  // Apply the transformation
+  mapImage.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
+};
+const levels = [
+  {number : 1, x : 0.01, y:0.01},
+  {number : 2, x : -0.06, y:0.09},
+  {number : 3, x : -0.06, y:0.31},
+  {number : 4, x : -0.065, y:0.4},
+  {number : 5, x : 0.025, y:0.38},
+  {number : 6, x : 0.25, y:0.38},
+  {number : 7, x : 0.178, y:0.054},
+  {number : 8, x : 0.123, y:0.17},
+]
+const showZoomingEffect = ()=>{
+  levels.forEach((level,index) => {
+    setTimeout(()=>{
+      zoomToLevel(2.5,level.x,level.y)
+    },index * 3000)
+  })
+  
+  setTimeout(()=>{
+    zoomToLevel(2.5,levels[user.level-1].x, levels[user.level-1].y);
+  },[levels.length * 3000])
+}
+useEffect(()=>{
+  // zoomToLevel(2.5,0.178,0.053);
+  showZoomingEffect();
+  console.log('zooming to current level ' + levels[user.level-1].x + ' ' + levels[user.level-1].y);
+  
+},[])
+
 
   useEffect(() => {
     console.log('in competition page ',user);
@@ -77,12 +130,20 @@ const QueryPage = () => {
               <FiMap className="text-red-500" />
               Progress Map
             </h2>
-            <div className="relative bg-gray-800 rounded-lg overflow-hidden" style={{ height: '400px' }}>
-              <img
-                src="/images/sample_map.jpg"
-                alt="Competition Map"
-                className="w-full h-full object-contain"
-              />
+            <div className="relative bg-gray-800 rounded-lg overflow-hidden flex justify-center items-center" style={{ height: '400px' }}>
+              <div className="absolute size-full flex justify-center items-center inset-0" id="map-wrapper">
+                <img
+                  id="map-image"
+                  src="/images/sample_map.jpg"
+                  alt="Competition Map"
+                  className="size-full"
+                  style={{
+                    transition: "transform 0.3s ease-in-out",
+                    transformOrigin: "center"
+                  }}
+                  onClick={()=>{zoomToLevel(2,0.2,0.2)}}
+                  />
+              </div>
               <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                 <div className="w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
                 <div className="w-4 h-4 bg-red-500 rounded-full absolute top-0"></div>
@@ -104,7 +165,7 @@ const QueryPage = () => {
               </span>
             </div>
             
-            {selectedQuery && (
+            {selectedQuery.id ? (
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <h3 className="text-xl font-semibold text-white">{selectedQuery.title}</h3>
@@ -132,7 +193,12 @@ const QueryPage = () => {
                   </button>
                 </div>
               </div>
-            )}
+            )
+            :
+              (
+                <p className="text-center text-gray-400">No query selected</p>
+              )
+            }
           </div>
         </div>
 

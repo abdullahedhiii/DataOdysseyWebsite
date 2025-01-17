@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { FiAward, FiTrendingUp, FiClock, FiTarget } from "react-icons/fi";
 import { useUserContext } from "../Contexts/userContext";
+import axios from "axios";
 
 const LeaderBoard = () => {
   const {user} = useUserContext();
-  const leaderboardData = [
+  const tempLeaderboardData = [
     {
-      rank: 1,
       team_id : 10100,
       teamName: "SQL Masters",
       currentLevel: 5,
@@ -19,7 +19,6 @@ const LeaderBoard = () => {
       totalScore: 800
     },
     {
-      rank: 2,
       team_id:10101,
       teamName: "Query Questers",
       currentLevel: 4,
@@ -32,7 +31,6 @@ const LeaderBoard = () => {
       totalScore: 650
     },
     {
-      rank: 3,
       team_id:10102,
       teamName: "Data Dragons",
       currentLevel: 3,
@@ -45,7 +43,6 @@ const LeaderBoard = () => {
       totalScore: 550
     },
     {
-      rank: 4,
       team_id : 10103,
       teamName: "Schema Slayers",
       currentLevel: 3,
@@ -58,7 +55,6 @@ const LeaderBoard = () => {
       totalScore: 400
     },
     {
-      rank: 5,
       team_id : 10104,
       teamName: "Table Titans",
       currentLevel: 2,
@@ -73,11 +69,25 @@ const LeaderBoard = () => {
   ];
 
   const [timeRemaining, setTimeRemaining] = useState(2 * 60 * 60 + 45 * 60 + 30); 
+  const [leaderboardData,setLeaderBoardData] = useState([]);
+  
+  const fetchStats = () => {    
+    axios
+    .get('/api/leaderboardData',{withCredentials:true})
+    .then(res=>{
+      setLeaderBoardData(res.data.teamData);
+    })
+    .catch(err=>{
+      console.error(err.message);
+    })
+   }
 
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeRemaining((prevTime) => Math.max(prevTime - 1, 0));
     }, 1000);
+
+    fetchStats();
 
     return () => clearInterval(timer); 
   }, []);
@@ -90,7 +100,7 @@ const LeaderBoard = () => {
       .toString()
       .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
-
+   
   return (
     <div className="min-h-screen bg-black px-4 py-8">
       <div className="max-w-7xl mx-auto">
@@ -149,29 +159,29 @@ const LeaderBoard = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-800">
-                {leaderboardData.map((team) => {
+                {leaderboardData.length && leaderboardData.map((team,index) => {                  
                   const isUserTeam = team.team_id === user?.team_id;
                   return (
                     <tr
-                      key={team.rank}
+                      key={(index+1)}
                       className={`hover:bg-gray-800/50 transition-colors ${
                         isUserTeam ? "bg-red-600" : ""
                       }`} // Apply highlight color if team matches user's team_id
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
-                          {team.rank <= 3 && (
+                          {(index+1) <= 3 && (
                             <FiAward
                               className={`${
-                                team.rank === 1
+                                (index+1) === 1
                                   ? "text-yellow-500"
-                                  : team.rank === 2
+                                  : (index+1) === 2
                                   ? "text-gray-400"
                                   : "text-yellow-700"
                               }`}
                             />
                           )}
-                          <span className="text-white font-medium">#{team.rank}</span>
+                          <span className="text-white font-medium">#{(index+1)}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -181,13 +191,13 @@ const LeaderBoard = () => {
                         <span className="text-white font-medium">{team.currentLevel}</span>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <span className="text-red-400 font-medium">{team.queriesSolved.hard}</span>
+                        <span className="text-red-400 font-medium">{team.queriesSolved.Hard}</span>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <span className="text-yellow-400 font-medium">{team.queriesSolved.medium}</span>
+                        <span className="text-yellow-400 font-medium">{team.queriesSolved.Medium}</span>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <span className="text-green-400 font-medium">{team.queriesSolved.easy}</span>
+                        <span className="text-green-400 font-medium">{team.queriesSolved.Easy}</span>
                       </td>
                       <td className="px-6 py-4 text-center">
                         <span className="text-white font-medium">{team.submissions}</span>
