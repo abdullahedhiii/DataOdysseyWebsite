@@ -5,7 +5,8 @@ const uploadMiddleware = require('../config/multerConfig');
 
 router.get('/queries/:level',sendQueries)
 router.get('/leaderboardData',sendLeaderboardData)
-router.post('/submitFile',uploadMiddleware,submitQuery);
+// router.post('/submitFile',uploadMiddleware,submitQuery);
+router.post('/submitFile',submitQuery);
 
 
 module.exports = router;

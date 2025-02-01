@@ -5,11 +5,13 @@ import { useUserContext } from '../Contexts/userContext';
 const SubmissionWindow = ({ fileName, query,dialect, toggleWindow }) => {
 
   const [status,setStatus] = useState('submitting');
-  const {user,socket} = useUserContext();
+  const {user,socket,setUser} = useUserContext();
 
   const statusChanger =  (queryStatus) => {
     if(queryStatus.email === user.email && queryStatus.status !== status){
       setStatus(prev => queryStatus.status);
+      if(queryStatus.status === 'accepted' && user.level < 8)
+        setUser(prev => ({...prev, level : prev.level + 1}))
     }
   }
 
@@ -89,7 +91,7 @@ const SubmissionWindow = ({ fileName, query,dialect, toggleWindow }) => {
             </div> */}
           </div>
         </div>
-        { status !== 'accepted' &&      
+        { (status !== 'accepted' && status !== 'rejected') &&      
         <div className="flex justify-center">
           <div className="w-8 h-8 border-4 border-red-500 border-t-transparent rounded-full animate-spin"></div>
         </div>}

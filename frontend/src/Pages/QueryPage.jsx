@@ -17,6 +17,7 @@ const QueryPage = () => {
   const [selectedDialect, setSelectedDialect] = useState("MySQL");
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedQuery, setSelectedQuery] = useState([]);
+  const [userAnswer,setUserAnswer] = useState('');
   const { user } = useUserContext();
   const navigate = useNavigate();
   const [queries, setQueries] = useState([]);
@@ -29,17 +30,17 @@ const QueryPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const formData = new FormData();
-      formData.append("teamName", user.teamName);
-      formData.append("email", user.email);
-      formData.append("team_id", user.team_id);
-      formData.append("dialect", selectedDialect);
-      formData.append("query", selectedQuery.id);
-      formData.append("file", selectedFile);
+      // const formData = new FormData();
+      // formData.append("teamName", user.teamName);
+      // formData.append("email", user.email);
+      // formData.append("team_id", user.team_id);
+      // formData.append("dialect", selectedDialect);
+      // formData.append("query",selectedQuery);
+      // formData.append("file", selectedFile);
       
-      const response = await axios.post("/api/submitFile", formData, {
+      const response = await axios.post("/api/submitFile", JSON.stringify({ query:selectedQuery, email : user.email, team_id : user.team_id, answer:userAnswer}), {
         headers: {
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "application/json",
         },
         withCredentials: true,
       });
@@ -102,15 +103,14 @@ useEffect(()=>{
 
 
   useEffect(() => {
-    console.log('in competition page ',user);
     if (!user.loggedIn) navigate("/");
-    else {
+    else {      
       axios
         .get("/api/queries/" + user.level, {
           withCredentials: true,
           headers: { "Content-Type": "application/json" },
         })
-        .then((res) => {
+        .then((res) => {          
           setQueries(res.data.queries);
         //  setSelectedQuery(res.data.queries[0]);
         })
@@ -191,6 +191,16 @@ useEffect(()=>{
                     <FiDownload className="text-red-500" />
                     Download PDF
                   </button>
+                </div>
+                <div className="h-full">
+                  <textarea
+                  name="queryEditor"
+                  id="queryEditorId"
+                  placeholder="Write your query here"
+                  value = {userAnswer}
+                  onChange={e => setUserAnswer(e.target.value)}
+                  className="bg-gray-800 w-full p-4 rounded-lg text-gray-300 text-base whitespace-pre-wrap break-words font-mono h-[180px]"
+                />
                 </div>
               </div>
             )
