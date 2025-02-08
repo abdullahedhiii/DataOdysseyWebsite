@@ -18,18 +18,61 @@ const QueryPage = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedQuery, setSelectedQuery] = useState([]);
   const [userAnswer,setUserAnswer] = useState('');
-  const { user } = useUserContext();
+  const { user, socket, setUser } = useUserContext();
   const navigate = useNavigate();
   const [queries, setQueries] = useState([]);
   const [showSubmissionWindow, setShowSubmissionWindow] = useState(false);
-
+  
+  const levelChanger = ({email,level}) => {
+    if(email == user.email && level < 8){
+      setUser(prev => ({...prev, level : level}))
+      zoomToLevel(2.5,levels[level-1].x, levels[level-1].y);
+    }
+  }
+  
+  useEffect(()=>{
+    socket.on('levelUpdated',levelChanger)
+  },[])
+  
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    const options = {
+      method: 'POST',
+      url: 'https://onecompiler-apis.p.rapidapi.com/api/v1/run',
+      headers: {
+        'x-rapidapi-key':  import.meta.env.VITE_API_KEY,
+        'x-rapidapi-host': 'onecompiler-apis.p.rapidapi.com',
+        'Content-Type': 'application/json'
+      },
+      data: {
+        "language": "mysql",
+        "stdin": "",
+        "files": [
+          {
+            "name": "TestQuery.sql",
+            "content": import.meta.env.VITE_TEST_DB + userAnswer
+          }
+        ]
+      }      
+    };
+    
     try {
+
+      const testRes = await axios.request(options);      
+
+      if(testRes.data.exception || testRes.data.stderr){
+        
+        console.log('invalid query',testRes.data.exception,testRes.data.stderr)
+        return;
+      }
+	    // console.log(testRes.data);
+      // console.log(testRes.data.stdout.split('|'))
+      // console.log('this is the parsed data ',JSON.parse(testRes.data.stdout.split('|')[3]))
       // const formData = new FormData();
       // formData.append("teamName", user.teamName);
       // formData.append("email", user.email);
@@ -38,7 +81,7 @@ const QueryPage = () => {
       // formData.append("query",selectedQuery);
       // formData.append("file", selectedFile);
       
-      const response = await axios.post("/api/submitFile", JSON.stringify({ query:selectedQuery, email : user.email, team_id : user.team_id, answer:userAnswer}), {
+      const response = await axios.post("/api/submitFile", JSON.stringify({ query:selectedQuery, email : user.email, team_id : user.team_id, answer:testRes.data.stdout}), {
         headers: {
           "Content-Type": "application/json",
         },

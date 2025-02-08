@@ -5,13 +5,11 @@ import { useUserContext } from '../Contexts/userContext';
 const SubmissionWindow = ({ fileName, query,dialect, toggleWindow }) => {
 
   const [status,setStatus] = useState('submitting');
-  const {user,socket,setUser} = useUserContext();
+  const {user,socket} = useUserContext();
 
   const statusChanger =  (queryStatus) => {
     if(queryStatus.email === user.email && queryStatus.status !== status){
       setStatus(prev => queryStatus.status);
-      if(queryStatus.status === 'accepted' && user.level < 8)
-        setUser(prev => ({...prev, level : prev.level + 1}))
     }
   }
 

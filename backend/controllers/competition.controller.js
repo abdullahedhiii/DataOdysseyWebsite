@@ -2,178 +2,161 @@ const { db } = require('../db');
 const socket = require('../socket');
 
 const answers = {
-    1: {
+    
         "4612": [
-            { testId: 5, testName: 'Aisha Siddiqui', age: 23, score: 95.0 },
-            { testId: 1, testName: 'Sara Ali', age: 22, score: 92.5 },
-            { testId: 7, testName: 'Maya Shah', age: 20, score: 91.0 }
+            ['5', 'Aisha Siddiqui', '23', '95.0'],
+            ['1', 'Sara Ali', '22', '92.5'],
+            ['7', 'Maya Shah', '20', '91.0']
         ],
-        "4613": [{ average: 73.5 }],
-        "4614": [{ testId: 10, testName: 'Jawwad', age: 20, score: 38.5 }]
-    },
-    2: {
-        "4615": [
-            {
-                "age": 19,
-                "number_of_students": 1
-            },
-            {
-                "age": 20,
-                "number_of_students": 3
-            },
-            {
-                "age": 21,
-                "number_of_students": 1
-            },
-            {
-                "age": 22,
-                "number_of_students": 1
-            },
-            {
-                "age": 23,
-                "number_of_students": 1
-            },
-            {
-                "age": 24,
-                "number_of_students": 1
-            },
-            {
-                "age": 25,
-                "number_of_students": 1
-            },
-            {
-                "age": 26,
-                "number_of_students": 1
-            },
-            {
-                "age": 27,
-                "number_of_students": 1
-            }
-        ]
-        ,
-        "4616": [
-            {
-                "id": 5,
-                "name": "Aisha Siddiqui",
-                "age": 23,
-                "score": 95.0
-            },
-            {
-                "id": 1,
-                "name": "Sara Ali",
-                "age": 22,
-                "score": 92.5
-            },
-            {
-                "id": 3,
-                "name": "Lina Ahmed",
-                "age": 19,
-                "score": 88.5
-            },
-            {
-                "id": 9,
-                "name": "Nadia Malik",
-                "age": 26,
-                "score": 78.5
-            },
-            {
-                "id": 8,
-                "name": "Imran Javed",
-                "age": 27,
-                "score": 80.0
-            },
-            {
-                "id": 4,
-                "name": "Zaid Khan",
-                "age": 21,
-                "score": 75.5
-            },
-            {
-                "id": 7,
-                "name": "Maya Shah",
-                "age": 20,
-                "score": 91.0
-            },
-            {
-                "id": 2,
-                "name": "Omar Farooq",
-                "age": 25,
-                "score": 78.0
-            },
-            {
-                "id": 10,
-                "name": "Jawwad",
-                "age": 20,
-                "score": 38.5
-            },
-            {
-                "id": 6,
-                "name": "Hassan Rizvi",
-                "age": 24,
-                "score": 84.5
-            },
-            {
-                "id": 0,
-                "name": "Taha Khan",
-                "age": 20,
-                "score": 86.0
-            }
-        ]
-        ,
-        "4617": [
-            {
-                "age": 23,
-                "average_score": 95.0
-            },
-            {
-                "age": 22,
-                "average_score": 92.5
-            },
-            {
-                "age": 24,
-                "average_score": 84.5
-            },
-            {
-                "age": 19,
-                "average_score": 88.5
-            },
-            {
-                "age": 27,
-                "average_score": 80.0
-            }
-        ]
+        "4613": [['73.5'] ],
+        "4614": [['10','Jawwad', '20', '38.5']]
+    
+        // we've to rearange the below objects like above format
+    // 2: {
+    //     "4615": [
+    //         {
+    //             "age": 19,
+    //             "number_of_students": 1
+    //         },
+    //         {
+    //             "age": 20,
+    //             "number_of_students": 3
+    //         },
+    //         {
+    //             "age": 21,
+    //             "number_of_students": 1
+    //         },
+    //         {
+    //             "age": 22,
+    //             "number_of_students": 1
+    //         },
+    //         {
+    //             "age": 23,
+    //             "number_of_students": 1
+    //         },
+    //         {
+    //             "age": 24,
+    //             "number_of_students": 1
+    //         },
+    //         {
+    //             "age": 25,
+    //             "number_of_students": 1
+    //         },
+    //         {
+    //             "age": 26,
+    //             "number_of_students": 1
+    //         },
+    //         {
+    //             "age": 27,
+    //             "number_of_students": 1
+    //         }
+    //     ]
+    //     ,
+    //     "4616": [
+    //         {
+    //             "id": 5,
+    //             "name": "Aisha Siddiqui",
+    //             "age": 23,
+    //             "score": 95.0
+    //         },
+    //         {
+    //             "id": 1,
+    //             "name": "Sara Ali",
+    //             "age": 22,
+    //             "score": 92.5
+    //         },
+    //         {
+    //             "id": 3,
+    //             "name": "Lina Ahmed",
+    //             "age": 19,
+    //             "score": 88.5
+    //         },
+    //         {
+    //             "id": 9,
+    //             "name": "Nadia Malik",
+    //             "age": 26,
+    //             "score": 78.5
+    //         },
+    //         {
+    //             "id": 8,
+    //             "name": "Imran Javed",
+    //             "age": 27,
+    //             "score": 80.0
+    //         },
+    //         {
+    //             "id": 4,
+    //             "name": "Zaid Khan",
+    //             "age": 21,
+    //             "score": 75.5
+    //         },
+    //         {
+    //             "id": 7,
+    //             "name": "Maya Shah",
+    //             "age": 20,
+    //             "score": 91.0
+    //         },
+    //         {
+    //             "id": 2,
+    //             "name": "Omar Farooq",
+    //             "age": 25,
+    //             "score": 78.0
+    //         },
+    //         {
+    //             "id": 10,
+    //             "name": "Jawwad",
+    //             "age": 20,
+    //             "score": 38.5
+    //         },
+    //         {
+    //             "id": 6,
+    //             "name": "Hassan Rizvi",
+    //             "age": 24,
+    //             "score": 84.5
+    //         },
+    //         {
+    //             "id": 0,
+    //             "name": "Taha Khan",
+    //             "age": 20,
+    //             "score": 86.0
+    //         }
+    //     ]
+    //     ,
+    //     "4617": [
+    //         {
+    //             "age": 23,
+    //             "average_score": 95.0
+    //         },
+    //         {
+    //             "age": 22,
+    //             "average_score": 92.5
+    //         },
+    //         {
+    //             "age": 24,
+    //             "average_score": 84.5
+    //         },
+    //         {
+    //             "age": 19,
+    //             "average_score": 88.5
+    //         },
+    //         {
+    //             "age": 27,
+    //             "average_score": 80.0
+    //         }
+    //     ]
 
-    },
+    // },
+}
+
+const tabularAnswers = {
+    '4612':"+--------+----------------+------+-------+\n| testId | testName       | age  | score |\n+--------+----------------+------+-------+\n|      5 | Aisha Siddiqui |   23 |    95 |\n|      1 | Sara Ali       |   22 |  92.5 |\n|      7 | Maya Shah      |   20 |    91 |\n+--------+----------------+------+-------+\n",
+    '4613':"+-------------------+\n| average           |\n+-------------------+\n| 80.72727272727273 |\n+-------------------+\n",
+    '4614':"+--------+----------+------+-------+\n| testId | testName | age  | score |\n+--------+----------+------+-------+\n|     10 | Jawwad   |   20 |  38.5 |\n+--------+----------+------+-------+\n",
 }
 
 module.exports.sendQueries = (req, res) => {
 
     try {
         const level = req.params.level;
-        // const queries = [ // Should be fethed from a database
-        //     {
-        //         id: 1,
-        //         title: "Tracking Time Efficiency of Top Participants",
-        //         description: 'To highlight time efficiency, the organizers want to find the fastest participant in solving at least 5 problems while maintaining a position in the top 10 scorers.',
-        //         difficulty: 'Easy',
-        //         level:1
-        //     },
-        //     {
-        //         id: 2,
-        //         title: "Identifying the Clutch Performers",
-        //         description: `During the competition, organizers want to identify users who made a significant comeback by being outside the top 10 in the first half but finishing in the top 5 by the end. This will highlight participants who showed exceptional performance under pressure.`,
-        //         difficulty: 'Medium',
-        //         level:1
-        //     },
-        //     {id:3,title:"Detecting Problem Masters", description:'The organizers want to reward users who solved the Hardest problems (those solved by the least number of participants). The query should list the Hardest problems and the users who solved them.', difficulty: 'Hard', level:1},
-        //     {id:4,title:"title4", description:'This is an Easy query of level 2', difficulty: 'Easy', level:2},
-        //     {id:5,title:"title5", description:'This is a medium query of level 2', difficulty: 'Medium', level:2},
-        //     {id:6,title:"title6", description:'This is a Hard query of level 2', difficulty: 'Hard', level:2},
-        //     {id:7,title:"title7", description:'This is an Easy query of level 3', difficulty: 'Easy', level:3},
-        //     {id:8,title:"title8", description:'This is a medium query of level 3', difficulty: 'Medium', level:3},
-        //     {id:9,title:"title9", description:'This is a Hard query of level 3', difficulty: 'Hard', level:3},
-        // ]
-        // const filteredQueries = queries.filter(ele => ele.level == level).map(ele => ({...ele}));
         const q = 'select * from queries where level = ?';
         db.query(q, [level], (err, result) => {
             if (result.length == 0 || err) {
@@ -189,49 +172,30 @@ module.exports.sendQueries = (req, res) => {
     }
 }
 
-function sendStatus(email, status) {
+function sendStatus(email, status, level = 0) {
 
     const io = socket.getIO();
-    io.emit('fileStatusUpdated', { email: email, status: status });
+    if(level == 0) io.emit('fileStatusUpdated', { email: email, status: status });
+    else io.emit('levelUpdated', { email, level : level + 1 });
 
 }
 
-function deepEqual(a, b) {
+function deepEqual(queryId, b) {
     try {
+        
+        if (tabularAnswers[queryId] == b) return true;
+        const parsedData = b.split('\n').slice(3,-1).map(row => row.split('|').slice(1,-1)) 
 
-        if (a === b) return true;
+// Currenlty true is returned, check should be performed
+        return true;
 
-        if (typeof a !== typeof b || a == null || b == null) return false;
-
-        if (typeof a === 'object') {
-            // If both are arrays, compare their sorted JSON string representations.
-            if (Array.isArray(a) && Array.isArray(b)) {
-                if (a.length !== b.length) return false;
-                const sortedA = a.map(item => JSON.stringify(item)).sort();
-                const sortedB = b.map(item => JSON.stringify(item)).sort();
-                for (let i = 0; i < sortedA.length; i++) {
-                    if (sortedA[i] !== sortedB[i]) return false;
-                }
-                return true;
-            }
-            // Otherwise, if both are plain objects
-            const keysA = Object.keys(a);
-            const keysB = Object.keys(b);
-            if (keysA.length !== keysB.length) return false;
-            for (let key of keysA) {
-                if (!b.hasOwnProperty(key)) return false;
-                if (!deepEqual(a[key], b[key])) return false;
-            }
-            return true;
-        }
-        return false;
     }
     catch (err) {
         console.log(err.message);
     }
 }
 
-function statusSender(email, id, query, answer) {
+function statusSender(email, id, team_id, query, answer) {
     const delayTime = 3000;
     setTimeout(() => {
 
@@ -244,46 +208,27 @@ function statusSender(email, id, query, answer) {
 
                     sendStatus(email, 'pending');
 
-                    db.query(answer, [], (errAnswer, resultAnswer) => {
-                        if (errAnswer) {
-                            sendStatus(email, 'rejected');
-                            db.execute(`update solutions set status = \'rejected\' where id = ${id}`);
-
-                        } else {
-                            if (deepEqual(resultAnswer, answers[query.level][query.queryId])) {
-
-                                const q2 = 'update solutions set status = \'accepted\' where id = ?'
-                                db.query(q2, [id], (err3, result3) => {
-                                    if (err3) { console.error('cannot update to accepted'); }
-                                    else {
-                                        const updateLevel = 'update participants set level = ? where email = ?';
-                                        db.query(updateLevel, [query.level + 1, email], (errFinal, resultFinal) => {
-                                            if (errFinal) {
-                                                res.status(400).json({ message: errFinal.message })
-                                                return
-                                            }
-                                            else {
-                                                setTimeout(() => {
-                                                    sendStatus(email, 'accepted');
-                                                }, delayTime)
-                                            }
-                                        })
-                                    }
-                                })
-                            }
-                            else {
-                                const q2 = 'update solutions set status = \'rejected\' where id = ?'
-                                db.query(q2, [id], (err3, result3) => {
-                                    if (err3) { console.error('cannot update status'); }
-                                    else {
-                                        setTimeout(() => {
-                                            sendStatus(email, 'rejected');
-                                        }, delayTime)
-                                    }
-                                })
-                            }
-                        }
-                    })
+                    if(deepEqual(query.queryId , answer)){
+                        const acceptQuery = `update solutions set status = \'accepted\' where id = ${id}`;
+                        db.execute(acceptQuery);
+                        sendStatus(email,'accepted');
+                        
+                        const levelCount = 'select count(*) as solved from solutions where status = \'accepted\' and team_id = ?'
+                        db.query(levelCount,[team_id],(err3, result3) => {
+                            if(!err3 || result3.length > 0){
+                                const levels = Math.floor(result3[0].solved / 3);
+                                
+                                if(levels > 0){
+                                    sendStatus(email,'',levels)
+                                    db.execute(`update participants set level = ${levels + 1} where team_id = ${team_id}`)
+                                }
+                                }
+                        })
+                    }else{
+                        const rejectQuery = `update solutions set status = \'rejected\' where id = ${id}`;
+                        db.execute(rejectQuery);
+                        sendStatus(email,'rejected');
+                    }
 
                 }, delayTime);
             }
@@ -302,7 +247,7 @@ module.exports.submitQuery = (req, res) => {
                 res.status(500).json({ message: 'Something went wrong!' })
             }
             else {
-                statusSender(email, result.insertId, query, answer);
+                statusSender(email, result.insertId, team_id, query, answer);                
                 res.status(200).json({ message: 'File Submitted' });
             }
         })

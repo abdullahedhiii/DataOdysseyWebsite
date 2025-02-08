@@ -53,7 +53,7 @@ CREATE TABLE testDB (
     testId INTEGER PRIMARY KEY,
     testName varchar(100),
     age INTEGER,
-    score DOUBLE
+    score FLOAT
 );
 
 insert into testDB values (0,'Taha Khan',20,86.0);
