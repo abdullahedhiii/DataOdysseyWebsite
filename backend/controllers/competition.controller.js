@@ -40,23 +40,38 @@ const tabularAnswers = {
 }
 
 module.exports.sendQueries = (req, res) => {
-
     try {
-        const level = req.params.level;
-        const q = 'select * from queries where level = ?';
-        db.query(q, [level], (err, result) => {
-            if (result.length == 0 || err) {
-                res.status(400).json({ message: 'something went wrong' });
+        const [level, team_id] = req.params.id.split('.');
+        const q = `
+            SELECT q.*, 
+                   CASE 
+                       WHEN s.queryId IS NOT NULL and s.status = 'accepted' THEN true 
+                       ELSE false 
+                   END AS markDone
+            FROM queries q
+            LEFT JOIN solutions s ON q.queryId = s.queryId AND s.team_id = ?
+            WHERE q.level = ?;
+        `;
+
+        db.query(q, [team_id, level], (err, result) => {
+            if (err || result.length === 0) {
+                return res.status(400).json({ message: 'Something went wrong' });
             }
-            else {
-                res.status(200).json({ message: 'Queris found successfully', queries: result.map(query => ({ ...query, id: query.queryId })) })
-            }
-        })
-    }
-    catch (err) {
+
+            res.status(200).json({
+                message: 'Queries found successfully',
+                queries: result.map(query => ({
+                    ...query,
+                    id: query.queryId,
+                    markDone: query.markDone === 1 
+                }))
+            });
+        });
+    } catch (err) {
         res.status(500).json({ message: err.message });
     }
-}
+};
+
 
 function sendStatus(email, status, level = 0) {
 

@@ -23,6 +23,7 @@ const QueryPage = () => {
   const [queries, setQueries] = useState([]);
   const [showSubmissionWindow, setShowSubmissionWindow] = useState(false);
   
+
   const levelChanger = ({email,level}) => {
     if(email == user.email && level < 8){
       setUser(prev => ({...prev, level : level}))
@@ -36,6 +37,21 @@ const QueryPage = () => {
   
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
+  };
+  
+  const fetchQueries = async (e) => {
+    axios
+    .get(`/api/queries/${user.level}.${user.team_id}` , {
+      withCredentials: true,
+      headers: { "Content-Type": "application/json" },
+    })
+    .then((res) => {          
+      setQueries(res.data.queries);
+    //  setSelectedQuery(res.data.queries[0]);
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -81,7 +97,8 @@ const QueryPage = () => {
       // formData.append("query",selectedQuery);
       // formData.append("file", selectedFile);
       
-      const response = await axios.post("/api/submitFile", JSON.stringify({ query:selectedQuery, email : user.email, team_id : user.team_id, answer:testRes.data.stdout}), {
+      const response = await axios.post("/api/submitFile", JSON.stringify({ query:selectedQuery, email : user.email, 
+        team_id : user.team_id, answer:testRes.data.stdout}), {
         headers: {
           "Content-Type": "application/json",
         },
@@ -148,18 +165,7 @@ useEffect(()=>{
   useEffect(() => {
     if (!user.loggedIn) navigate("/");
     else {      
-      axios
-        .get("/api/queries/" + user.level, {
-          withCredentials: true,
-          headers: { "Content-Type": "application/json" },
-        })
-        .then((res) => {          
-          setQueries(res.data.queries);
-        //  setSelectedQuery(res.data.queries[0]);
-        })
-        .catch((err) => {
-          console.log(err.message);
-        });
+     fetchQueries();
     }
   }, [user, user.loggedIn]);
 
@@ -245,6 +251,16 @@ useEffect(()=>{
                   className="bg-gray-800 w-full p-4 rounded-lg text-gray-300 text-base whitespace-pre-wrap break-words font-mono h-[180px]"
                 />
                 </div>
+
+                <button
+              type="submit"
+              className={`w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition-colors ${showSubmissionWindow && 'cursor-not-allowed'}`}
+              disabled = {showSubmissionWindow}
+              onClick={handleSubmit}
+            >
+              <FiCheck className="w-5 h-5" />
+              Submit Solution
+            </button>
               </div>
             )
             :
@@ -269,7 +285,8 @@ useEffect(()=>{
                   selectedQuery.id === query.id
                     ? "bg-red-500/10 border-2 border-red-500"
                     : "bg-gray-800 border-2 border-transparent hover:border-red-500/50"
-                }`}
+                } ` }
+                disabled = {query.markDone}
               >
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="font-medium text-white">{query.title}</h3>
@@ -288,8 +305,8 @@ useEffect(()=>{
             ))}
           </div>
         </div>
-
-        <div className="bg-gray-900 rounded-xl p-6 border border-gray-800">
+     
+        {/* <div className="bg-gray-900 rounded-xl p-6 border border-gray-800">
         <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
             <FiCode className="text-red-500" />
             Submit Solution
@@ -330,8 +347,8 @@ useEffect(()=>{
                   />
                 </label>
               </div>
-            </div>
-
+            </div> */}
+{/* 
             <button
               type="submit"
               className={`w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition-colors ${showSubmissionWindow && 'cursor-not-allowed'}`}
@@ -341,7 +358,7 @@ useEffect(()=>{
               Submit Solution
             </button>
           </form>
-        </div>      
+        </div>       */}
       </div>
 
       {showSubmissionWindow && (
@@ -350,7 +367,10 @@ useEffect(()=>{
           query={selectedQuery} 
           dialect={selectedDialect}
           status="submitting"
-          toggleWindow={() => setShowSubmissionWindow(prev => !prev)}
+          toggleWindow={() => {
+            setShowSubmissionWindow(prev => !prev)
+            fetchQueries();
+          }}
         />
       )}
 
