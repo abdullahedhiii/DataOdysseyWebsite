@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { FiMenu, FiX, FiLogOut, FiAward,FiHome} from 'react-icons/fi';
 import { useUserContext } from '../Contexts/userContext';
+import { NavLink, useLocation } from 'react-router-dom';
 import Dashboard from './Dashboard';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openDashboard,setDashboard] = useState(false);
   const { user, logUserOut } = useUserContext();
+  const location = useLocation();
 
   return (
     <nav className="bg-black border-b border-gray-800">
@@ -19,7 +21,7 @@ const Navbar = () => {
           </div>
 
           <div className="hidden md:flex justify-center flex-1">
-            {user.loggedIn && (
+            {user.loggedIn && location.pathname != '/leaderboard' && (
               <>
               <button
                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white hover:text-red-500 transition-colors"
@@ -36,13 +38,13 @@ const Navbar = () => {
                 <FiAward className="h-4 w-4" />
                 Leaderboard
               </a>
-              <a
-                href="/competition"
+              <NavLink
+                to="/competition"
                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white hover:text-red-500 transition-colors"
               >
                 <FiAward className="h-4 w-4" />
                 Competition
-              </a>
+              </NavLink>
               </>
             )}
           </div>

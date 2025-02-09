@@ -1,152 +1,38 @@
 const { db } = require('../db');
 const socket = require('../socket');
 
+// This data would be use to compare rows if tabular results dosen't match exactly, possibly due to change in headers
 const answers = {
     
         "4612": [
-            ['5', 'Aisha Siddiqui', '23', '95.0'],
+            ['5', 'Aisha Siddiqui', '23', '95'],
             ['1', 'Sara Ali', '22', '92.5'],
-            ['7', 'Maya Shah', '20', '91.0']
+            ['7', 'Maya Shah', '20', '91']
         ],
-        "4613": [['73.5'] ],
-        "4614": [['10','Jawwad', '20', '38.5']]
+        "4613": [['80.72727272727273'] ],
+        "4614": [['10','Jawwad', '20', '38.5']],
+        "4615":[
+            [ '20', '3' ],[ '22', '1' ],[ '25', '1' ],[ '19', '1' ],[ '21', '1' ],[ '23', '1' ],[ '24', '1' ],[ '27', '1' ],[ '26', '1' ]
+        ],
+        "4616":[
+            [ '5', 'Aisha Siddiqui', '23', '95' ],[ '6', 'Hassan Rizvi', '24', '84.5' ],[ '8', 'Imran Javed', '27', '80' ],[ '10', 'Jawwad', '20', '38.5' ],[ '3', 'Lina Ahmed', '19', '88.5' ],[ '7', 'Maya Shah', '20', '91' ],[ '9', 'Nadia Malik', '26', '78.5' ],[ '2', 'Omar Farooq', '25', '78' ],[ '1', 'Sara Ali', '22', '92.5' ],[ '0', 'Taha Khan', '20', '86' ],[ '4', 'Zaid Khan', '21', '75.5' ]
+        ],
+        "4617":[
+            [ '23', '95' ],[ '22', '92.5' ],[ '19', '88.5' ],[ '24', '84.5' ]
+        ],
+        "4618":[],
+        "4619":[],
+        "4620":[],
+        "4621":[],
+        "4622":[],
+        "4623":[],
+        "4624":[],
+        "4625":[],
+        "4626":[],
     
-        // we've to rearange the below objects like above format
-    // 2: {
-    //     "4615": [
-    //         {
-    //             "age": 19,
-    //             "number_of_students": 1
-    //         },
-    //         {
-    //             "age": 20,
-    //             "number_of_students": 3
-    //         },
-    //         {
-    //             "age": 21,
-    //             "number_of_students": 1
-    //         },
-    //         {
-    //             "age": 22,
-    //             "number_of_students": 1
-    //         },
-    //         {
-    //             "age": 23,
-    //             "number_of_students": 1
-    //         },
-    //         {
-    //             "age": 24,
-    //             "number_of_students": 1
-    //         },
-    //         {
-    //             "age": 25,
-    //             "number_of_students": 1
-    //         },
-    //         {
-    //             "age": 26,
-    //             "number_of_students": 1
-    //         },
-    //         {
-    //             "age": 27,
-    //             "number_of_students": 1
-    //         }
-    //     ]
-    //     ,
-    //     "4616": [
-    //         {
-    //             "id": 5,
-    //             "name": "Aisha Siddiqui",
-    //             "age": 23,
-    //             "score": 95.0
-    //         },
-    //         {
-    //             "id": 1,
-    //             "name": "Sara Ali",
-    //             "age": 22,
-    //             "score": 92.5
-    //         },
-    //         {
-    //             "id": 3,
-    //             "name": "Lina Ahmed",
-    //             "age": 19,
-    //             "score": 88.5
-    //         },
-    //         {
-    //             "id": 9,
-    //             "name": "Nadia Malik",
-    //             "age": 26,
-    //             "score": 78.5
-    //         },
-    //         {
-    //             "id": 8,
-    //             "name": "Imran Javed",
-    //             "age": 27,
-    //             "score": 80.0
-    //         },
-    //         {
-    //             "id": 4,
-    //             "name": "Zaid Khan",
-    //             "age": 21,
-    //             "score": 75.5
-    //         },
-    //         {
-    //             "id": 7,
-    //             "name": "Maya Shah",
-    //             "age": 20,
-    //             "score": 91.0
-    //         },
-    //         {
-    //             "id": 2,
-    //             "name": "Omar Farooq",
-    //             "age": 25,
-    //             "score": 78.0
-    //         },
-    //         {
-    //             "id": 10,
-    //             "name": "Jawwad",
-    //             "age": 20,
-    //             "score": 38.5
-    //         },
-    //         {
-    //             "id": 6,
-    //             "name": "Hassan Rizvi",
-    //             "age": 24,
-    //             "score": 84.5
-    //         },
-    //         {
-    //             "id": 0,
-    //             "name": "Taha Khan",
-    //             "age": 20,
-    //             "score": 86.0
-    //         }
-    //     ]
-    //     ,
-    //     "4617": [
-    //         {
-    //             "age": 23,
-    //             "average_score": 95.0
-    //         },
-    //         {
-    //             "age": 22,
-    //             "average_score": 92.5
-    //         },
-    //         {
-    //             "age": 24,
-    //             "average_score": 84.5
-    //         },
-    //         {
-    //             "age": 19,
-    //             "average_score": 88.5
-    //         },
-    //         {
-    //             "age": 27,
-    //             "average_score": 80.0
-    //         }
-    //     ]
-
-    // },
 }
 
+// These are the hard coded tabular results of the stdout stream of oneCompiler
 const tabularAnswers = {
     '4612':"+--------+----------------+------+-------+\n| testId | testName       | age  | score |\n+--------+----------------+------+-------+\n|      5 | Aisha Siddiqui |   23 |    95 |\n|      1 | Sara Ali       |   22 |  92.5 |\n|      7 | Maya Shah      |   20 |    91 |\n+--------+----------------+------+-------+\n",
     '4613':"+-------------------+\n| average           |\n+-------------------+\n| 80.72727272727273 |\n+-------------------+\n",
@@ -184,9 +70,22 @@ function deepEqual(queryId, b) {
     try {
         
         if (tabularAnswers[queryId] == b) return true;
-        const parsedData = b.split('\n').slice(3,-1).map(row => row.split('|').slice(1,-1)) 
 
-// Currenlty true is returned, check should be performed
+        const parsedData = b.split('\n').slice(3,-1).map(row => row.split('|').slice(1,-1).map(ele => ele.trim())).slice(0,-1) 
+        console.log(parsedData,'\n');
+        
+        let i = 0;
+        for (const row of answers[queryId]){ // Extra data will also be accepted by comparing like this
+            const ele2 = JSON.stringify(row)
+            const ele1 = JSON.stringify(parsedData[i])
+            if(ele1 != ele2){
+                console.log('returning false ',ele1,ele2)
+                return false;
+            }
+            else console.log('true ',ele1,ele2,'\n')
+            i++
+        }
+
         return true;
 
     }
@@ -351,6 +250,8 @@ module.exports.sendLeaderboardData = (req, res) => {
 
                         const initialResult = innerResult.reduce(
                             (acc, curr) => {
+                                console.log('current is ',curr);
+                                
                                 const updatedQueriesSolved = {
                                     ...acc.queriesSolved,
                                     [curr.difficulty]: curr.queriesSolved || 0,
@@ -360,10 +261,10 @@ module.exports.sendLeaderboardData = (req, res) => {
                                     totalScore:
                                         acc.totalScore +
                                         (curr.difficulty === 'Easy'
-                                            ? 50
-                                            : curr.difficulty === 'Medium'
-                                                ? 100
-                                                : 200),
+                                            ? (50 * curr.queriesSolved)
+                                            : (curr.difficulty === 'Medium'
+                                                ? (100 * curr.queriesSolved)
+                                                : (200 * curr.queriesSolved) )),
                                     submissions: acc.submissions + curr.queriesSolved,
                                     queriesSolved: updatedQueriesSolved,
                                 };
@@ -381,8 +282,7 @@ module.exports.sendLeaderboardData = (req, res) => {
                         };
                     })
                 );
-
-                res.status(200).json({ message: 'Success', teamData: [...tempLeaderboardData, ...finalResult] });
+                res.status(200).json({ message: 'Success', teamData: [...tempLeaderboardData, ...finalResult].sort((a,b) => b.totalScore - a.totalScore) });
             } catch (error) {
                 console.error('Error:', error.message);
                 res.status(500).json({ message: 'Something went wrong!' });

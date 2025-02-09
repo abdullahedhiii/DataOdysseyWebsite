@@ -31,7 +31,7 @@ const QueryPage = () => {
   }
   
   useEffect(()=>{
-    socket.on('levelUpdated',levelChanger)
+    socket.on('levelUpdated',levelChanger) // I don't know why it's throwing error on reloading
   },[])
   
   const handleFileChange = (event) => {
@@ -67,7 +67,7 @@ const QueryPage = () => {
 
       if(testRes.data.exception || testRes.data.stderr){
         
-        console.log('invalid query',testRes.data.exception,testRes.data.stderr)
+        alert('invalid query',testRes.data.stderr)
         return;
       }
 	    // console.log(testRes.data);
@@ -334,7 +334,8 @@ useEffect(()=>{
 
             <button
               type="submit"
-              className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition-colors"
+              className={`w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition-colors ${showSubmissionWindow && 'cursor-not-allowed'}`}
+              disabled = {showSubmissionWindow}
             >
               <FiCheck className="w-5 h-5" />
               Submit Solution
