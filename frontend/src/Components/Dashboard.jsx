@@ -1,32 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FiX, FiClock, FiCheckCircle, FiXCircle, FiLoader } from 'react-icons/fi';
 import { useUserContext } from '../Contexts/userContext';
+import axios, { Axios } from 'axios';
 
 const Dashboard = ({onClose}) => {
   const {user} = useUserContext();
-  const dummySubmissions = [
-    {
-      id: 1,
-      queryTitle: "Complex Join Operations",
-      difficulty: "Hard",
-      status: "Accepted",
-      submittedAt: "2024-01-14T14:30:00"
-    },
-    {
-      id: 2,
-      queryTitle: "Data Aggregation Query",
-      difficulty: "Medium",
-      status: "Wrong Answer",
-      submittedAt: "2024-01-14T14:15:00"
-    },
-    {
-      id: 3,
-      queryTitle: "Basic Select Query",
-      difficulty: "Easy",
-      status: "Wrong Answer",
-      submittedAt: "2024-01-14T14:00:00"
-    }
-  ];
+  const [submissions,setSubmissions] = useState([]);
+
+  const fetchSubmissions = async (e) => {
+      try{
+         const response = await axios.get(`/api/getMyDashboard/${user.team_id}`);
+         setSubmissions(response.data);
+         console.log(response.data)
+      }
+      catch(err){   console.log(err);
+      }
+  }
+ 
+  useEffect(() => {
+    fetchSubmissions();
+  },[]);
 
   const getStatusIcon = (status) => {
     switch (status) {
@@ -80,7 +73,7 @@ const Dashboard = ({onClose}) => {
 
         <div className="p-6 overflow-y-auto max-h-[calc(80vh-100px)]">
           <div className="space-y-4">
-            { dummySubmissions.map((submission) => (
+            { submissions.map((submission) => (
               <div
                 key={submission.id}
                 className="bg-gray-800/50 rounded-lg p-4 hover:bg-gray-800 transition-colors"
@@ -113,7 +106,7 @@ const Dashboard = ({onClose}) => {
             ))}
           </div>
 
-          {dummySubmissions.length === 0 && (
+          {submissions.length === 0 && (
             <div className="text-center py-12">
               <p className="text-gray-400">No submissions yet</p>
             </div>
@@ -122,7 +115,7 @@ const Dashboard = ({onClose}) => {
 
         <div className="p-6 border-t border-gray-800 bg-gray-900/50">
           <div className="flex justify-between items-center text-sm text-gray-400">
-            <p>Total Submissions: {(dummySubmissions.length)}</p>
+            <p>Total Submissions: {(submissions.length)}</p>
             <button
               onClick={onClose}
               className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-md transition-colors"

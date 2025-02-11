@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FiCalendar, FiClock, FiUsers, FiAward, FiAlertCircle } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 
-const Banner = ({ competitionDate = "2024-02-21T09:00:00" }) => {
+const Banner = ({ competitionDate = "2025-02-18T09:00:00" }) => {
     const navigate = useNavigate();
     const [timeLeft, setTimeLeft] = useState({
     days: 0,
@@ -14,8 +14,11 @@ const Banner = ({ competitionDate = "2024-02-21T09:00:00" }) => {
   useEffect(() => {
     const calculateTimeLeft = () => {
       const difference = new Date(competitionDate) - new Date();
-      
-      if (difference > 0) {
+
+      if (difference <= 0) {
+        clearInterval(timer);
+        navigate('/competition');
+      } else {
         setTimeLeft({
           days: Math.floor(difference / (1000 * 60 * 60 * 24)),
           hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
@@ -29,17 +32,11 @@ const Banner = ({ competitionDate = "2024-02-21T09:00:00" }) => {
     calculateTimeLeft();
 
     return () => clearInterval(timer);
-  }, [competitionDate]);
-
+  }, [competitionDate, navigate]); // Added `navigate` as dependency
   return (
     <div className="min-h-screen bg-black flex items-center justify-center px-4">
       <div className="max-w-4xl w-full space-y-8">
-        <div className="bg-red-600/10 border border-red-600/20 rounded-lg p-4 flex items-center gap-3">
-          <FiAlertCircle className="text-red-500 flex-shrink-0" />
-          <p className="text-red-500 text-sm">
-            No active competition at the moment. Please wait for the upcoming event.
-          </p>
-        </div>
+       
 
         <div className="bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden">
           <div className="bg-gradient-to-r from-red-600/10 via-red-600/5 to-transparent p-6 border-b border-gray-800">

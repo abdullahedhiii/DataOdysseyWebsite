@@ -122,3 +122,29 @@ module.exports.retrieveCookie = (req, res) => {
         console.log(err.message);
     }
 };
+
+
+module.exports.getDashboard = (req, res) => {
+    console.log('hit dashboard');
+    try {
+        const team_id = req.params.id;
+        const q = `
+            SELECT s.id as id, q.title as queryTitle, q.difficulty as difficulty, 
+                   s.status as status, s.submitted_at as submittedAt
+            FROM queries q 
+            JOIN solutions s ON q.queryId = s.queryId
+            WHERE team_id = ?
+        `;
+
+        db.query(q, [team_id], (err, result) => {
+            if (err) {
+                console.log(err);
+                return res.status(400).json([]);
+            }
+            res.status(200).json(result);
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json([]);
+    }
+};
