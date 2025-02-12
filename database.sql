@@ -41,19 +41,7 @@ CREATE TABLE solutions (
 ALTER TABLE solutions AUTO_INCREMENT  = 4392;
 ALTER TABLE solutions ADD COLUMN submitted_at DATETIME default current_timestamp;
 
-insert into queries (title, description, level, difficulty,pdfURL) 
-values ('Identifying Frequent Gym Visitors',
-'Find the top 3 people who checked into the gym the most times in a single day. Display their names, the date, and the number of check-ins.
-',1,'Easy','/queries/Question1-Level1.pdf');
 
-insert into queries (title, description, level, difficulty,pdfURL)
-values ('High Earning Drivers',
-'List the names of people whose annual income is above $100,000 and who drive a car manufactured by Tesla.',1,'Medium','/queries/Question2-Level1.pdf');
-
-insert into queries (title, description, level, difficulty,pdfURL)
-values ('Crime Scene Correlations',
-'Identify the cities where multiple crime scenes of type ''Homicide'' have been reported. Display the city and the count of incidents.
-',1,'Hard','/queries/Question3-Level1.pdf');
 --
 --insert into queries (title, description, level, difficulty) values ('Find Position Holders','Find the top three scorers of the class',1,'Easy');
 --insert into queries (title, description, level, difficulty) values ('Class Callibre','A class can be interpreted on what amount of score almost every student is achieving. Find how much intelligent this class is',1,'Easy');
@@ -88,3 +76,47 @@ drop table solutions;
 select * from solutions;
 select * from queries;
 show constraint
+
+
+
+
+
+
+-------------final queries ---------
+insert into queries (title, description, level, difficulty,pdfURL) 
+VALUES ('Crime Scene Reports','Scenario: Start with the basics. What happened in the city on January 15, 2018?
+(date format : yyyymmdd)',1,'easy','/queries/Question1 - Level1.pdf');
+
+insert into queries (title, description, level, difficulty,pdfURL) 
+VALUES ('Crime Scene Reports (only murders in the city)',
+'What are we looking for ? Murders? Find the murder(s) that took place in 
+the city on January 15, 2018. (date format : yyyymmdd)'
+,1,'medium','/queries/Question2 - Level1.pdf');
+
+insert into queries (title, description, level, difficulty,pdfURL) 
+VALUES ('Witness 1: Last House on Northwestern Dr',
+'Track down the first witness.'
+,1,'hard','/queries/Question3 - Level1.pdf');
+
+insert into queries (title, description, level, difficulty,pdfURL) 
+VALUES ('Witness 2: Annabel on Franklin Ave',
+'Find "Annabel" on Franklin Ave'
+,1,'easy','/queries/Question1 - Level2.pdf');
+
+insert into queries (title, description, level, difficulty,pdfURL) 
+VALUES ('Witnesses Interview',
+'Extract interview transcripts mentioning the "gym."'
+,2,'medium','/queries/Question2 - Level2.pdf');
+
+insert into queries (title, description, level, difficulty,pdfURL) 
+VALUES ('Gym Check-ins',
+'Find gym members who checked in on January the 9th.'
+,2,'hard','/queries/Question3 - Level2.pdf');
+
+
+insert into queries (title, description, level, difficulty,pdfURL) 
+VALUES ('Narrow down the Gym Check-ins',
+'Find gym members who checked in on January the 9th, but filter them based on the second witness.'
+,3,'easy','/queries/Question1 - Level3.pdf');
+
+select * from queries;
