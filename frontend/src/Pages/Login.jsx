@@ -16,7 +16,8 @@ const Login = () => {
   const {user, logUserIn, registerUser} = useUserContext();
   
   useEffect(() => {
-    if(user.loggedIn) navigate("/competition");
+    // if(user.loggedIn) navigate("/competition");
+    if(user.loggedIn) navigate("/upcomingCompetition");
   },[user,user.loggedIn])
 
   const handleSubmit = async (e) => {

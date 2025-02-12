@@ -16,7 +16,6 @@ import SubmissionWindow from "../Components/SubmissionWindow";
 
 const QueryPage = () => {
   const [selectedDialect, setSelectedDialect] = useState("MySQL");
-  const [selectedFile, setSelectedFile] = useState(null);
   const [selectedQuery, setSelectedQuery] = useState([]);
   const [userAnswer, setUserAnswer] = useState("");
   const { user, socket, setUser } = useUserContext();
@@ -35,9 +34,7 @@ const QueryPage = () => {
     socket.on("levelUpdated", levelChanger); // I don't know why it's throwing error on reloading
   }, []);
 
-  const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-  };
+
 
   const fetchQueries = async (e) => {
     axios
@@ -57,7 +54,7 @@ const QueryPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    console.log('trying to submitt '); 
     const options = {
       method: "POST",
       url: "https://onecompiler-apis.p.rapidapi.com/api/v1/run",
@@ -77,7 +74,7 @@ const QueryPage = () => {
         ],
       },
     };
-
+    console.log('back from one compilter response')
     try {
       const testRes = await axios.request(options);
 
@@ -403,10 +400,8 @@ const QueryPage = () => {
 
       {showSubmissionWindow && (
         <SubmissionWindow
-          fileName={selectedFile.name}
           query={selectedQuery}
           dialect={selectedDialect}
-          status="submitting"
           toggleWindow={() => {
             setShowSubmissionWindow((prev) => !prev);
             fetchQueries();

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FiClock, FiFileText, FiFlag, FiAlertCircle } from 'react-icons/fi';
 import { useUserContext } from '../Contexts/userContext';
 
-const SubmissionWindow = ({ fileName, query,dialect, toggleWindow }) => {
+const SubmissionWindow = ({ query,dialect, toggleWindow }) => {
 
   const [status,setStatus] = useState('submitting');
   const {user,socket} = useUserContext();
@@ -59,13 +59,7 @@ const SubmissionWindow = ({ fileName, query,dialect, toggleWindow }) => {
             </div>
           </div>
 
-          <div className="flex items-start gap-3">
-            <FiFileText className="text-red-500 mt-1" />
-            <div>
-              <p className="text-sm text-gray-400">File Name</p>
-              <p className="text-white font-medium">{fileName}</p>
-            </div>
-          </div>
+         
         </div>
 
         <div className="bg-gray-800 rounded-lg p-4">
