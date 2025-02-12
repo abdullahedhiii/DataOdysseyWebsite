@@ -13,6 +13,7 @@ import {
 import { useUserContext } from "../Contexts/userContext";
 import { useNavigate } from "react-router-dom";
 import SubmissionWindow from "../Components/SubmissionWindow";
+import Demo from "../Components/Demo";
 
 const QueryPage = () => {
   const [selectedDialect, setSelectedDialect] = useState("MySQL");
@@ -22,6 +23,7 @@ const QueryPage = () => {
   const navigate = useNavigate();
   const [queries, setQueries] = useState([]);
   const [showSubmissionWindow, setShowSubmissionWindow] = useState(false);
+  const [showDemo,setDemo] = useState(true);
 
   const levelChanger = ({ email, level }) => {
     if (email == user.email && level < 8) {
@@ -31,7 +33,8 @@ const QueryPage = () => {
   };
 
   useEffect(() => {
-    socket.on("levelUpdated", levelChanger); // I don't know why it's throwing error on reloading
+    if(socket) socket.on("levelUpdated", levelChanger);
+    if(user) setDemo(user.firstLogin);
   }, []);
 
 
@@ -74,7 +77,7 @@ const QueryPage = () => {
         ],
       },
     };
-    console.log('back from one compilter response')
+
     try {
       const testRes = await axios.request(options);
 
@@ -82,16 +85,6 @@ const QueryPage = () => {
         alert("invalid query", testRes.data);
         return;
       }
-      // console.log(testRes.data);
-      // console.log(testRes.data.stdout.split('|'))
-      // console.log('this is the parsed data ',JSON.parse(testRes.data.stdout.split('|')[3]))
-      // const formData = new FormData();
-      // formData.append("teamName", user.teamName);
-      // formData.append("email", user.email);
-      // formData.append("team_id", user.team_id);
-      // formData.append("dialect", selectedDialect);
-      // formData.append("query",selectedQuery);
-      // formData.append("file", selectedFile);
 
       const response = await axios.post(
         "/api/submitFile",
@@ -123,8 +116,6 @@ const QueryPage = () => {
     const mapImage = document.getElementById("map-image");
     const mapWrapper = document.getElementById("map-wrapper");
 
-    mapImage.scrollIntoView({ behavior: "smooth" });
-
     // Calculate offsets to center based on the given coordinates
     const containerWidth = mapWrapper.offsetWidth;
     const containerHeight = mapWrapper.offsetHeight;
@@ -147,26 +138,17 @@ const QueryPage = () => {
     { number: 7, x: 0.178, y: 0.054 },
     { number: 8, x: 0.123, y: 0.17 },
   ];
-  const showZoomingEffect = () => {
-    levels.forEach((level, index) => {
-      setTimeout(() => {
-        zoomToLevel(2.5, level.x, level.y);
-      }, index * 3000);
-    });
-
-    setTimeout(() => {
-      zoomToLevel(2.5, levels[user.level - 1].x, levels[user.level - 1].y);
-    }, [levels.length * 3000]);
-  };
+  
   useEffect(() => {
     // zoomToLevel(2.5,0.178,0.053);
-    showZoomingEffect();
     console.log(
       "zooming to current level " +
         levels[user.level - 1].x +
         " " +
         levels[user.level - 1].y
     );
+    const currLevel = levels[user.level - 1];
+    zoomToLevel(2.5,currLevel.x,currLevel.y)
   }, []);
 
   useEffect(() => {
@@ -178,7 +160,8 @@ const QueryPage = () => {
 
   return (
     <div className="min-h-screen bg-black px-4 py-8">
-      <div className="max-w-7xl mx-auto space-y-6">
+      <div className={`max-w-7xl mx-auto space-y-6`}>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-gray-900 rounded-xl p-6 border border-gray-800">
             <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
@@ -397,7 +380,12 @@ const QueryPage = () => {
           </form>
         </div>       */}
       </div>
+      
+      {
+        showDemo && <Demo setDemo={setDemo}/>
+      }
 
+      
       {showSubmissionWindow && (
         <SubmissionWindow
           query={selectedQuery}

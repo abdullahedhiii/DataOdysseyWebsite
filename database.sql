@@ -18,6 +18,7 @@ CREATE TABLE participants (
  );
 ALTER TABLE participants ADD COLUMN team_id INT AUTO_INCREMENT PRIMARY KEY; 
 ALTER TABLE participants auto_increment = 10010;
+alter table  participants add column firstLogin Boolean default TRUE;
 
 select * from participants;
 CREATE TABLE queries (

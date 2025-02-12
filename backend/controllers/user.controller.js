@@ -46,7 +46,6 @@ module.exports.loginUser = (req, res) => {
 
 
 module.exports.logoutUser = (req,res) =>{
-    console.log('log out hitt');
     try{
         res.cookie('access_token',{ 
           httpOnly: true, 
@@ -146,5 +145,16 @@ module.exports.getDashboard = (req, res) => {
     } catch (err) {
         console.log(err);
         res.status(500).json([]);
+    }
+};
+
+module.exports.markTutorialDone = (req,res) => {
+    console.log(req.body);
+    try{
+        const q = `update participants set firstLogin = false where team_id = ${req.body.team_id}`;
+        db.execute(q);
+        res.status(200).json({message : 'User marked'})
+    }catch(err){
+        console.log(err.message);
     }
 };
