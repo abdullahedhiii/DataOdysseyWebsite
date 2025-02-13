@@ -3,64 +3,28 @@ const socket = require("../socket");
 
 // This data would be use to compare rows if tabular results dosen't match exactly, possibly due to change in headers
 const answers = {
-  4611: [
-    ["5", "Aisha Siddiqui", "23", "95"],
-    ["1", "Sara Ali", "22", "92.5"],
-    ["7", "Maya Shah", "20", "91"],
+  4609 : [
+    ['Hamilton: Lee, do you yield? Burr: You shot him in the side! Yes he yields!'],
+    ['Report Not Found'],
+    ['Security footage shows that there were 2 witnesses. The first witness lives at the last house on ""Northwestern Dr"". The second witness, named Annabel, lives somewhere on ""Franklin Ave"".'],
   ],
-  4612: [
-    ["5", "Aisha Siddiqui", "23", "95"],
-    ["1", "Sara Ali", "22", "92.5"],
-    ["7", "Maya Shah", "20", "91"],
-  ],
-  4613: [["80.72727272727273"]],
-  4614: [["10", "Jawwad", "20", "38.5"]],
-  4615: [
-    ["20", "3"],
-    ["22", "1"],
-    ["25", "1"],
-    ["19", "1"],
-    ["21", "1"],
-    ["23", "1"],
-    ["24", "1"],
-    ["27", "1"],
-    ["26", "1"],
-  ],
-  4616: [
-    ["5", "Aisha Siddiqui", "23", "95"],
-    ["6", "Hassan Rizvi", "24", "84.5"],
-    ["8", "Imran Javed", "27", "80"],
-    ["10", "Jawwad", "20", "38.5"],
-    ["3", "Lina Ahmed", "19", "88.5"],
-    ["7", "Maya Shah", "20", "91"],
-    ["9", "Nadia Malik", "26", "78.5"],
-    ["2", "Omar Farooq", "25", "78"],
-    ["1", "Sara Ali", "22", "92.5"],
-    ["0", "Taha Khan", "20", "86"],
-    ["4", "Zaid Khan", "21", "75.5"],
-  ],
-  4617: [
-    ["23", "95"],
-    ["22", "92.5"],
-    ["19", "88.5"],
-    ["24", "84.5"],
-  ],
-  4618: [],
-  4619: [],
-  4620: [],
-  4621: [],
-  4622: [],
-  4623: [],
-  4624: [],
-  4625: [],
-  4626: [],
+ 4610 : [    
+  ['Security footage shows that there were 2 witnesses. The first witness lives at the last house on ""Northwestern Dr"". The second witness, named Annabel, lives somewhere on ""Franklin Ave"".'],
+ ],
+ 4611 : [
+  ['Morty Schapiro','4919']
+ ],
+ 4612 : [
+  ['Annabel Miller','16371']
+ ]
 };
 
 // These are the hard coded tabular results of the stdout stream of oneCompiler
 const tabularAnswers = {
-  4612: "+--------+----------------+------+-------+\n| testId | testName       | age  | score |\n+--------+----------------+------+-------+\n|      5 | Aisha Siddiqui |   23 |    95 |\n|      1 | Sara Ali       |   22 |  92.5 |\n|      7 | Maya Shah      |   20 |    91 |\n+--------+----------------+------+-------+\n",
-  4613: "+-------------------+\n| average           |\n+-------------------+\n| 80.72727272727273 |\n+-------------------+\n",
-  4614: "+--------+----------+------+-------+\n| testId | testName | age  | score |\n+--------+----------+------+-------+\n|     10 | Jawwad   |   20 |  38.5 |\n+--------+----------+------+-------+\n",
+  4609: "",
+  4610 : "",
+  4611: "+----------------+----------------+| name           | address_number |+----------------+----------------+Morty Schapiro |           4919 |+----------------+----------------+",
+  4612:"+----------------+-------+| name           | id    |+----------------+-------+| Annabel Miller | 16371 |+----------------+-------+"
 };
 
 module.exports.sendQueries = (req, res) => {

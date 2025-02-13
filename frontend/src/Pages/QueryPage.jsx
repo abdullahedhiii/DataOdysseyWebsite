@@ -16,7 +16,7 @@ import SubmissionWindow from "../Components/SubmissionWindow";
 import Demo from "../Components/Demo";
 
 const QueryPage = () => {
-  const [selectedDialect, setSelectedDialect] = useState("MySQL");
+  const [selectedDialect, setSelectedDialect] = useState("mysql");
   const [selectedQuery, setSelectedQuery] = useState([]);
   const [userAnswer, setUserAnswer] = useState("");
   const { user, socket, setUser } = useUserContext();
@@ -56,8 +56,16 @@ const QueryPage = () => {
   };
 
   const handleSubmit = async (e) => {
+    // const language = selectedDialect === 'MySql' ? 'mysql' : (selectedDialect === '')
+    let db = ''
+    if(user.level <= 5){
+      if(selectedDialect === 'mysql') db = import.meta.env.VITE_MURDER_DB_MYSQL
+      else if(selectedDialect === 'oracle') db = import.meta.env.VITE_MURDER_DB_ORACLE
+      else if(selectedDialect === 'postgresql') db = import.meta.env.VITE_MURDER_DB_POSTGRE
+      else throw new Error('Invalid dialect found!')
+    }
     e.preventDefault();
-    console.log('trying to submitt '); 
+    console.log('trying to submitt ',db,db + userAnswer); 
     const options = {
       method: "POST",
       url: "https://onecompiler-apis.p.rapidapi.com/api/v1/run",
@@ -67,12 +75,12 @@ const QueryPage = () => {
         "Content-Type": "application/json",
       },
       data: {
-        language: "mysql",
+        language: selectedDialect,
         stdin: "",
         files: [
           {
             name: "TestQuery.sql",
-            content: import.meta.env.VITE_TEST_DB + userAnswer,
+            content: db + userAnswer,
           },
         ],
       },
@@ -81,10 +89,14 @@ const QueryPage = () => {
     try {
       const testRes = await axios.request(options);
 
-      if (testRes.data.exception || testRes.data.stderr) {
+      if (testRes.data.exception || testRes.data.stderr ||testRes.data.status == 'failed') {
         alert("invalid query", testRes.data);
+        console.log(testRes);
+        
         return;
       }
+      else console.log(testRes.data);
+      
 
       const response = await axios.post(
         "/api/submitFile",
