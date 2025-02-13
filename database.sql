@@ -53,30 +53,7 @@ ALTER TABLE solutions ADD COLUMN submitted_at DATETIME default current_timestamp
 -- 
 --update queries set level = 3 where queryId = 4612 or queryId = 4609 or queryId = 4611;
 
-CREATE TABLE testDB (
-    testId INTEGER PRIMARY KEY,
-    testName varchar(100),
-    age INTEGER,
-    score FLOAT
-);
 
-select * from testDB;
-insert into testDB values (0,'Taha Khan',20,86.0);
-insert into testDB values (1, 'Sara Ali', 22, 92.5);
-insert into testDB values (2, 'Omar Farooq', 25, 78.0);
-insert into testDB values (3, 'Lina Ahmed', 19, 88.5);
-insert into testDB values (4, 'Zaid Khan', 21, 75.5);
-insert into testDB values (5, 'Aisha Siddiqui', 23, 95.0);
-insert into testDB values (6, 'Hassan Rizvi', 24, 84.5);
-insert into testDB values (7, 'Maya Shah', 20, 91.0);
-insert into testDB values (8, 'Imran Javed', 27, 80.0);
-insert into testDB values (9, 'Nadia Malik', 26, 78.5);
-insert into testDB values (10, 'Jawwad', 20, 38.5);
-
-drop table solutions;
-select * from solutions;
-select * from queries;
-show constraint
 
 
 
@@ -119,5 +96,56 @@ insert into queries (title, description, level, difficulty,pdfURL)
 VALUES ('Narrow down the Gym Check-ins',
 'Find gym members who checked in on January the 9th, but filter them based on the second witness.'
 ,3,'easy','/queries/Question1 - Level3.pdf');
+
+insert into queries (title, description, level, difficulty,pdfURL) 
+VALUES ('SQL Symphony Concert',
+'Did the suspects attend a concert in December 2017?Find attendees of the event “SQL Symphony Concert” three times in December 2017.'
+,3,'medium','/queries/Question2 - Level3.pdf');
+
+insert into queries (title, description, level, difficulty,pdfURL) 
+VALUES ('Car Clue','A witness spotted a male fleeing the scene in a car with plate containing “H42W.”.Find drivers with number plates containing “H42W.”'
+,3,'hard','/queries/Question3 - Level3.pdf');
+
+insert into queries (title, description, level, difficulty,pdfURL) 
+VALUES ('Person-Car Match','
+Link the driver to gym suspects.  
+Task:Find which gym member owns the car.  
+'
+,4,'easy','/queries/Question1 - Level4.pdf');
+
+insert into queries (title, description, level, difficulty,pdfURL) 
+VALUES ('Confession ','
+Jeremy Bowers’ interview reveals a twist.  
+Task: Retrieve Jeremy’s full transcript.'
+,4,'medium','/queries/Question2 - Level4.pdf');
+
+insert into queries (title, description, level, difficulty,pdfURL) 
+VALUES ('Identify Potential Masterminds','
+ Use Jeremy’s clues to find the potential mastermind.  
+Task: Identify women with red hair and a Tesla'
+,4,'hard','/queries/Question3 - Level4.pdf');
+
+
+insert into queries (title, description, level, difficulty,pdfURL) 
+VALUES ('Did we miss one clue?','
+Use all the clues to find the potential mastermind.  
+Task: Identify women with red hair, a Tesla and love for concerts'
+,5,'easy','/queries/Question1 - Level5.pdf');
+
+insert into queries (title, description, level, difficulty,pdfURL) 
+VALUES ('Miranda loves Symphony concerts only?
+','Did she only ever attend Symphony concerts?  
+Task: Prove Jeremy’s statement right
+Clue : She never checked in to any other concerts(empty result)'
+,5,'medium','/queries/Question2 - Level5.pdf');
+
+
+insert into queries (title, description, level, difficulty,pdfURL) 
+VALUES ('Seal the case','
+Seal the case.  
+Task: Declare Miranda Priestly as the mastermind.
+Hint : how would you close a case in this scenario?'
+,5,'hard','/queries/Question3 - Level5.pdf');
+
 
 select * from queries;

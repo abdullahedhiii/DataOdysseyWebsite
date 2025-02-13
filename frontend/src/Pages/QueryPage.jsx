@@ -24,6 +24,8 @@ const QueryPage = () => {
   const [queries, setQueries] = useState([]);
   const [showSubmissionWindow, setShowSubmissionWindow] = useState(false);
   const [showDemo,setDemo] = useState(true);
+  const [error,setError] = useState("");
+  const [result,setResult] = useState(null);
 
   const levelChanger = ({ email, level }) => {
     if (email == user.email && level < 8) {
@@ -51,12 +53,95 @@ const QueryPage = () => {
         //  setSelectedQuery(res.data.queries[0]);
       })
       .catch((err) => {
-        console.log(err.message);
+        console.log('error why', err.message);
       });
   };
-
-  const handleSubmit = async (e) => {
+  
+  function parseTableString(tableString) {
+    // Split into lines and filter out empty lines
+    const lines = tableString
+      .split('\n')
+      .map(line => line.trim())
+      .filter(line => line.length > 0);
+  
+    // Find the header line (the one with actual column names)
+    const headerLine = lines.find(line => line.startsWith('|') && !line.startsWith('+-'));
+    
+    if (!headerLine) {
+      throw new Error('No header line found');
+    }
+  
+    // Extract headers
+    const headers = headerLine
+      .split('|')
+      .filter(cell => cell.trim().length > 0)
+      .map(cell => cell.trim().toLowerCase());
+  
+    // Initialize result array
+    const result = [];
+    
+    // Track current data object and multiline fields
+    let currentData = null;
+    
+    // Process each line
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      
+      // Skip separator lines
+      if (line.startsWith('+-')) continue;
+      // Skip header line
+      if (line === headerLine) continue;
+      
+      // If line starts with |, it's either a new record or continuation
+      if (line.startsWith('|')) {
+        const cells = line
+          .split('|')
+          .filter(cell => cell.length > 0)
+          .map(cell => cell.trim());
+        
+        // If we have the right number of cells, it's a new record
+        if (cells.length === headers.length) {
+          if (currentData) {
+            result.push(currentData);
+          }
+          currentData = {};
+          headers.forEach((header, index) => {
+            currentData[header] = cells[index];
+          });
+        } 
+        // Otherwise it might be a continuation of the previous field
+        else if (currentData) {
+          // Find which cell has content and append it
+          cells.forEach(cell => {
+            if (cell.length > 0) {
+              // Append to the last non-empty field
+              for (let header of headers.reverse()) {
+                if (currentData[header]) {
+                  currentData[header] += ' ' + cell;
+                  break;
+                }
+              }
+            }
+          });
+        }
+      }
+    }
+    
+    // Don't forget to add the last record
+    if (currentData) {
+      result.push(currentData);
+    }
+    
+    return result;
+  }
+  
+  const handleSubmit = async (type) => {
     // const language = selectedDialect === 'MySql' ? 'mysql' : (selectedDialect === '')
+    setResult(null)
+    if(userAnswer === "") {
+      setError('Write a query to proceed further');
+      return;
+    }
     let db = ''
     if(user.level <= 5){
       if(selectedDialect === 'mysql') db = import.meta.env.VITE_MURDER_DB_MYSQL
@@ -64,7 +149,6 @@ const QueryPage = () => {
       else if(selectedDialect === 'postgresql') db = import.meta.env.VITE_MURDER_DB_POSTGRE
       else throw new Error('Invalid dialect found!')
     }
-    e.preventDefault();
     console.log('trying to submitt ',db,db + userAnswer); 
     const options = {
       method: "POST",
@@ -90,14 +174,14 @@ const QueryPage = () => {
       const testRes = await axios.request(options);
 
       if (testRes.data.exception || testRes.data.stderr ||testRes.data.status == 'failed') {
-        alert("invalid query", testRes.data);
         console.log(testRes);
-        
+        setError(testRes.data.stderr);
         return;
       }
       else console.log(testRes.data);
       
-
+      setResult(parseTableString(testRes.data.stdout))
+      if(type === 'test') return;
       const response = await axios.post(
         "/api/submitFile",
         JSON.stringify({
@@ -243,7 +327,7 @@ const QueryPage = () => {
                 </div>
 
                 <div className="bg-gray-800 rounded-lg p-4">
-                  <pre className="text-gray-300 text-sm whitespace-pre-wrap break-words font-mono">
+                  <pre className="text-white text-sm whitespace-pre-wrap break-words font-mono">
                     {selectedQuery.description}
                   </pre>
                 </div>
@@ -276,29 +360,66 @@ const QueryPage = () => {
                     id="queryEditorId"
                     placeholder="Write your query here"
                     value={userAnswer}
-                    onChange={(e) => setUserAnswer(e.target.value)}
+                    onChange={(e) => {
+                      setUserAnswer(e.target.value)
+                      setError("")
+                      setResult("")
+                    }}
                     className="bg-white w-full p-4 rounded-lg text-black text-base whitespace-pre-wrap break-words font-mono h-[180px]"
                   />
+                  {error !== "" && <p className="rounded-md px-2 py-2 bg-white font-bold text-red-600">{error}</p>}
                 </div>
-
+            <div className="flex space-x-4">
+               <button
+                  type="button"
+                  className={`w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition-colors`}
+                  onClick={() => handleSubmit('test')}
+                >
+                  <FiCheck className="w-5 h-5" />
+                  Test
+                </button>
                 <button
                   type="submit"
                   className={`w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition-colors ${
                     showSubmissionWindow && "cursor-not-allowed"
                   }`}
                   disabled={showSubmissionWindow}
-                  onClick={handleSubmit}
+                  onClick={() => handleSubmit('submit')}
                 >
                   <FiCheck className="w-5 h-5" />
                   Submit Solution
                 </button>
               </div>
+              </div>
+
             ) : (
               <p className="text-center text-gray-400">No query selected</p>
             )}
           </div>
         </div>
-
+       
+        {result && result.length > 0 ? (
+        <div className="mt-4 overflow-x-auto">
+          <table className="min-w-full border border-gray-700">
+            <thead>
+              <tr className="bg-red-600 text-white">
+                {Object.keys(result[0]).map((key) => (
+                  <th key={key} className="border border-gray-700 px-4 py-2">{key}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {result.map((row, index) => (
+                <tr key={index} className="border border-gray-700 odd:bg-gray-900 even:bg-gray-800 text-white">
+                  {Object.values(row).map((value, idx) => (
+                    <td key={idx} className="border border-gray-700 px-4 py-2">{value || "—"}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : null}
         <div className="bg-gray-900 rounded-xl p-6 border border-gray-800">
           <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
             <FiUnlock className="text-red-500" />
@@ -308,7 +429,11 @@ const QueryPage = () => {
             {queries.map((query) => (
               <button
                 key={query.id}
-                onClick={() => setSelectedQuery(query)}
+                onClick={() =>{ 
+                  setSelectedQuery(query)
+                  setUserAnswer("")
+                  setResult("")
+                }}
                 className={`p-4 rounded-lg text-left transition-all h-full ${
                   selectedQuery.id === query.id
                     ? "bg-red-500/10 border-2 border-red-500"
@@ -320,14 +445,15 @@ const QueryPage = () => {
                   <h3 className="font-medium text-white">{query.title}</h3>
                   <span
                     className={`px-2 py-0.5 rounded-full text-xs flex-shrink-0 ml-2 ${
-                      query.difficulty === "Hard"
+                      query.markDone ?"bg-green-500/20 text-green-500 text-white font-bold" :
+                      query.difficulty === "hard"
                         ? "bg-red-500/20 text-red-500"
-                        : query.difficulty === "Easy"
+                        : query.difficulty === "easy"
                         ? "bg-green-500/20 text-green-500"
                         : "bg-yellow-500/20 text-yellow-500"
                     }`}
                   >
-                    {query.difficulty}
+                    {query.markDone ? 'solved' : query.difficulty}
                   </span>
                 </div>
                 <p className="text-sm text-gray-400 break-words whitespace-pre-wrap line-clamp-3">

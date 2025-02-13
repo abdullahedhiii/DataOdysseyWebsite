@@ -118,8 +118,8 @@ const LeaderBoard = () => {
             <div className="flex items-center gap-4">
               <FiTarget className="text-red-500 text-3xl" />
               <div>
-                <p className="text-gray-400">Max Level</p>
-                <p className="text-2xl font-bold text-white">5</p>
+                <p className="text-gray-400">Levels to cross</p>
+                <p className="text-2xl font-bold text-white">8</p>
               </div>
             </div>
           </div>
