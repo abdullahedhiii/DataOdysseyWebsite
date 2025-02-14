@@ -58,85 +58,78 @@ const QueryPage = () => {
   };
   
   function parseTableString(tableString) {
-    if(tableString === null) {
-      return;
+    if (!tableString) {
+        return [];
     }
-    // Split into lines and filter out empty lines
+
     const lines = tableString
-      .split('\n')
-      .map(line => line.trim())
-      .filter(line => line.length > 0);
-  
-    // Find the header line (the one with actual column names)
-    const headerLine = lines.find(line => line.startsWith('|') && !line.startsWith('+-'));
-    
-    if (!headerLine) {
-      throw new Error('No header line found');
-    }
-  
-    // Extract headers
-    const headers = headerLine
-      .split('|')
-      .filter(cell => cell.trim().length > 0)
-      .map(cell => cell.trim().toLowerCase());
-  
-    // Initialize result array
-    const result = [];
-    
-    // Track current data object and multiline fields
-    let currentData = null;
-    
-    // Process each line
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      
-      // Skip separator lines
-      if (line.startsWith('+-')) continue;
-      // Skip header line
-      if (line === headerLine) continue;
-      
-      // If line starts with |, it's either a new record or continuation
-      if (line.startsWith('|')) {
-        const cells = line
-          .split('|')
-          .filter(cell => cell.length > 0)
-          .map(cell => cell.trim());
-        
-        // If we have the right number of cells, it's a new record
-        if (cells.length === headers.length) {
-          if (currentData) {
-            result.push(currentData);
-          }
-          currentData = {};
-          headers.forEach((header, index) => {
-            currentData[header] = cells[index];
-          });
-        } 
-        // Otherwise it might be a continuation of the previous field
-        else if (currentData) {
-          // Find which cell has content and append it
-          cells.forEach(cell => {
-            if (cell.length > 0) {
-              // Append to the last non-empty field
-              for (let header of headers.reverse()) {
-                if (currentData[header]) {
-                  currentData[header] += ' ' + cell;
-                  break;
-                }
-              }
-            }
-          });
+        .split('\n')
+        .map(line => line.trim())
+        .filter(line => line.length > 0);
+
+    let result = [];
+    let headers = [];
+    let dataStartIndex = 0;
+
+    if (selectedDialect === 'postgresql') {
+        const filteredLines = lines.filter(line => !/^(CREATE TABLE|INSERT \d+ \d+)$/.test(line));
+
+        if (filteredLines.length < 2) {
+            throw new Error('Invalid PostgreSQL table format');
         }
-      }
+        console.log(filteredLines);
+        headers = filteredLines[0]
+            .split('|')
+            .map(cell => cell.trim().toLowerCase());
+
+        dataStartIndex = 2; 
+
+        for (let i = dataStartIndex; i < filteredLines.length; i++) {
+            let cells = filteredLines[i].split('|').map(cell => cell.trim());
+
+            if (cells.length === headers.length) {
+                result.push(Object.fromEntries(headers.map((header, index) => [header, cells[index]])));
+            } else if (result.length > 0) {
+                result[result.length - 1][headers[headers.length - 1]] += ' ' + filteredLines[i].trim();
+            }
+        }
+    } else if (selectedDialect === 'mysql') {
+        const headerLine = lines.find(line => line.startsWith('|') && !line.startsWith('+-'));
+
+        if (!headerLine) {
+            throw new Error('No header line found');
+        }
+
+        headers = headerLine
+            .split('|')
+            .filter(cell => cell.trim().length > 0)
+            .map(cell => cell.trim().toLowerCase());
+
+        dataStartIndex = lines.indexOf(headerLine) + 1;
+
+        for (let i = dataStartIndex; i < lines.length; i++) {
+            let line = lines[i];
+
+            if (line.startsWith('+-')) continue;
+
+            if (line.startsWith('|')) {
+                let cells = line
+                    .split('|')
+                    .filter(cell => cell.length > 0)
+                    .map(cell => cell.trim());
+
+                if (cells.length === headers.length) {
+                    result.push(Object.fromEntries(headers.map((header, index) => [header, cells[index]])));
+                } else if (result.length > 0) {
+                    result[result.length - 1][headers[headers.length - 1]] += ' ' + line.trim();
+                }
+            }
+        }
     }
-    
-    // Don't forget to add the last record
-    if (currentData) {
-      result.push(currentData);
-    }
-    
+
     return result;
-  }
+}
+
   
   const handleSubmit = async (type) => {
     setResult(null)
@@ -153,7 +146,7 @@ const QueryPage = () => {
     if(user.level >= 4){
       if(selectedDialect === 'mysql') db = import.meta.env.VITE_MURDER_DB_MYSQL
       else if(selectedDialect === 'oracle') db = import.meta.env.VITE_MURDER_DB_ORACLE
-      else if(selectedDialect === 'postgresql') db = import.meta.env.VITE_MURDER_DB_POSTGRE
+      else if(selectedDialect === 'postgresql') db = import.meta.env.VITE_MURDER_DB_POSTGRES
       else throw new Error('Invalid dialect found!')
     }
     else{
@@ -183,7 +176,6 @@ const QueryPage = () => {
 
     try {
       const testRes = await axios.request(options);
-
       if (testRes.data.exception || testRes.data.stderr ||testRes.data.status == 'failed') {
         console.log(testRes);
         setError(testRes.data.stderr);
@@ -195,8 +187,10 @@ const QueryPage = () => {
         setError('empty result');
         return;
       }
-      setResult(parseTableString(testRes.data.stdout))
+      setResult(parseTableString(testRes.data.stdout));
+      console.log('back from parsingg');
       if(type === 'test') return;
+
       const response = await axios.post(
         "/api/submitFile",
         JSON.stringify({
@@ -413,7 +407,7 @@ const QueryPage = () => {
         </div>
        
         {result && result.length > 0 ? (
-        <div className="mt-4 overflow-x-auto">
+        <div className="mt-4 overflow-x-auto ">
           <p className="text-center text-white text-xl font-bold mb-2">Your output</p>
           {result.length > 10 && <p className="text-center text-white text-md mb-2">In case of huge results,only the first 10 rows are displayed</p>}
 
