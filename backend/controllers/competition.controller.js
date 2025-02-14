@@ -228,43 +228,69 @@ function sendStatus(email, status, level = 0) {
   else io.emit("levelUpdated", { email, level: level + 1 });
 }
 
-function deepEqual(queryId, b) {
-  console.log(queryId,b);
+function deepEqual(queryId, b, selectedDialect) {
+  console.log(queryId, b);
   try {
     if (tabularAnswers[queryId] == b) return true;
 
-    const parsedData = b
-      .split("\n")
-      .slice(3, -1)
-      .map((row) =>
-        row
-          .split("|")
-          .slice(1, -1)
-          .map((ele) => ele.trim())
-      )
-      .slice(0, -1);
-    console.log('parsed' ,parsedData, "\n");
+    let parsedData = [];
+
+    if (selectedDialect === "postgresql") {
+      let lines = b.split("\n").map(line => line.trim()).filter(line => line.length > 0);
+
+      const filteredLines = lines
+      .filter(line => !/^(CREATE TABLE|INSERT \d+ \d+)$/.test(line)) 
+      .filter(line => !/^\(\d+ rows?\)$/.test(line)); 
+
+      const headerIndex = filteredLines.findIndex(line => line.includes("|") && !line.includes("+-"));
+
+      if (headerIndex === -1) {
+        const header = filteredLines[0];  // First line is the header
+        parsedData = filteredLines.slice(2).map(row => [row]); // Data starts from index 2
+      } else {
+        parsedData = filteredLines.slice(headerIndex + 2).map(row =>
+          row.split("|").map(ele => ele.trim()).filter(cell => cell.length > 0)
+        );
+      }
+    } else { // MySQL Parsing
+      parsedData = b
+        .split("\n")
+        .slice(3, -1) // Remove first 3 and last line
+        .map((row) =>
+          row
+            .split("|")
+            .slice(1, -1)
+            .map((ele) => ele.trim())
+        )
+        .slice(0, -1);
+    }
+
+    console.log("parsed", parsedData, "\n");
 
     let i = 0;
     for (const row of answers[queryId]) {
       const ele2 = JSON.stringify(row);
       const ele1 = JSON.stringify(parsedData[i]);
-      console.log('row ',ele2);
-      console.log('rrrr ',ele1);
-      if (ele1 != ele2) {
+      console.log("row ", ele2);
+      console.log("rrrr ", ele1);
+      if (ele1 !== ele2) {
         console.log("returning false ", ele1, ele2);
         return false;
-      } else console.log("true ", ele1, ele2, "\n");
+      } else {
+        console.log("true ", ele1, ele2, "\n");
+      }
       i++;
     }
 
     return true;
   } catch (err) {
     console.log(err.message);
+    return false;
   }
 }
 
-function statusSender(email, id, team_id, query, answer) {
+
+function statusSender(email, id, team_id, query, answer,selectedDialect) {
   const delayTime = 1000;
   setTimeout(() => {
     sendStatus(email, "submitted");
@@ -276,7 +302,7 @@ function statusSender(email, id, team_id, query, answer) {
         setTimeout(() => {
           sendStatus(email, "pending");
 
-          if (deepEqual(query.queryId, answer)) {
+          if (deepEqual(query.queryId, answer,selectedDialect)) {
             const acceptQuery = `update solutions set status = \'accepted\' where id = ${id}`;
             db.execute(acceptQuery);
             sendStatus(email, "accepted");
@@ -309,14 +335,14 @@ function statusSender(email, id, team_id, query, answer) {
 }
 
 module.exports.submitQuery = (req, res) => {
-  const { email, team_id, query, answer } = req.body;
+  const { email, team_id, query, answer,selectedDialect} = req.body;
   const q = "Insert into solutions (team_id,queryId) values (?,?)";
   try {
     db.query(q, [team_id, query.queryId], (err, result) => {
       if (err) {
         res.status(500).json({ message: "Something went wrong!" });
       } else {
-        statusSender(email, result.insertId, team_id, query, answer);
+        statusSender(email, result.insertId, team_id, query, answer,selectedDialect);
         res.status(200).json({ message: "File Submitted" });
       }
     });

@@ -72,17 +72,21 @@ const QueryPage = () => {
     let dataStartIndex = 0;
 
     if (selectedDialect === 'postgresql') {
-        const filteredLines = lines.filter(line => !/^(CREATE TABLE|INSERT \d+ \d+)$/.test(line));
+        const filteredLines = lines
+            .filter(line => !/^(CREATE TABLE|INSERT \d+ \d+)$/.test(line)) // Remove unnecessary lines
+            .filter(line => !/^\(\d+ rows?\)$/.test(line)); // Skip last "(n row)" line
 
         if (filteredLines.length < 2) {
             throw new Error('Invalid PostgreSQL table format');
         }
+
         console.log(filteredLines);
+
         headers = filteredLines[0]
             .split('|')
             .map(cell => cell.trim().toLowerCase());
 
-        dataStartIndex = 2; 
+        dataStartIndex = 2; // Skip separator line
 
         for (let i = dataStartIndex; i < filteredLines.length; i++) {
             let cells = filteredLines[i].split('|').map(cell => cell.trim());
@@ -151,6 +155,7 @@ const QueryPage = () => {
     }
     else{
       if(selectedDialect === 'mysql') db = import.meta.env.VITE_ECOMMERCE_DB_MYSQL
+      else if(selectedDialect === 'postgresql') db = import.meta.env.VITE_ECOMMERCE_DB_POSTGRES
 
     }
     // console.log('trying to submitt ',db + userAnswer); 
@@ -198,6 +203,7 @@ const QueryPage = () => {
           email: user.email,
           team_id: user.team_id,
           answer: testRes.data.stdout,
+          selectedDialect
         }),
         {
           headers: {
@@ -544,6 +550,7 @@ const QueryPage = () => {
             setShowSubmissionWindow((prev) => !prev);
             fetchQueries();
           }}
+          toggledSelected = {() => setSelectedQuery([])}
         />
       )}
 
