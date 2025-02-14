@@ -33,12 +33,14 @@ const Dashboard = ({onClose}) => {
   };
 
   const getDifficultyColor = (difficulty) => {
+    console.log(difficulty);
+    
     switch (difficulty) {
-      case 'Hard':
+      case 'hard':
         return 'text-red-500 bg-red-500/10';
-      case 'Medium':
+      case 'medium':
         return 'text-yellow-500 bg-yellow-500/10';
-      case 'Easy':
+      case 'easy':
         return 'text-green-500 bg-green-500/10';
       default:
         return 'text-gray-500 bg-gray-500/10';
@@ -57,7 +59,7 @@ const Dashboard = ({onClose}) => {
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-gray-900 rounded-xl border border-gray-800 w-full max-w-3xl max-h-[80vh] overflow-hidden">
+      <div className="bg-gray-900 rounded-xl border border-gray-800 w-full max-w-3xl ">
         <div className="p-6 border-b border-gray-800 flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-white">{user.teamName}'s submissions</h2>
@@ -71,7 +73,7 @@ const Dashboard = ({onClose}) => {
           </button>
         </div>
 
-        <div className="p-6 overflow-y-auto max-h-[calc(80vh-100px)]">
+        <div className="p-6 overflow-y-scroll max-h-[calc(80vh-100px)]">
           <div className="space-y-4">
             { submissions.map((submission) => (
               <div
@@ -94,8 +96,8 @@ const Dashboard = ({onClose}) => {
                   <div className="flex items-center gap-2">
                     {getStatusIcon(submission.status)}
                     <span className={`text-sm font-medium ${
-                      submission.status === 'Accepted' ? 'text-green-500' :
-                      submission.status === 'Wrong Answer' ? 'text-red-500' :
+                      submission.status === 'accepted' ? 'text-green-500' :
+                      submission.status === 'rejected' ? 'text-red-500' :
                       'text-yellow-500'
                     }`}>
                       {submission.status}

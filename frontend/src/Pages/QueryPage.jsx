@@ -136,7 +136,10 @@ const QueryPage = () => {
 
   
   const handleSubmit = async (type) => {
+
     setResult(null)
+    setError(null)
+    
     if(userAnswer === "") {
       setError('Write a query to proceed further');
       return;
@@ -212,7 +215,8 @@ const QueryPage = () => {
           withCredentials: true,
         }
       );
-      setShowSubmissionWindow(true);
+      
+      setShowSubmissionWindow(true);      
     } catch (err) {
       alert("Failed to upload file: " + err.message);
     }
@@ -449,7 +453,6 @@ const QueryPage = () => {
                 key={query.id}
                 onClick={() =>{ 
                   setSelectedQuery(query)
-                  setUserAnswer("")
                   setResult("")
                 }}
                 className={`p-4 rounded-lg text-left transition-all h-full ${
@@ -548,9 +551,14 @@ const QueryPage = () => {
           dialect={selectedDialect}
           toggleWindow={() => {
             setShowSubmissionWindow((prev) => !prev);
-            fetchQueries();
           }}
-          toggledSelected = {() => setSelectedQuery([])}
+          toggledSelected = {() => {
+            setQueries(prev => prev.map(query => query.queryId === selectedQuery.queryId ? {...query, markDone : true} : query))
+            setSelectedQuery([])
+            setUserAnswer('')
+            setResult("")
+            setError('')
+          }}
         />
       )}
 
