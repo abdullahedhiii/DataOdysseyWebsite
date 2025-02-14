@@ -49,7 +49,7 @@ const QueryPage = () => {
       })
       .then((res) => {
         setQueries(res.data.queries);
-        console.log(res.data.queries);
+        // console.log(res.data.queries);
         //  setSelectedQuery(res.data.queries[0]);
       })
       .catch((err) => {
@@ -136,10 +136,13 @@ const QueryPage = () => {
   }
   
   const handleSubmit = async (type) => {
-    // const language = selectedDialect === 'MySql' ? 'mysql' : (selectedDialect === '')
     setResult(null)
     if(userAnswer === "") {
       setError('Write a query to proceed further');
+      return;
+    }
+    else if (selectedQuery.markDone){
+      setError('Query Already solved')
       return;
     }
     let db = ''
@@ -149,7 +152,7 @@ const QueryPage = () => {
       else if(selectedDialect === 'postgresql') db = import.meta.env.VITE_MURDER_DB_POSTGRE
       else throw new Error('Invalid dialect found!')
     }
-    console.log('trying to submitt ',db,db + userAnswer); 
+    console.log('trying to submitt ',db + userAnswer); 
     const options = {
       method: "POST",
       url: "https://onecompiler-apis.p.rapidapi.com/api/v1/run",
@@ -226,13 +229,13 @@ const QueryPage = () => {
   };
   const levels = [
     { number: 1, x: 0.01, y: 0.01 },
-    { number: 2, x: -0.06, y: 0.09 },
-    { number: 3, x: -0.06, y: 0.31 },
-    { number: 4, x: -0.065, y: 0.4 },
-    { number: 5, x: 0.025, y: 0.38 },
-    { number: 6, x: 0.25, y: 0.38 },
-    { number: 7, x: 0.178, y: 0.054 },
-    { number: 8, x: 0.123, y: 0.17 },
+    { number: 2, x: -0.08, y: 0.09 },
+    { number: 3, x: -0.08, y: 0.31 },
+    { number: 4, x: -0.082, y: 0.4 },
+    { number: 5, x: 0.028, y: 0.38 },
+    { number: 6, x: 0.313, y: 0.386 },
+    { number: 7, x: 0.222, y: 0.054 },
+    { number: 8, x: 0.153, y: 0.17 },
   ];
   
   useEffect(() => {
@@ -243,7 +246,7 @@ const QueryPage = () => {
         " " +
         levels[user.level - 1].y
     );
-    const currLevel = levels[user.level - 1];
+    const currLevel = levels[user.level-1];
     zoomToLevel(2.5,currLevel.x,currLevel.y)
   }, []);
 
@@ -445,7 +448,7 @@ const QueryPage = () => {
                   <h3 className="font-medium text-white">{query.title}</h3>
                   <span
                     className={`px-2 py-0.5 rounded-full text-xs flex-shrink-0 ml-2 ${
-                      query.markDone ?"bg-green-500/20 text-green-500 text-white font-bold" :
+                      query.markDone ?"bg-green-500/20  text-white font-bold" :
                       query.difficulty === "hard"
                         ? "bg-red-500/20 text-red-500"
                         : query.difficulty === "easy"

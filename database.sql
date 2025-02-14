@@ -58,6 +58,7 @@ ALTER TABLE solutions ADD COLUMN submitted_at DATETIME default current_timestamp
 
 
 
+update queries set level = 2 where queryId = 4612;
 
 
 -------------final queries ---------
@@ -99,11 +100,11 @@ VALUES ('Narrow down the Gym Check-ins',
 
 insert into queries (title, description, level, difficulty,pdfURL) 
 VALUES ('SQL Symphony Concert',
-'Did the suspects attend a concert in December 2017?Find attendees of the event “SQL Symphony Concert” three times in December 2017.'
+'Did the suspects attend a concert in December 2017?Find attendees of the event ï¿½SQL Symphony Concertï¿½ three times in December 2017.'
 ,3,'medium','/queries/Question2 - Level3.pdf');
 
 insert into queries (title, description, level, difficulty,pdfURL) 
-VALUES ('Car Clue','A witness spotted a male fleeing the scene in a car with plate containing “H42W.”.Find drivers with number plates containing “H42W.”'
+VALUES ('Car Clue','A witness spotted a male fleeing the scene in a car with plate containing ï¿½H42W.ï¿½.Find drivers with number plates containing ï¿½H42W.ï¿½'
 ,3,'hard','/queries/Question3 - Level3.pdf');
 
 insert into queries (title, description, level, difficulty,pdfURL) 
@@ -115,13 +116,13 @@ Task:Find which gym member owns the car.
 
 insert into queries (title, description, level, difficulty,pdfURL) 
 VALUES ('Confession ','
-Jeremy Bowers’ interview reveals a twist.  
-Task: Retrieve Jeremy’s full transcript.'
+Jeremy Bowersï¿½ interview reveals a twist.  
+Task: Retrieve Jeremyï¿½s full transcript.'
 ,4,'medium','/queries/Question2 - Level4.pdf');
 
 insert into queries (title, description, level, difficulty,pdfURL) 
 VALUES ('Identify Potential Masterminds','
- Use Jeremy’s clues to find the potential mastermind.  
+ Use Jeremyï¿½s clues to find the potential mastermind.  
 Task: Identify women with red hair and a Tesla'
 ,4,'hard','/queries/Question3 - Level4.pdf');
 
@@ -135,7 +136,7 @@ Task: Identify women with red hair, a Tesla and love for concerts'
 insert into queries (title, description, level, difficulty,pdfURL) 
 VALUES ('Miranda loves Symphony concerts only?
 ','Did she only ever attend Symphony concerts?  
-Task: Prove Jeremy’s statement right
+Task: Prove Jeremyï¿½s statement right
 Clue : She never checked in to any other concerts(empty result)'
 ,5,'medium','/queries/Question2 - Level5.pdf');
 

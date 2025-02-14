@@ -9,17 +9,17 @@ const answers = {
     ],
     [ 'Report Not Found' ],
     [
-      'Security footage shows that there were 2 witnesses. The first witness lives at the last house on Northwestern Dr. The second witness, named Annabel, lives somewhere on Franklin Ave.'
+      'Security footage shows that there were 2 witnesses. The first witness lives at the last house on "Northwestern Dr". The second witness, named Annabel, lives somewhere on "Franklin Ave".'
     ]
   ],
- 4610: [['Security footage shows that there were 2 witnesses. The first witness lives at the last house on Northwestern Dr. The second witness, named Annabel, lives somewhere on Franklin Ave.']],
+ 4610: [[
+  'Security footage shows that there were 2 witnesses. The first witness lives at the last house on "Northwestern Dr". The second witness, named Annabel, lives somewhere on "Franklin Ave".'
+]],
  4611 :[ [ 'Morty Schapiro', '4919' ] ] ,
  4612 : [['Annabel Miller','16371']],
  4613 :[
-  [
-    ['Morty Schapiro','I heard a gunshot and then saw a man run out. He had a "Get Fit Now Gym" bag. The membership number on the bag started with "48Z". Only gold members have those bags. The man got into a car with a plate that included "H42W".'],
-    ['Annabel Miller','I saw the murder happen, and I recognized the killer from my gym when I was working out last week on January the 9th.']
-  ]
+    ['Annabel Miller','I saw the murder happen, and I recognized the killer from my gym when I was working out last week on January the 9th.'],
+    ['Morty Schapiro','I heard a gunshot and then saw a man run out. He had a "Get Fit Now Gym" bag. The membership number on the bag started with "48Z". Only gold members have those bags. The man got into a car with a plate that included "H42W".']
  ],
  4614:[
   [ 'X0643', 'Shondra Ledlow', 'silver' ],
@@ -55,113 +55,21 @@ const answers = {
 
 // These are the hard coded tabular results of the stdout stream of oneCompiler
 const tabularAnswers = {
-  4609: `"+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| description                                                                                                                                                                           |
-+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Hamilton: Lee, do you yield? Burr: You shot him in the side! Yes he yields!                                                                                                           |
-| Report Not Found                                                                                                                                                                      |
-| Security footage shows that there were 2 witnesses. The first witness lives at the last house on Northwestern Dr. The second witness, named Annabel, lives somewhere on Franklin Ave. |
-+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-"`,
-  4610 : `
-  "+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| description                                                                                                                                                                           |
-+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Security footage shows that there were 2 witnesses. The first witness lives at the last house on Northwestern Dr. The second witness, named Annabel, lives somewhere on Franklin Ave. |
-+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-"`,
-  4611 : `"+----------------+----------------+
-| name           | address_number |
-+----------------+----------------+
-| Morty Schapiro |           4919 |
-+----------------+----------------+
-"`,
-  4612 :`"+----------------+-------+
-| name           | id    |
-+----------------+-------+
-| Annabel Miller | 16371 |
-+----------------+-------+"`,
+  4609: `+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+\n| description                                                                                                                                                                           |\n+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+\n| Hamilton: Lee, do you yield? Burr: You shot him in the side! Yes he yields!                                                                                                               |\n| Report Not Found                                                                                                                                                                          |\n| Security footage shows that there were 2 witnesses. The first witness lives at the last house on \"Northwestern Dr\". The second witness, named Annabel, lives somewhere on \"Franklin Ave\". |\n+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+\n`,
+  4610 : `+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+\n| description                                                                                                                                                                               |\n+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+\n| Security footage shows that there were 2 witnesses. The first witness lives at the last house on \"Northwestern Dr\". The second witness, named Annabel, lives somewhere on \"Franklin Ave\". |\n+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+\n`,
+  4611 : `+----------------+----------------+\n| name           | address_number |\n+----------------+----------------+\n| Morty Schapiro |           4919 |\n+----------------+----------------+\n`,
+  4612 :`+----------------+-------+\n| name           | id    |\n+----------------+-------+\n| Annabel Miller | 16371 |\n+----------------+-------+\n`,
 
-  4613: `"+----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| name           | transcript                                                                                                                                                                                                                      |
-+----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Morty Schapiro | I heard a gunshot and then saw a man run out. He had a "Get Fit Now Gym" bag. The membership number on the bag started with "48Z". Only gold members have those bags. The man got into a car with a plate that included "H42W". |
-| Annabel Miller | I saw the murder happen, and I recognized the killer from my gym when I was working out last week on January the 9th.                                                                                                           |
-+----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-"`,
-4614:`"+-------+-------------------+-------------------+
-| id    | name              | membership_status |
-+-------+-------------------+-------------------+
-| X0643 | Shondra Ledlow    | silver            |
-| UK1F2 | Zackary Cabotage  | silver            |
-| XTE42 | Sarita Bartosh    | gold              |
-| 1AE2H | Adriane Pelligra  | silver            |
-| 6LSTG | Burton Grippe     | gold              |
-| 7MWHJ | Blossom Crescenzo | regular           |
-| GE5Q8 | Carmen Dimick     | gold              |
-| 48Z55 | Jeremy Bowers     | gold              |
-| 90081 | Annabel Miller    | gold              |
-+-------+-------------------+-------------------+
-"`,
-4615:`"+-------+----------------+-------------------+
-| id    | name           | membership_status |
-+-------+----------------+-------------------+
-| 48Z55 | Jeremy Bowers  | gold              |
-| 6LSTG | Burton Grippe  | gold              |
-| 90081 | Annabel Miller | gold              |
-| GE5Q8 | Carmen Dimick  | gold              |
-| XTE42 | Sarita Bartosh | gold              |
-+-------+----------------+-------------------+
-"`,
-4616:`"+-----------+--------+
-| person_id | visits |
-+-----------+--------+
-|     24556 |      3 |
-|     99716 |      3 |
-+-----------+--------+
-"`,
-4617:`"+--------+--------+--------+
-| id     | gender | height |
-+--------+--------+--------+
-| 423327 | male   |     70 |
-+--------+--------+--------+
-"`,
-4618: `
-"+---------------+-------+
-| name          | id    |
-+---------------+-------+
-| Jeremy Bowers | 48Z55 |
-+---------------+-------+
-"
-`,
-4619: `
-"+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| transcript                                                                                                                                                                                                                                                             |
-+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| I was hired by a woman with a lot of money. I am not sure what her name is but I know she is around 5ft 5inch (65 cm) or 5ft 7inch (67cm). She has red hair and she drives a Tesla Model S.I know that she attended the SQL Symphony Concert 3 times in December 2017. |
-+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-"
-`,
-4620:`"+------------------+--------+-----------+
-| name             | height | car_model |
-+------------------+--------+-----------+
-| Miranda Priestly |     66 | Model S   |
-+------------------+--------+-----------+
-"`,
-4621: `"+------------------+--------+-----------+
-| name             | height | car_model |
-+------------------+--------+-----------+
-| Miranda Priestly |     66 | Model S   |
-+------------------+--------+-----------+
-"`,
-4622 : `"+-----------+----------------------+
-| person_id | event_name           |
-+-----------+----------------------+
-|     99716 | SQL Symphony Concert |
-|     99716 | SQL Symphony Concert |
-|     99716 | SQL Symphony Concert |
-+-----------+----------------------+
-"`,
+  4613: `+----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+\n| name           | transcript                                                                                                                                                                                                                      |\n+----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+\n| Annabel Miller | I saw the murder happen, and I recognized the killer from my gym when I was working out last week on January the 9th.                                                                                                           |\n| Morty Schapiro | I heard a gunshot and then saw a man run out. He had a \"Get Fit Now Gym\" bag. The membership number on the bag started with \"48Z\". Only gold members have those bags. The man got into a car with a plate that included \"H42W\". |\n+----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+\n`,
+4614:`+-------+-------------------+-------------------+\n| id    | name              | membership_status |\n+-------+-------------------+-------------------+\n| X0643 | Shondra Ledlow    | silver            |\n| UK1F2 | Zackary Cabotage  | silver            |\n| XTE42 | Sarita Bartosh    | gold              |\n| 1AE2H | Adriane Pelligra  | silver            |\n| 6LSTG | Burton Grippe     | gold              |\n| 7MWHJ | Blossom Crescenzo | regular           |\n| GE5Q8 | Carmen Dimick     | gold              |\n| 48Z55 | Jeremy Bowers     | gold              |\n| 90081 | Annabel Miller    | gold              |\n+-------+-------------------+-------------------+\n`,
+4615:`+-------+----------------+-------------------+\n| id    | name           | membership_status |\n+-------+----------------+-------------------+\n| 48Z55 | Jeremy Bowers  | gold              |\n| 6LSTG | Burton Grippe  | gold              |\n| 90081 | Annabel Miller | gold              |\n| GE5Q8 | Carmen Dimick  | gold              |\n| XTE42 | Sarita Bartosh | gold              |\n+-------+----------------+-------------------+\n`,
+4616:`+-----------+--------+\n| person_id | visits |\n+-----------+--------+\n|     24556 |      3 |\n|     99716 |      3 |\n+-----------+--------+\n`,
+4617:`+--------+--------+--------+\n| id     | gender | height |\n+--------+--------+--------+\n| 423327 | male   |     70 |\n+--------+--------+--------+\n`,
+4618: `+---------------+-------+\n| name          | id    |\n+---------------+-------+\n| Jeremy Bowers | 48Z55 |\n+---------------+-------+\n`,
+4619: `+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+\n| transcript                                                                                                                                                                                                                                                             |\n+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+\n| I was hired by a woman with a lot of money. I am not sure what her name is but I know she is around 5ft 5inch (65 cm) or 5ft 7inch (67cm). She has red hair and she drives a Tesla Model S.I know that she attended the SQL Symphony Concert 3 times in December 2017. |\n+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+\n`,
+4620:`+------------------+--------+-----------+\n| name             | height | car_model |\n+------------------+--------+-----------+\n| Miranda Priestly |     66 | Model S   |\n+------------------+--------+-----------+\n`,
+4621: `+------------------+--------+-----------+\n| name             | height | car_model |\n+------------------+--------+-----------+\n| Miranda Priestly |     66 | Model S   |\n+------------------+--------+-----------+\n`,
+4622 : `+-----------+----------------------+\n| person_id | event_name           |\n+-----------+----------------------+\n|     99716 | SQL Symphony Concert |\n|     99716 | SQL Symphony Concert |\n|     99716 | SQL Symphony Concert |\n+-----------+----------------------+\n`,
 4623 : []
 };
 
@@ -243,7 +151,7 @@ function deepEqual(queryId, b) {
 }
 
 function statusSender(email, id, team_id, query, answer) {
-  const delayTime = 3000;
+  const delayTime = 1000;
   setTimeout(() => {
     sendStatus(email, "submitted");
     const q1 = "update solutions set status = 'pending' where id = ?";
@@ -288,7 +196,6 @@ function statusSender(email, id, team_id, query, answer) {
 
 module.exports.submitQuery = (req, res) => {
   const { email, team_id, query, answer } = req.body;
-  console.log(answer,'in queryy')
   const q = "Insert into solutions (team_id,queryId) values (?,?)";
   try {
     db.query(q, [team_id, query.queryId], (err, result) => {
