@@ -58,6 +58,9 @@ const QueryPage = () => {
   };
   
   function parseTableString(tableString) {
+    if(tableString === null) {
+      return;
+    }
     // Split into lines and filter out empty lines
     const lines = tableString
       .split('\n')
@@ -145,14 +148,19 @@ const QueryPage = () => {
       setError('Query Already solved')
       return;
     }
+
     let db = ''
-    if(user.level <= 5){
+    if(user.level >= 4){
       if(selectedDialect === 'mysql') db = import.meta.env.VITE_MURDER_DB_MYSQL
       else if(selectedDialect === 'oracle') db = import.meta.env.VITE_MURDER_DB_ORACLE
       else if(selectedDialect === 'postgresql') db = import.meta.env.VITE_MURDER_DB_POSTGRE
       else throw new Error('Invalid dialect found!')
     }
-    console.log('trying to submitt ',db + userAnswer); 
+    else{
+      if(selectedDialect === 'mysql') db = import.meta.env.VITE_ECOMMERCE_DB_MYSQL
+
+    }
+    // console.log('trying to submitt ',db + userAnswer); 
     const options = {
       method: "POST",
       url: "https://onecompiler-apis.p.rapidapi.com/api/v1/run",
@@ -183,6 +191,10 @@ const QueryPage = () => {
       }
       else console.log(testRes.data);
       
+      if(testRes.data.stdout === null){
+        setError('empty result');
+        return;
+      }
       setResult(parseTableString(testRes.data.stdout))
       if(type === 'test') return;
       const response = await axios.post(
@@ -306,7 +318,7 @@ const QueryPage = () => {
                 <p className="text-gray-400 mt-1">Level {user.level} Queries</p>
               </div>
               <span className="px-4 py-2 rounded-full text-sm font-medium bg-red-500/10 text-red-500">
-                {queries.length} Queries Available
+                {Array.isArray(queries) && queries.length} Queries Available
               </span>
             </div>
 
@@ -366,7 +378,6 @@ const QueryPage = () => {
                     onChange={(e) => {
                       setUserAnswer(e.target.value)
                       setError("")
-                      setResult("")
                     }}
                     className="bg-white w-full p-4 rounded-lg text-black text-base whitespace-pre-wrap break-words font-mono h-[180px]"
                   />
@@ -403,6 +414,9 @@ const QueryPage = () => {
        
         {result && result.length > 0 ? (
         <div className="mt-4 overflow-x-auto">
+          <p className="text-center text-white text-xl font-bold mb-2">Your output</p>
+          {result.length > 10 && <p className="text-center text-white text-md mb-2">In case of huge results,only the first 10 rows are displayed</p>}
+
           <table className="min-w-full border border-gray-700">
             <thead>
               <tr className="bg-red-600 text-white">
@@ -411,8 +425,9 @@ const QueryPage = () => {
                 ))}
               </tr>
             </thead>
-            <tbody>
-              {result.map((row, index) => (
+            <tbody> 
+              {/* .slice(0, 10) */}
+              {result.slice(0, 10).map((row, index) => (
                 <tr key={index} className="border border-gray-700 odd:bg-gray-900 even:bg-gray-800 text-white">
                   {Object.values(row).map((value, idx) => (
                     <td key={idx} className="border border-gray-700 px-4 py-2">{value || "—"}</td>
@@ -429,7 +444,7 @@ const QueryPage = () => {
             Available Queries
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {queries.map((query) => (
+            {Array.isArray(queries) && queries.map((query) => (
               <button
                 key={query.id}
                 onClick={() =>{ 

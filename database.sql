@@ -80,7 +80,7 @@ VALUES ('Witness 1: Last House on Northwestern Dr',
 insert into queries (title, description, level, difficulty,pdfURL) 
 VALUES ('Witness 2: Annabel on Franklin Ave',
 'Find "Annabel" on Franklin Ave'
-,1,'easy','/queries/Question1 - Level2.pdf');
+,2,'easy','/queries/Question1 - Level2.pdf');
 
 insert into queries (title, description, level, difficulty,pdfURL) 
 VALUES ('Witnesses Interview',
@@ -150,3 +150,4 @@ Hint : how would you close a case in this scenario?'
 
 
 select * from queries;
+update queries set level = 2 where queryId = 4612;

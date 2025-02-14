@@ -165,7 +165,11 @@ const LeaderBoard = () => {
                     <tr
                       key={(index+1)}
                       className={`hover:bg-gray-800/50 transition-colors ${
-                        isUserTeam ? "bg-red-600" : ""
+                        isUserTeam ? "bg-red-600" 
+                        :index === 0 ? "bg-red-500" 
+                        : index === 1 ?"bg-red-400" 
+                        :index ===2 ? "bg-red-300" 
+                        : ""
                       }`} // Apply highlight color if team matches user's team_id
                     >
                       <td className="px-6 py-4">
@@ -191,13 +195,13 @@ const LeaderBoard = () => {
                         <span className="text-white font-medium">{team.currentLevel}</span>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <span className="text-red-400 font-medium">{team.queriesSolved.Hard}</span>
+                        <span className="text-red-400 font-medium">{team.queriesSolved.hard}</span>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <span className="text-yellow-400 font-medium">{team.queriesSolved.Medium}</span>
+                        <span className="text-yellow-400 font-medium">{team.queriesSolved.medium}</span>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <span className="text-green-400 font-medium">{team.queriesSolved.Easy}</span>
+                        <span className="text-green-400 font-medium">{team.queriesSolved.easy}</span>
                       </td>
                       <td className="px-6 py-4 text-center">
                         <span className="text-white font-medium">{team.submissions}</span>

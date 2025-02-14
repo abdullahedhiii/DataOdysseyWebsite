@@ -24,7 +24,6 @@ const SubmissionWindow = ({ query,dialect, toggleWindow }) => {
           <h2 className="text-xl font-bold text-white mb-2">Submission Details</h2>
           <button onClick={toggleWindow} className='mb-2 hover:text-red-500'>✖</button>
         </div>
-        <p className="text-sm text-gray-400">Status: Pending Evaluation</p>
       </div>
 
       <div className="p-6 space-y-6">
