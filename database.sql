@@ -10,6 +10,7 @@ CREATE TABLE Competition (
  );
  INSERT INTO Competition VALUES ();
  select * from Competition;
+update Competition set competitionName = 'Data Odyssey' where competition_id = 88829;
 
 CREATE TABLE participants (
  teamName VARCHAR(30), 
@@ -210,7 +211,8 @@ select * from queries;
 
 select * from participants;
 delete  from solutions where id = 4441; 
-update participants set level = 4 where team_id = 10010;
+update participants set level = 2 where team_id = 10010;
 
 drop table solutions;
 drop table queries;
+select * from solutions;
