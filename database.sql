@@ -206,9 +206,9 @@ Hint : how would you close a case in this scenario?'
 
 select * from queries;
 
-select * from solutions;
+select * from participants;
 delete  from solutions where id = 4441; 
-update participants set level = 1 where team_id = 10010;
+update participants set level = 4 where team_id = 10010;
 
 drop table solutions;
 drop table queries;
