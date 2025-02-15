@@ -4,47 +4,47 @@ import { useUserContext } from "../Contexts/userContext";
 import axios from "axios";
 
 const LeaderBoard = () => {
-  const {user} = useUserContext();
-   const [competitionDetails, setCompetitionDetails] = useState({
-          competitionName: "Data Odyssey",
-          competitionDate: "2025-02-19T09:00:00",
-          startTime: "09:00",
-          endTime: "12:00"
-      });
+  const { user } = useUserContext();
+  const [competitionDetails, setCompetitionDetails] = useState({
+    competitionName: "Data Odyssey",
+    competitionDate: "2025-02-19T09:00:00",
+    startTime: "09:00",
+    endTime: "12:00",
+  });
 
+  const [timeRemaining, setTimeRemaining] = useState(0);
+  const [leaderboardData, setLeaderBoardData] = useState([]);
   useEffect(() => {
     const fetchTimings = async () => {
-       try{
-          const response = await axios.get(`/api/getCompetitionTimings`);
-          const data = response.data;
-          const formattedDate = `${data.competitionDate.split('T')[0]}T${data.startTime}`;
-
-          setCompetitionDetails({
-              ...data,
-              competitionDate: formattedDate
-          });
-       }   
-       catch(err){
-
-       }
-    }
-    fetchTimings()
-},[]);
-
-
-  const [timeRemaining, setTimeRemaining] = useState(2 * 60 * 60 + 45 * 60 + 30); 
-  const [leaderboardData,setLeaderBoardData] = useState([]);
+      try {
+        const response = await axios.get(`/api/getCompetitionTimings`);
+        const data = response.data;
+        
+        const competitionDate = data.competitionDate.split('T')[0];
   
-  const fetchStats = () => {    
-    axios
-    .get('/api/leaderboardData',{withCredentials:true})
-    .then(res=>{
-      setLeaderBoardData(res.data.teamData);
-    })
-    .catch(err=>{
-      console.error(err.message);
-    })
-   }
+        const start = new Date(`${competitionDate}T${data.startTime}`).getTime();
+        const end = new Date(`${competitionDate}T${data.endTime}`).getTime();
+  
+        console.log("Start Time:", new Date(start));
+        console.log("End Time:", new Date(end));
+  
+        const remainingSeconds = Math.max((end - start) / 1000, 0);
+  
+        setCompetitionDetails({
+          ...data,
+          competitionDate: `${competitionDate}T${data.startTime}`,
+        });
+  
+        setTimeRemaining(remainingSeconds);
+      } catch (err) {
+        console.error("Error fetching competition timings", err);
+      }
+    };
+  
+    fetchTimings();
+  }, []);
+  
+  
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -53,17 +53,27 @@ const LeaderBoard = () => {
 
     fetchStats();
 
-    return () => clearInterval(timer); 
+    return () => clearInterval(timer);
   }, []);
+
+  const fetchStats = () => {    
+    axios
+      .get('/api/leaderboardData', { withCredentials: true })
+      .then(res => {
+        setLeaderBoardData(res.data.teamData);
+      })
+      .catch(err => {
+        console.error(err.message);
+      });
+  };
 
   const formatTime = (seconds) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
-    return `${hours.toString().padStart(2, "0")}:${minutes
-      .toString()
-      .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
+
    
   return (
     <div className="min-h-screen bg-black px-4 py-8">
@@ -124,15 +134,13 @@ const LeaderBoard = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-800">
-                {leaderboardData.length && leaderboardData.map((team,index) => {                  
+                {leaderboardData.length > 0 && leaderboardData.map((team,index) => {                  
                   const isUserTeam = team.team_id === user?.team_id;
                   return (
                     <tr
                       key={(index+1)}
                       className={`hover:bg-gray-800/50 transition-colors ${
-                        isUserTeam ? "bg-red-600" 
-                  
-                        : ""
+                        isUserTeam ? "bg-red-600" : ""
                       }`} // Apply highlight color if team matches user's team_id
                     >
                       <td className="px-6 py-4">

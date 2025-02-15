@@ -29,7 +29,6 @@ export const UserProvider = ({ children }) => {
       
       setUser({teamName: '',email: '',member_count:1,level:1,loggedIn:false});
 
-      alert('Successfully logged out');
     } catch (err) {
       alert('Error logging out: ' + err.message);
     }
@@ -43,7 +42,6 @@ export const UserProvider = ({ children }) => {
           ...response.data,
           loggedIn:true
       }));
-      alert('Successfully logged in, welcome ' + response.data.teamName);
     }
     catch(err){
         alert(err.message)

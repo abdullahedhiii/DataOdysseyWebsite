@@ -4,7 +4,7 @@ import { FiCalendar, FiClock, FiEdit3 } from 'react-icons/fi';
 
 const Management = () => {
     const [competitionName, setCompetitionName] = useState('Data Odyssey');
-    const [competitionDate, setCompetitionDate] = useState('2025-02-18');
+    const [competitionDate, setCompetitionDate] = useState('2025-02-19');
     const [startTime, setStartTime] = useState('09:00');
     const [endTime, setEndTime] = useState('12:00');
     const [secretKey, setKey] = useState('');
@@ -14,8 +14,10 @@ const Management = () => {
         const fetchTimings = async () => {
            try{
               const response = await axios.get(`/api/getCompetitionTimings`);
+           //   console.log('request response' ,response.data);
+
               setCompetitionName(response.data.competitionName);
-              setCompetitionDate(response.data.competitionDate.split('T')[0]);
+              setCompetitionDate(response.data.competitionDate);
               setStartTime(response.data.startTime);
               setEndTime(response.data.endTime);
            }   
@@ -59,6 +61,7 @@ const Management = () => {
                             value={secretKey}
                             onChange={(e) =>{ setKey(e.target.value) ;setError('')}}
                             className="w-full p-2 bg-gray-800 text-white rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                        
                         />
                     </div>
                     <div>
@@ -67,7 +70,8 @@ const Management = () => {
                             type="text"
                             value={competitionName}
                             onChange={(e) => {setCompetitionName(e.target.value)  ;setError('')}}
-                            className="w-full p-2 bg-gray-800 text-white rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                            className="w-full p-2 bg-gray-600 text-white rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                            readOnly
                         />
                     </div>
                     <div>
@@ -78,7 +82,8 @@ const Management = () => {
                                 type="date"
                                 value={competitionDate}
                                 onChange={(e) => {setCompetitionDate(e.target.value)  ;setError('')}}
-                                className="w-full p-2 bg-gray-800 text-white rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                                className="w-full p-2 bg-gray-600 text-white rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                                readOnly
                             />
                         </div>
                     </div>

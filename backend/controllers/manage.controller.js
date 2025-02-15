@@ -2,8 +2,9 @@ const { db } = require("../db");
 const socket = require("../socket");
 require('dotenv').config();
 
+
 module.exports.updateTimings = (req, res) => {
-    console.log(req.body);
+    console.log('update hit ' ,req.body);
     const { competitionName, competitionDate, startTime, endTime,secretKey } = req.body;
     const io = socket.getIO();
     if(secretKey !== process.env.secret_key_manage) {
@@ -12,7 +13,7 @@ module.exports.updateTimings = (req, res) => {
     const q = `
         UPDATE Competition 
         SET competitionName = ?, competitionDate = ?, startTime = ?, endTime = ?
-        WHERE competition_id = 88829;
+        WHERE competition_id = 1;
     `;
     
     db.query(q, [competitionName, competitionDate, startTime, endTime], (error, result) => {
@@ -34,9 +35,8 @@ module.exports.updateTimings = (req, res) => {
 
 
 module.exports.getCompetitionTimings = (req, res) => {
-console.log('get timings hitt');
     const q = `SELECT competitionName,competitionDate,
-    startTime,endTime FROM competition WHERE competition_id = 88829;`;
+    startTime,endTime FROM competition WHERE competition_id = 1;`;
 
     db.query(q, (err, result) => {
         if (err) {
@@ -49,10 +49,9 @@ console.log('get timings hitt');
         }
 
         const competitionData = result[0];
-        console.log(competitionData);
         res.status(200).json({
             competitionName: competitionData.competitionName,
-            competitionDate: competitionData.competitionDate, 
+            competitionDate: competitionData.competitionDate.toISOString().split("T")[0],
             startTime: competitionData.startTime, 
             endTime: competitionData.endTime
         });

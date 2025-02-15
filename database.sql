@@ -2,15 +2,14 @@ create database data_dungeon;
 use data_dungeon;
 
 CREATE TABLE Competition (
-    competition_id INT default 88829,
-    competitionName VARCHAR(100) default 'Data Odyssey',
-    competitionDate DATE,
-    startTime TIME,
-    endTime TIME
- );
- INSERT INTO Competition VALUES ();
- select * from Competition;
-update Competition set competitionName = 'Data Odyssey' where competition_id = 88829;
+    competition_id INT PRIMARY KEY AUTO_INCREMENT,
+    competitionName VARCHAR(100) NOT NULL DEFAULT 'Data Odyssey',
+    competitionDate DATE NOT NULL DEFAULT '2025-02-19',
+    startTime TIME NOT NULL DEFAULT '09:30:00',
+    endTime TIME NOT NULL DEFAULT '12:00:00'
+);
+
+INSERT INTO Competition VALUES ();
 
 CREATE TABLE participants (
  teamName VARCHAR(30), 
@@ -23,7 +22,7 @@ ALTER TABLE participants ADD COLUMN team_id INT AUTO_INCREMENT PRIMARY KEY;
 ALTER TABLE participants auto_increment = 10010;
 alter table  participants add column firstLogin Boolean default TRUE;
 
-select * from participants;
+
 CREATE TABLE queries (
     queryId INTEGER PRIMARY KEY AUTO_INCREMENT,
     description varchar(600) not null,
@@ -46,173 +45,163 @@ ALTER TABLE solutions AUTO_INCREMENT  = 4392;
 ALTER TABLE solutions ADD COLUMN submitted_at DATETIME default current_timestamp;
 
 
---
---insert into queries (title, description, level, difficulty) values ('Find Position Holders','Find the top three scorers of the class',1,'Easy');
---insert into queries (title, description, level, difficulty) values ('Class Callibre','A class can be interpreted on what amount of score almost every student is achieving. Find how much intelligent this class is',1,'Easy');
---insert into queries (title, description, level, difficulty) values ('Failed Students','It was recently announced that students scoring below 50 will be considered as failed. Find the students who got failed',1,'Easy');
---insert into queries (title, description, level, difficulty) values ('Similar Students','Teacher want to group students of same age for an activity. Help teacher to get the result',2,'Medium');
---insert into queries (title, description, level, difficulty) values ('Serial List','To avoid any biasness, teacher decided to make the serial list in chronological order. Give the sorted list of students',2,'Medium');
---insert into queries (title, description, level, difficulty) values ('Insights','Find the average score of students grouped by their age, but only include those ages where the average score is above 80. Sort the result in descending order of the average score.',2,'Medium');
--- 
---update queries set level = 3 where queryId = 4612 or queryId = 4609 or queryId = 4611;
-
-
-
-
-
-
-update queries set level = 2 where queryId = 4612;
-
 
 -------------final queries ---------
+update participants set level=1;
+INSERT INTO queries (title, description, level, difficulty, pdfURL) 
+VALUES ('SQL Investigation Challenge:',
+'A frustrated customer, John Doe, insists he has placed multiple orders—but his account shows nothing.\n\nIs it an error, or is something missing?\n\nYour task: Retrieve all past orders placed by John Doe, including order date and status.\nCan you uncover the lost order history?', 
+1, 'easy', '/queries/Question1 - Level1.pdf');
+
 
 insert into queries (title, description, level, difficulty,pdfURL) 
-VALUES ('Lost Order History',
-'Scenario:
-John Doe, a long-time customer, claims he has placed several orders but can not find any record of them in her account. He is frustrated and wants a list of all orders he has placed in the past, including order date and status, to verify. 
-',1,'easy','/queries/Question1 - Level1.pdf');
-
-insert into queries (title, description, level, difficulty,pdfURL) 
-VALUES ('The Disappearing Products Mystery ',
-'Taha, the owner of ‘Gaming World’, swears that he added new products to his store last week, but when he checks his inventory, some of them are missing. He wants a list of all products he is selling, along with their stock quantity, to double-check. 
+VALUES ('SQL Inventory Mystery ',
+'Taha, the owner of Gaming World, is convinced he added new products last week—but now, some have vanished. Is it a mistake, a glitch, or something more?\n\n
+Your task: Retrieve a list of all products Taha is selling, along with their stock quantity.\n\n Can you solve the case of the disappearing products?
 ',1,'medium','/queries/Question2 - Level1.pdf');
 
 
 insert into queries (title, description, level, difficulty,pdfURL) 
-VALUES (' The Curious Seller Revenue Report ',
-'Scenario: Abdullah,the owner of Zara ,has been running his store for months but has no idea how much revenue he has made. He wants to know the total revenue generated from all the orders he has delivered.
+VALUES ('SQL Revenue Investigation ',
+'
+Abdullah, the owner of Zara, has been running his store for months—but he has no idea how much money he’s made. Could his revenue be hiding in plain sight?
+\n\nYour task: Write a query to calculate the total revenue from all delivered orders. \n\nTime to show Abdullah the true power of his sales!
 ',1,'hard','/queries/Question3 - Level1.pdf');
 
 
 insert into queries (title, description, level, difficulty,pdfURL) 
-VALUES (' The Best-Seller Challenge  ',
-'The marketplace is running a competition to reward the top 5 best-selling products. Your job is to identify these products based on the total quantity sold and provide the product names.
-',2,'easy','/queries/Question1 - Level2.pdf');
+VALUES (' SQL Best-Seller Hunt  ',
+'The marketplace is on a mission—to reward the top 5 best-selling products. But which products truly dominate the charts?\n\n
+Your task: Write a query to find the top 5 products based on total quantity sold. \nCan you uncover the champions of the marketplace?',2,'easy','/queries/Question1 - Level2.pdf');
 
 insert into queries (title, description, level, difficulty,pdfURL) 
-VALUES ('What Did I Order Again? ',
-'James placed an order but forgot what he purchased! He only remembers the order ID: 12 . He needs a detailed breakdown of his order, including product names, quantities, and the total price per product. Write an SQL query to refresh James’s memory.
-',2,'medium','/queries/Question2 - Level2.pdf');
+VALUES ('SQL Order Recall Challenge',
+'James placed an order but completely forgot what he purchased—all he remembers is Order ID: 12.\n\n
+Your task: Write a query to retrieve a detailed breakdown of his order, including product names, quantities, and the total price per product.\n
+Can you help James remember his order before it arrives?',2,'medium','/queries/Question2 - Level2.pdf');
 
 insert into queries (title, description, level, difficulty,pdfURL) 
-VALUES ('  The Vanishing Stock Alert  ',
-'A warehouse manager is in panic mode! Some products are almost sold out, and those products are in high demand. Find all products where the stock quantity has reached the threshold set by the manager i.e less than 15, so the manager can restock them before more complaints arrive.
+VALUES (' SQL Stock Shortage Alert   ',
+'The warehouse manager is in panic mode—high-demand products are running out fast! If they are not restocked soon, customer complaints will flood in.\n\n
+Your task: Write a query to find all products where the stock quantity is less than 15, so the manager can act before it is too late.\n
+Can you prevent a supply crisis?
 ',2,'hard','/queries/Question3 - Level2.pdf');
 
 
 insert into queries (title, description, level, difficulty,pdfURL) 
-VALUES ('  The Marketplace’s Biggest Spender  ',
-'The platform wants to reward its most valuable customer—the one who has spent the most money on orders. Your job is to find out who this customer is and how much they have spent in total. 
-',3,'easy','/queries/Question1 - Level3.pdf');
+VALUES ('  SQL High Roller Hunt   ',
+'The marketplace is rolling out a VIP reward for its biggest spender—the customer who has spent the most money on orders. But who is it?\n\n
+Your task: Write a query to find the top spender and the total amount they have spent.',3,'easy','/queries/Question1 - Level3.pdf');
 
 insert into queries (title, description, level, difficulty,pdfURL) 
-VALUES ('   The Ghost Products  ',
-'Some products have been listed forever, but strangely, no one has ever ordered them! The marketing team wants to run a promotion on these “ghost products.” 
+VALUES ('  SQL Ghost Hunt ',
+'Some products have been sitting on the marketplace forever, yet no one has ever ordered them.\n\n Are they cursed? Forgotten? Or just waiting for their time to shine?
+\nYour task: Write a query to find all “ghost products”—products that have never been ordered.
+\nTime to bring these forgotten items back to life!
 ',3,'medium','/queries/Question2 - Level3.pdf');
 
 insert into queries (title, description, level, difficulty,pdfURL) 
-VALUES ('  The Wrong Price Scandal!   ',
-'Customers are reporting that their order totals don’t add up correctly. Upon investigation, you realize that the total_amount in the order table has been incorrectly inserted. Use the ordered_items table to recalculate and display the correct order totals (no need to update).
-',3,'hard','/queries/Question3 - Level3.pdf');
+VALUES (' SQL Pricing Scandal   ',
+'Customers are furious—their order totals don’t add up! Upon investigation, something seems off in the order records.\n\n Could it be a mistake, or is someone like Talha behind this? ?
+\nYo
+-ur task: Recalculate the correct order totals using the ordered_items table and display them (without updating).
+\nCan you uncover the truth before customers lose trust?',3,'hard','/queries/Question3 - Level3.pdf');
 
 
 ---2nd database
 
 
 insert into queries (title, description, level, difficulty,pdfURL) 
-VALUES ('Crime Scene Reports','Scenario: Start with the basics. What happened in the city on January 15, 2018?
-(date format : yyyymmdd)',4,'easy','/queries/Question1 - Level4.pdf');
+VALUES ('SQL Investigation Challenge:',
+'Rumors are swirling in SQL City—multiple incidents, conflicting stories. What really went down on January 15, 2018?\n\n
+Your task: Write a query to uncover the truth hidden in the crime scene reports.\n The facts are in the data—if you know where to look.
+',4,'easy','/queries/Question1 - Level4.pdf');
 
 insert into queries (title, description, level, difficulty,pdfURL) 
-VALUES ('Crime Scene Reports (only murders in the city)',
-'What are we looking for ? Murders? Find the murder(s) that took place in 
-the city on January 15, 2018. (date format : yyyymmdd)'
+VALUES ('SQL Crime Challenge',
+'A deadly murder shook SQL City on January 15, 2018. Who was the victim? What really happened at the scene?\n\n
+Your task: Write a query to sift through crime scene reports—but only focus on murders.\n The truth is buried in the data. Can you find it?'
 ,4,'medium','/queries/Question2 - Level4.pdf');
 
 insert into queries (title, description, level, difficulty,pdfURL) 
 VALUES ('Witness 1: Last House on Northwestern Dr',
-'Track down the first witness.'
+'A crucial witness lives at the last house on Northwestern Dr—but what does last really mean?\n\n
+Your task: Write a query to track them down. Are house addresses ordered numerically? Alphabetically? Something else?\n The answer is in the data. 
+'
 ,4,'hard','/queries/Question3 - Level4.pdf');
 
 insert into queries (title, description, level, difficulty,pdfURL) 
 VALUES ('Witness 2: Annabel on Franklin Ave',
-'Find "Annabel" on Franklin Ave'
-,5,'easy','/queries/Question1 - Level5.pdf');
+'A second witness has been identified—Annabel on Franklin Ave. But who is she really?\n\n
+Your task: Write a query to track her down.\n You might want to cast a wide net—sometimes the smallest details hide in plain sight.
+',5,'easy','/queries/Question1 - Level5.pdf');
 
 insert into queries (title, description, level, difficulty,pdfURL) 
-VALUES ('Witnesses Interview',
-'Extract interview transcripts mentioning the "gym."'
-,5,'medium','/queries/Question2 - Level5.pdf');
+VALUES ('SQL Investigation Challenge',
+'The witnesses have spoken, and their words hold the truth. Somewhere in their transcripts, the gym is mentioned—but why?\n\n
+Your task: Write a query to pull all witness interviews that contain the word "gym."\n The key testimony is waiting to be uncovered.',5,'medium','/queries/Question2 - Level5.pdf');
 
 insert into queries (title, description, level, difficulty,pdfURL) 
-VALUES ('Gym Check-ins',
-'Find gym members who checked in on January the 9th.'
-,5,'hard','/queries/Question3 - Level5.pdf');
+VALUES ('SQL Surveillance Challenge',
+'The gym—an ordinary place, or the scene of something more? January 9 holds a clue, but who was there to see it?\n\n
+Your task: Write a query to find all gym members who checked in on January 9.\n Their presence might not be a coincidence.',5,'hard','/queries/Question3 - Level5.pdf');
 
 
 insert into queries (title, description, level, difficulty,pdfURL) 
-VALUES ('Narrow down the Gym Check-ins',
-'Find gym members who checked in on January the 9th, but filter them based on the second witness.'
-,6,'easy','/queries/Question1 - Level6.pdf');
+VALUES ('SQL Suspect Hunt',
+'A key witness recalls a runner at the gym on January 9—but it wasn’t just any runner. They carried a bag exclusive to Gold members.\n\n
+Your task: Find gym members with Gold membership who checked in on January 9.\n One of them might be the person we are looking for.',6,'easy','/queries/Question1 - Level6.pdf');
 
 insert into queries (title, description, level, difficulty,pdfURL) 
-VALUES ('SQL Symphony Concert',
-'Did the suspects attend a concert in December 2017?Find attendees of the event ï¿½SQL Symphony Concertï¿½ three times in December 2017.'
-,6,'medium','/queries/Question2 - Level6.pdf');
+VALUES ('SQL Alibi Investigation:',
+'A suspect claims an alibi—but does it hold up?\n A witness mentioned a love for concerts, and the SQL Symphony Concert took place multiple times in December 2017.\n\n
+Your task: Find individuals who attended this event at least three times in December 2017. \nWas the suspect enjoying the music, or do they have something to hide?',6,'medium','/queries/Question2 - Level6.pdf');
 
 insert into queries (title, description, level, difficulty,pdfURL) 
-VALUES ('Car Clue','A witness spotted a male fleeing the scene in a car with plate containing ï¿½H42W.ï¿½.Find drivers with number plates containing ï¿½H42W.ï¿½'
-,6,'hard','/queries/Question3 - Level6.pdf');
+VALUES ('SQL Getaway Car Chase',
+'A male suspect was seen fleeing the scene—but they left behind one crucial detail: a license plate fragment containing "H42W." \n\n
+Your task: Write a query to track down drivers with plates matching this pattern.\n Could this be the break in the case?',6,'hard','/queries/Question3 - Level6.pdf');
 
 insert into queries (title, description, level, difficulty,pdfURL) 
-VALUES ('Person-Car Match','
-Link the driver to gym suspects.  
-Task:Find which gym member owns the car.  
+VALUES ('SQL Final Showdown','
+The gym suspect and the getaway car—are they the same person? The answer lies in what you have already uncovered.\n\n
+Your task: Use your previous query on gym check-ins and match it with car ownership records. \nLog only the name and ID of the suspect.
+\nIs this the moment you unmask the killer?.  
 '
 ,7,'easy','/queries/Question1 - Level7.pdf');
 
 insert into queries (title, description, level, difficulty,pdfURL) 
-VALUES ('Confession ','
-Jeremy Bowersï¿½ interview reveals a twist.  
-Task: Retrieve Jeremyï¿½s full transcript.'
+VALUES ('SQL Final Puzzle ','
+There’s always a mastermind—someone pulling the strings from the shadows. Jeremy Bowers confession reveals a new twist, but his identification holds more than just a name.\n
+Your task: Retrieve Jeremy’s full interview transcript.\n But think—what does identification really mean in this scenario?\n Could it lead to something bigger?'
 ,7,'medium','/queries/Question2 - Level7.pdf');
 
 insert into queries (title, description, level, difficulty,pdfURL) 
-VALUES ('Identify Potential Masterminds','
- Use Jeremyï¿½s clues to find the potential mastermind.  
-Task: Identify women with red hair and a Tesla'
+VALUES ('SQL Mastermind Hunt:','
+Jeremy left behind clues, but what do they really mean? The mastermind might not have acted alone.\n
+Your task: Use the information to identify women who have red hair and own a Tesla.\n Could one of them be pulling the strings? '
 ,7,'hard','/queries/Question3 - Level7.pdf');
 
 
 insert into queries (title, description, level, difficulty,pdfURL) 
-VALUES ('Did we miss one clue?','
-Use all the clues to find the potential mastermind.  
-Task: Identify women with red hair, a Tesla and love for concerts'
+VALUES ('SQL Ultimate Reveal:','
+Did you miss a clue? Or maybe… we wanted you to miss one?  \nEvery detail matters, and the mastermind has been hiding in plain sight all along.\n
+Your task: Use all the clues to identify potential suspects. \nAre you about to crack the case wide open? '
 ,8,'easy','/queries/Question1 - Level8.pdf');
 
 insert into queries (title, description, level, difficulty,pdfURL) 
-VALUES ('Miranda loves Symphony concerts only?
-','Did she only ever attend Symphony concerts?  
-Task: Prove Jeremyï¿½s statement right
-Clue : She never checked in to any other concerts(empty result)'
+VALUES ('SQL Truth Test
+','Jeremy made a bold claim—Miranda loves Symphony Concerts. \nBut is that really all she ever attended? Or is there more to the story?\n
+Your task: Prove Jeremy’s statement by checking Miranda’s event history.\n If she only ever attended Symphony Concerts, what should your query return'
 ,8,'medium','/queries/Question2 - Level8.pdf');
 
 
 insert into queries (title, description, level, difficulty,pdfURL) 
-VALUES ('Seal the case','
-Seal the case.  
-Task: Declare Miranda Priestly as the mastermind.
-Hint : how would you close a case in this scenario?'
+VALUES ('SQL Case Closed','
+It’s time to seal the case. Every clue, every log, every connection led to this moment. The mastermind behind it all? \nMiranda Priestly.
+\nYour task: Officially declare Miranda Priestly as the mastermind and log your final answer.
+\nHow is a murder case closed ? Think about the final step before justice is served.'
 ,8,'hard','/queries/Question3 - Level8.pdf');
 
 
 
-select * from queries;
-
-select * from participants;
-delete  from solutions where id = 4441; 
-update participants set level = 2 where team_id = 10010;
-
-drop table solutions;
-drop table queries;
-select * from solutions;

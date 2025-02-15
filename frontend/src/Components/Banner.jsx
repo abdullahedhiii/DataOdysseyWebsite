@@ -10,20 +10,33 @@ const Banner = () => {
     const [competitionDetails, setCompetitionDetails] = useState({
         competitionName: "ProCom'25 - Data Odyssey",
         competitionDate: "2025-02-19T09:00:00",
-        startTime: "09:00",
-        endTime: "12:00"
+        startTime: "09:00 AM",
+        endTime: "12:00 PM"
     });
     const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
     
+    const formatTime = (timeString) => {
+        const [hours, minutes] = timeString.split(':');
+        const h = parseInt(hours, 10);
+        const suffix = h >= 12 ? 'PM' : 'AM';
+        const formattedHours = h % 12 || 12; // Convert 24-hour to 12-hour format
+        return `${formattedHours}:${minutes} ${suffix}`;
+    };
+
+
     useEffect(() => {
       const fetchTimings = async () => {
          try{
             const response = await axios.get(`/api/getCompetitionTimings`);
             const data = response.data;
+            console.log('bannerr ',response.data);
             const formattedDate = `${data.competitionDate.split('T')[0]}T${data.startTime}`;
-  
+            const formattedStart =formatTime(response.data.startTime);
+            const formattedEnd = formatTime(response.data.endTime);
             setCompetitionDetails({
                 ...data,
+                startTime : formattedStart,
+                endTime : formattedEnd,
                 competitionDate: formattedDate
             });
          }   

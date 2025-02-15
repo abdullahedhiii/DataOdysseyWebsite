@@ -10,6 +10,7 @@ import Footer from './Components/Footer';
 import Banner from './Components/Banner';
 import { useUserContext } from './Contexts/userContext';
 import Management from './Pages/Management';
+import EndPage from './Components/EndPage';
 
 const Layout = () => {
   return (
@@ -49,9 +50,22 @@ const router = createBrowserRouter([
       {
         path : "manageCompetition",
         element : <Management/>
+      },
+      {
+        path : "end-page",
+        element : <EndPage/>
       }
     ],
   },
+  // {
+  //   path : '/',
+  //   children: [
+  //     {
+  //       path : "end-page",
+  //       element : <EndPage/>
+  //     }
+  //   ]
+  // }
 ]);
 const PUBLIC_PAGES = ["/manageCompetition", "/login", "/"]; 
 
