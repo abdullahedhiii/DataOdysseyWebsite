@@ -115,47 +115,30 @@ const QueryPage = () => {
       if (lines.some(line => line.includes('|'))) {
         const headerIndex = lines.findIndex(line => line.includes('|'));
         const headerLine = lines[headerIndex];
-
-        headers = headerLine.split('|').map(cell => cell.trim().toLowerCase());
-
+    
+        headers = headerLine.split('|')
+                  .map(cell => cell.trim().toLowerCase())
+                  .filter(cell => cell.length > 0);
+    
         const dataStartIndex = headerIndex + 2;
-        let currentRow = {};
-        let multilineKeys = ['name', 'description'];
-        let currentMultilineField = null;
-
+        
         for (let i = dataStartIndex; i < lines.length; i++) {
-            let line = lines[i];
-
-            if (/^[-+\s]+$/.test(line)) continue;
-
-            let cells = line.split('|').map(cell => cell.trim()).filter(cell => cell.length > 0);
-
-            if (cells.length === headers.length) {
-                if (Object.keys(currentRow).length > 0) {
-                    result.push(currentRow);
-                }
-
-                // Start new row
-                currentRow = Object.fromEntries(headers.map((h, idx) => [h, cells[idx]]));
-                currentMultilineField = 'name'; // NAME starts immediately after PRODUCT_ID & SELLER_ID
-            } else if (currentRow && currentMultilineField) {
-                // Handle multi-line fields (NAME, DESCRIPTION)
-                currentRow[currentMultilineField] = (currentRow[currentMultilineField] || '') + ' ' + line;
-
-                // If we finished NAME, move to DESCRIPTION
-                if (currentMultilineField === 'name') {
-                    currentMultilineField = 'description';
-                } else {
-                    currentMultilineField = null; // Stop if description is done
-                }
-            }
+          let line = lines[i];
+    
+          // Skip border/separator lines
+          if (/^[-+\s]+$/.test(line)) continue;
+    
+          // Extract row values
+          let cells = line.split('|').map(cell => cell.trim()).filter(cell => cell.length > 0);
+    
+          if (cells.length === headers.length) {
+            result.push(Object.fromEntries(headers.map((h, idx) => [h, cells[idx]])));
+          } else if (result.length > 0) {
+            // Handle multi-line values by appending to last column
+            result[result.length - 1][headers[headers.length - 1]] += ' ' + line.trim();
+          }
         }
-
-        // Push the last row
-        if (Object.keys(currentRow).length > 0) {
-            result.push(currentRow);
-        }
-    }
+      } 
       else {
         const cleanedLines = lines.map(line => line.trim()).filter(line => line.length > 0);
         
