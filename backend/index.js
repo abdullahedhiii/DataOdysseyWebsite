@@ -3,6 +3,7 @@ const cors = require('cors');
 const authentication = require('./middlewares/authenticate');
 const userRoutes = require('./routes/user.routes');
 const competitionRoutes = require('./routes/competition.routes');
+const manageRoutes = require('./routes/manage.routes');
 const cookieParser = require("cookie-parser");
 const http = require('http');
 const socket = require('./socket'); 
@@ -26,6 +27,7 @@ app.use(cors({
 
 app.use('/',userRoutes);
 app.use('/',competitionRoutes);
+app.use('/',manageRoutes);
 
 app.get('/', (req, res) => {
     res.send('Hunt Data with data dungeon!');
@@ -33,7 +35,6 @@ app.get('/', (req, res) => {
 
 
 io.on('connection', (socket) => {
-    console.log(`New client connected: ${socket.id}`);
     
   
     socket.on('updateFileStatus', (email, newStatus) => {
@@ -42,12 +43,10 @@ io.on('connection', (socket) => {
     });
   
     socket.on('disconnect', () => {
-      console.log(`Client disconnected: ${socket.id}`);
     });
 });
   
 server.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
 }).on('error', (err) => {
     if (err.code === 'EADDRINUSE') {
         console.error(`Port ${PORT} is already in use.`);

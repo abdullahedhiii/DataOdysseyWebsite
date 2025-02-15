@@ -24,7 +24,7 @@ const QueryPage = () => {
   const [queries, setQueries] = useState([]);
   const [showSubmissionWindow, setShowSubmissionWindow] = useState(false);
   const [showDemo,setDemo] = useState(true);
-  const [error,setError] = useState("");
+  const [error,setError] = useState(null);
   const [result,setResult] = useState(null);
 
   const levelChanger = ({ email, level }) => {
@@ -62,7 +62,6 @@ const QueryPage = () => {
       return [];
     }
     
-    // Split into nonempty trimmed lines.
     const lines = tableString
       .split('\n')
       .map(line => line.trim())
@@ -72,30 +71,25 @@ const QueryPage = () => {
     let headers = [];
     
     if (selectedDialect === 'postgresql') {
-      // Remove extraneous lines (CREATE, INSERT, row count markers)
       const filteredLines = lines
         .filter(line => !/^(CREATE TABLE|INSERT \d+ \d+)$/.test(line))
         .filter(line => !/^\(\d+ rows?\)$/.test(line));
       if (filteredLines.length < 2) {
         throw new Error('Invalid PostgreSQL table format');
       }
-      // Assume first row (with pipes) is header
       headers = filteredLines[0]
         .split('|')
         .map(cell => cell.trim().toLowerCase());
-      // Data rows start after header and a separator line
       const dataStartIndex = 2;
       for (let i = dataStartIndex; i < filteredLines.length; i++) {
         let cells = filteredLines[i].split('|').map(cell => cell.trim());
         if (cells.length === headers.length) {
           result.push(Object.fromEntries(headers.map((h, idx) => [h, cells[idx]])));
         } else if (result.length > 0) {
-          // Append as a continuation to last column
           result[result.length - 1][headers[headers.length - 1]] += ' ' + filteredLines[i].trim();
         }
       }
     } else if (selectedDialect === 'mysql') {
-      // Look for a header line starting with '|' (ignoring separator lines)
       const headerLine = lines.find(line => line.startsWith('|') && !line.startsWith('+-'));
       if (!headerLine) {
         throw new Error('No header line found');
@@ -118,68 +112,79 @@ const QueryPage = () => {
         }
       }
     } else if (selectedDialect === 'oracle') {
-      // If any line contains a pipe, use that logic:
       if (lines.some(line => line.includes('|'))) {
-        const headerLine = lines.find(line => line.includes('|'));
-        headers = headerLine.split('|')
-                  .map(cell => cell.trim().toLowerCase())
-                  .filter(cell => cell.length > 0);
-        const dataStartIndex = lines.indexOf(headerLine) + 1;
+        const headerIndex = lines.findIndex(line => line.includes('|'));
+        const headerLine = lines[headerIndex];
+
+        headers = headerLine.split('|').map(cell => cell.trim().toLowerCase());
+
+        const dataStartIndex = headerIndex + 2;
+        let currentRow = {};
+        let multilineKeys = ['name', 'description'];
+        let currentMultilineField = null;
+
         for (let i = dataStartIndex; i < lines.length; i++) {
-          let line = lines[i];
-          // Skip separator lines made only of dashes/spaces.
-          if (/^[-\s]+$/.test(line)) continue;
-          let cells = line.split('|').map(cell => cell.trim()).filter(cell => cell.length > 0);
-          if (cells.length === headers.length) {
-            result.push(Object.fromEntries(headers.map((h, idx) => [h, cells[idx]])));
-          } else if (result.length > 0) {
-            result[result.length - 1][headers[headers.length - 1]] += ' ' + line.trim();
+            let line = lines[i];
+
+            if (/^[-+\s]+$/.test(line)) continue;
+
+            let cells = line.split('|').map(cell => cell.trim()).filter(cell => cell.length > 0);
+
+            if (cells.length === headers.length) {
+                if (Object.keys(currentRow).length > 0) {
+                    result.push(currentRow);
+                }
+
+                // Start new row
+                currentRow = Object.fromEntries(headers.map((h, idx) => [h, cells[idx]]));
+                currentMultilineField = 'name'; // NAME starts immediately after PRODUCT_ID & SELLER_ID
+            } else if (currentRow && currentMultilineField) {
+                // Handle multi-line fields (NAME, DESCRIPTION)
+                currentRow[currentMultilineField] = (currentRow[currentMultilineField] || '') + ' ' + line;
+
+                // If we finished NAME, move to DESCRIPTION
+                if (currentMultilineField === 'name') {
+                    currentMultilineField = 'description';
+                } else {
+                    currentMultilineField = null; // Stop if description is done
+                }
+            }
+        }
+
+        // Push the last row
+        if (Object.keys(currentRow).length > 0) {
+            result.push(currentRow);
+        }
+    }
+      else {
+        const cleanedLines = lines.map(line => line.trim()).filter(line => line.length > 0);
+        
+        let currentRow = [];
+        let lastDashIndex = -1;
+    
+        for (let i = 0; i < cleanedLines.length; i++) {
+          if (/^[-]+$/.test(cleanedLines[i])) {
+            lastDashIndex = i;
           }
         }
-      } else {
-        // Fallback: assume output with PAGESIZE 5000 and no header.
-        // First, remove any leading tabs.
-        const cleanedLines = lines.map(line => line.replace(/^\t+/, '').trim());
-        
-        // Determine the maximum token count across lines by splitting using the regex that takes
-        // the first token and the remainder. If that fails, split by multiple spaces.
-        let maxTokens = 0;
-        cleanedLines.forEach(line => {
-          let match = line.match(/^(\S+)\s+(.*)$/);
-          let tokens;
-          if (match) {
-            tokens = [match[1], match[2]];
-          } else {
-            tokens = line.split(/\s{2,}/);
-          }
-          if (tokens.length > maxTokens) {
-            maxTokens = tokens.length;
-          }
-        });
-        
-        // Generate default headers: col1, col2, ..., colN.
-        headers = [];
-        for (let i = 0; i < maxTokens; i++) {
-          headers.push('col' + (i + 1));
+    
+        for (let i = 0; i < lastDashIndex; i += 2) {
+          headers.push(cleanedLines[i].toLowerCase());
         }
-        
-        // Now, parse each line using the same logic.
-        cleanedLines.forEach(line => {
-          let match = line.match(/^(\S+)\s+(.*)$/);
-          let tokens;
-          if (match) {
-            tokens = [match[1], match[2]];
-          } else {
-            tokens = line.split(/\s{2,}/);
+    
+        let headerCount = headers.length;
+    
+        for (let i = lastDashIndex + 1; i < cleanedLines.length; i++) {
+          currentRow.push(cleanedLines[i]);
+    
+          if (currentRow.length === headerCount) {
+            result.push(Object.fromEntries(headers.map((h, idx) => [h, currentRow[idx]])));
+            currentRow = [];
           }
-          // Pad tokens if necessary.
-          while (tokens.length < maxTokens) {
-            tokens.push('');
-          }
-          result.push(Object.fromEntries(headers.map((h, idx) => [h, tokens[idx]])));
-        });
+        }
       }
     }
+    
     return result;
   }
   
@@ -214,8 +219,10 @@ const QueryPage = () => {
 
     }
 
-    const formattedDb = db + userAnswer + (selectedDialect === 'oracle' ? ';\nEXIT;' : '');
-
+    const formattedDb = 
+    (selectedDialect === 'oracle' ? 'SET COLSEP "|";\n' : '') 
+    + db + userAnswer + (selectedDialect === 'oracle' ? ';\nEXIT;' : '');
+  
     // console.log('trying to submitt ',formattedDb); 
     const options = {
       method: "POST",
@@ -240,7 +247,7 @@ const QueryPage = () => {
     try {
       const testRes = await axios.request(options);
       if (testRes.data.exception || testRes.data.stderr ||testRes.data.status == 'failed') {
-        console.log(testRes);
+        console.log('setting error ?' ,'but why?')
         setError(testRes.data.stderr);
         return;
       }
@@ -251,7 +258,6 @@ const QueryPage = () => {
         return;
       }
       const parsedRes = parseTableString(testRes.data.stdout);
-      console.log(parsedRes);
       
       setResult(parsedRes);
       console.log('back from parsingg');
@@ -443,7 +449,7 @@ const QueryPage = () => {
                     }}
                     className="bg-white w-full p-4 rounded-lg text-black text-base whitespace-pre-wrap break-words font-mono h-[180px]"
                   />
-                  {error !== "" && <p className="rounded-md px-2 py-2 bg-white font-bold text-red-600">{error}</p>}
+                  {error && <p className="rounded-md px-2 py-2 bg-white font-bold text-red-600">{error}</p>}
                 </div>
             <div className="flex space-x-4">
                <button

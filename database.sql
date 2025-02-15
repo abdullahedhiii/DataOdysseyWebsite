@@ -1,13 +1,15 @@
 create database data_dungeon;
 use data_dungeon;
 
-select * from participants;
-select * from solutions;
-select * from queries;
-
-drop table solutions;
-drop table queries;
-drop table participants;
+CREATE TABLE Competition (
+    competition_id INT default 88829,
+    competitionName VARCHAR(100) default 'Data Odyssey',
+    competitionDate DATE,
+    startTime TIME,
+    endTime TIME
+ );
+ INSERT INTO Competition VALUES ();
+ select * from Competition;
 
 CREATE TABLE participants (
  teamName VARCHAR(30), 

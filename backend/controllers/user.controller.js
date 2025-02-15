@@ -31,7 +31,7 @@ module.exports.loginUser = (req, res) => {
             const token = jwt.sign(
                 { id: user.email }, 
                 process.env.JWT_SECRET, 
-                { expiresIn: 6000 }
+                { expiresIn: '3h' }
             );
             
             res.status(200).cookie("access_token", token, {
@@ -92,7 +92,6 @@ module.exports.registerUser = (req,res) => {
 
 
 module.exports.retrieveCookie = (req, res) => {
-
     const token = req.cookies.access_token;
     try{
         if (!token) {

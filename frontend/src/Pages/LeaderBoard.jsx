@@ -5,68 +5,32 @@ import axios from "axios";
 
 const LeaderBoard = () => {
   const {user} = useUserContext();
-  const tempLeaderboardData = [
-    {
-      team_id : 10100,
-      teamName: "SQL Masters",
-      currentLevel: 5,
-      queriesSolved: {
-        hard: 3,
-        medium: 4,
-        easy: 2
-      },
-      submissions: 11,
-      totalScore: 800
-    },
-    {
-      team_id:10101,
-      teamName: "Query Questers",
-      currentLevel: 4,
-      queriesSolved: {
-        hard: 2,
-        medium: 4,
-        easy: 2
-      },
-      submissions:10,
-      totalScore: 650
-    },
-    {
-      team_id:10102,
-      teamName: "Data Dragons",
-      currentLevel: 3,
-      queriesSolved: {
-        hard: 2,
-        medium: 3,
-        easy: 2
-      },
-      submissions:7,
-      totalScore: 550
-    },
-    {
-      team_id : 10103,
-      teamName: "Schema Slayers",
-      currentLevel: 3,
-      queriesSolved: {
-        hard: 1,
-        medium: 3,
-        easy: 2
-      },
-      submissions:9,
-      totalScore: 400
-    },
-    {
-      team_id : 10104,
-      teamName: "Table Titans",
-      currentLevel: 2,
-      queriesSolved: {
-        hard: 1,
-        medium: 2,
-        easy: 2
-      },
-      submissions:14,
-      totalScore: 350
-    },
-  ];
+   const [competitionDetails, setCompetitionDetails] = useState({
+          competitionName: "Data Odyssey",
+          competitionDate: "2025-02-19T09:00:00",
+          startTime: "09:00",
+          endTime: "12:00"
+      });
+
+  useEffect(() => {
+    const fetchTimings = async () => {
+       try{
+          const response = await axios.get(`/api/getCompetitionTimings`);
+          const data = response.data;
+          const formattedDate = `${data.competitionDate.split('T')[0]}T${data.startTime}`;
+
+          setCompetitionDetails({
+              ...data,
+              competitionDate: formattedDate
+          });
+       }   
+       catch(err){
+
+       }
+    }
+    fetchTimings()
+},[]);
+
 
   const [timeRemaining, setTimeRemaining] = useState(2 * 60 * 60 + 45 * 60 + 30); 
   const [leaderboardData,setLeaderBoardData] = useState([]);
@@ -155,6 +119,7 @@ const LeaderBoard = () => {
                   <th className="px-6 py-4 text-center text-sm font-semibold text-yellow-400">Medium</th>
                   <th className="px-6 py-4 text-center text-sm font-semibold text-green-400">Easy</th>
                   <th className="px-6 py-4 text-center text-sm font-semibold text-gray-400">Submissions</th>
+                  
                   <th className="px-6 py-4 text-right text-sm font-semibold text-gray-400">Total Score</th>
                 </tr>
               </thead>
@@ -166,9 +131,7 @@ const LeaderBoard = () => {
                       key={(index+1)}
                       className={`hover:bg-gray-800/50 transition-colors ${
                         isUserTeam ? "bg-red-600" 
-                        :index === 0 ? "bg-red-500" 
-                        : index === 1 ?"bg-red-400" 
-                        :index ===2 ? "bg-red-300" 
+                  
                         : ""
                       }`} // Apply highlight color if team matches user's team_id
                     >

@@ -1,6 +1,6 @@
 import React,{useEffect} from 'react';
 import axios from 'axios';
-import { createBrowserRouter, RouterProvider, Outlet,useNavigate } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Outlet,useNavigate, useLocation } from 'react-router-dom';
 import LandingPage from './Pages/LandingPage';
 import Login from './Pages/Login';
 import Navbar from './Components/Navbar';
@@ -9,6 +9,7 @@ import QueryPage from './Pages/QueryPage';
 import Footer from './Components/Footer';
 import Banner from './Components/Banner';
 import { useUserContext } from './Contexts/userContext';
+import Management from './Pages/Management';
 
 const Layout = () => {
   return (
@@ -44,31 +45,31 @@ const router = createBrowserRouter([
       {
         path: "upcomingCompetition",
         element: <Banner/>
+      },
+      {
+        path : "manageCompetition",
+        element : <Management/>
       }
     ],
   },
 ]);
+const PUBLIC_PAGES = ["/manageCompetition", "/login", "/"]; 
 
 const App = () => {
-  const {user,setUser} = useUserContext();
-  
+  const { user, setUser } = useUserContext();
+  const currentPath = window.location.pathname; 
   useEffect(() => {
-    
-    axios.get('/api/check-session', { withCredentials: true })
+    if (!user.loggedIn && PUBLIC_PAGES.includes(currentPath)) return; 
+    axios.get("/api/check-session", { withCredentials: true })
       .then(response => {
-        setUser((prev) => ({
+        setUser(prev => ({
           ...response.data,
-          loggedIn:true
-      }));
-      console.log('context state ',user);
-      console.log('user session recovered' ,response.data);
-      alert('session recovered , welcome ' + response.data.teamName);
-
+          loggedIn: true,
+        }));
       })
       .catch(err => {
-       // console.log('Not logged in or session expired', err);
       });
-  }, []);
+  }, [currentPath]); 
 
   return (
     <div className="min-h-screen w-full flex flex-col">
