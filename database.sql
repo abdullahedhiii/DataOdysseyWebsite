@@ -204,4 +204,3 @@ It’s time to seal the case. Every clue, every log, every connection led to this 
 ,8,'hard','/queries/Question3 - Level8.pdf');
 
 
-truncate table solutions;

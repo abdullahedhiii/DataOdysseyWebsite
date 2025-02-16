@@ -153,7 +153,8 @@ const oracleTabularAnswers = {
     4609: `\nSTATUS\n--------------------\nORDER_DATE\n---------------------------------------------------------------------------\nshipped\n01-FEB-25 10.30.00.000000 AM\n\npending\n13-FEB-24 07.25.00.000000 AM\n\ndelivered\n02-MAR-24 10.45.00.000000 AM\n\n`,
     4610 : `\nPRODUCT_ID| SELLER_ID\n----------|----------\nNAME\n--------------------------------------------------------------------------------\nDESCRIPTION\n--------------------------------------------------------------------------------\n     PRICE|STOCK_QUANTITY\n----------|--------------\n\t 9|\t    5\nGaming Console\nNext-gen gaming console\n    499.99|\t\t8\n\n`,
     4611 : `\nNAME|TOTAL_REVENUE\n----|-------------\nZara|\t    2222.1\n`,
-    4612 : `\nNAME\n--------------------------------------------------------------------------------\nTOTAL_QUANTITY\n--------------\nT-shirt\n\t    15\n\nPants\n\t    14\n\nGaming Chair\n\t    14\n\nJeans\n\t    14\n\nPull overs\n\t    14\n\n`,
+    4612 : `\nNAME\n--------------------------------------------------------------------------------\n  QUANTITY|TOTAL_PRICE\n----------|-----------\nJeans\n\t 3|\t119.97\n\nGaming Chair\n\t 1|\t199.99\n\n`,
+    
     4613 :`\nNAME\n--------------------------------------------------------------------------------\n  QUANTITY|TOTAL_PRICE\n----------|-----------\nJeans\n\t 3|\t119.97\n\nGaming Chair\n\t 1|\t199.99\n\n`,
     4614 : `\nPRODUCT_ID| SELLER_ID\n----------|----------\nNAME\n--------------------------------------------------------------------------------\nDESCRIPTION\n--------------------------------------------------------------------------------\n     PRICE|STOCK_QUANTITY\n----------|--------------\n\t 1|\t    1\nLaptop\nHigh-performance laptop\n   1200.99|\t       10\n\n\t 9|\t    5\nGaming Console\nNext-gen gaming console\n    499.99|\t\t8\n\n\t10|\t    6\nGaming Chair\nErgonomic gaming chair\n    199.99|\t       12\n\n`,
     4615: `\nCUSTOMER_ID\n-----------\nNAME\n--------------------------------------------------------------------------------\nTOTAL_MONEY_SPENT\n-----------------\n\t  2\nJane Smith\n\t  1654.74\n\n`,
@@ -179,6 +180,7 @@ const oracleTabularAnswers = {
 
 // These are the hard coded tabular results of the stdout stream of oneCompiler
 const tabularAnswers = {
+  
   4609:`+-----------+---------------------+\n| status    | order_date          |\n+-----------+---------------------+\n| Shipped   | 2025-02-01 10:30:00 |\n| Pending   | 2024-02-13 07:25:00 |\n| Delivered | 2024-03-02 10:45:00 |\n+-----------+---------------------+\n`,
   4610:`+------------+-----------+----------------+-------------------------+--------+----------------+\n| product_id | seller_id | name           | description             | price  | stock_quantity |\n+------------+-----------+----------------+-------------------------+--------+----------------+\n|          9 |         5 | Gaming Console | Next-gen gaming console | 499.99 |              8 |\n+------------+-----------+----------------+-------------------------+--------+----------------+\n`,
   4611:`+------+---------------+\n| name | total_revenue |\n+------+---------------+\n| Zara |       2222.10 |\n+------+---------------+\n`,
@@ -256,11 +258,16 @@ function sendStatus(email, status, level = 0) {
 }
 
 function deepEqual(queryId, b, selectedDialect) {
-  console.log(queryId, b, oracleTabularAnswers[queryId]);
+  // console.log(queryId, b, oracleTabularAnswers[queryId]);
+  console.log(selectedDialect, '\n\n');
+  console.log(queryId,'\n\n');
+  console.log(b,'\n\n');
+  selectedDialect === 'oracle' && console.log('printing oracle answer ' ,oracleTabularAnswers[queryId],'\n\n');
+  console.log(tabularAnswers[queryId],'\n\n');
   try {
-    if(selectedDialect === 'oracle' && oracleTabularAnswers[queryId] == b) return true;
+    if(selectedDialect === 'oracle' && oracleTabularAnswers[queryId] === b) {console.log('comparing as oracle,') ;return true;}
     if (tabularAnswers[queryId] == b) return true;
-
+    if(selectedDialect === 'oracle') return false;
     let parsedData = [];
 
     if (selectedDialect === "postgresql") {
@@ -293,26 +300,20 @@ function deepEqual(queryId, b, selectedDialect) {
         .slice(0, -1);
     }
 
-    console.log("parsed", parsedData, "\n");
 
     let i = 0;
     for (const row of answers[queryId]) {
       const ele2 = JSON.stringify(row);
       const ele1 = JSON.stringify(parsedData[i]);
-      console.log("row ", ele2);
-      console.log("rrrr ", ele1);
+    
       if (ele1 !== ele2) {
-        console.log("returning false ", ele1, ele2);
         return false;
-      } else {
-        console.log("true ", ele1, ele2, "\n");
-      }
+      } 
       i++;
     }
 
     return true;
   } catch (err) {
-    console.log(err.message);
     return false;
   }
 }

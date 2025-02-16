@@ -21,37 +21,36 @@ const LeaderBoard = () => {
         const data = response.data;
         
         const competitionDate = data.competitionDate.split('T')[0];
-  
-        const start = new Date(`${competitionDate}T${data.startTime}`).getTime();
-        const end = new Date(`${competitionDate}T${data.endTime}`).getTime();
-  
-  
-        const remainingSeconds = Math.max((end - start) / 1000, 0);
-  
+
+        // Calculate actual end time
+        const endTime = new Date(`${competitionDate}T${data.endTime}`).getTime();
+        const currentTime = new Date().getTime();
+
+        // Calculate remaining time in seconds
+        const remainingSeconds = Math.max((endTime - currentTime) / 1000, 0);
+
         setCompetitionDetails({
           ...data,
           competitionDate: `${competitionDate}T${data.startTime}`,
         });
-  
+
         setTimeRemaining(remainingSeconds);
       } catch (err) {
+        console.error("Error fetching competition timings:", err);
       }
     };
-  
+
     fetchTimings();
   }, []);
-  
-  
 
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeRemaining((prevTime) => Math.max(prevTime - 1, 0));
     }, 1000);
 
-    fetchStats();
-
     return () => clearInterval(timer);
   }, []);
+
 
   const fetchStats = () => {    
     axios
@@ -65,12 +64,15 @@ const LeaderBoard = () => {
   };
 
   const formatTime = (seconds) => {
+    if (seconds <= 0) return "00:00:00"; // If time is up, return "00:00:00"
+  
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
+    const secs = Math.floor(seconds % 60);
+  
     return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
-
+  
    
   return (
     <div className="min-h-screen bg-black px-4 py-8">

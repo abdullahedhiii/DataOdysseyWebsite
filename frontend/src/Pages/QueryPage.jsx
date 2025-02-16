@@ -349,10 +349,9 @@ Kindly note the differences in schema for Oracle:
         db = import.meta.env.VITE_ECOMMERCE_DB_ORACLE;
     }
     
-    const formattedDb =
-    db +
-    userAnswer +
-    (selectedDialect === "oracle" ? ";\nEXIT;" : "");
+    const formattedDb = 
+  (selectedDialect === 'oracle' ? 'SET COLSEP "|";\n' : '') 
+  + db + userAnswer + (selectedDialect === 'oracle' ? ';\nEXIT;' : '');
     
     // console.log('trying to submitt ',formattedDb);
     const options = {
@@ -381,9 +380,13 @@ Kindly note the differences in schema for Oracle:
         setError(testRes.data.stderr);
         setCanSubmit(true);
         return;
-      } else if (selectedDialect === "oracle" &&testRes.data?.stdout?.includes("ERROR")) {
+      } else if (selectedDialect === "oracle" ) {
+        if(testRes.data?.stdout?.includes("ERROR"))
         setError(testRes.data.stdout);
-      } 
+      else   setError('Oracle Query executed without any errors');
+
+      }
+      console.log(testRes.data);
       
       if (testRes.data.stdout === null) {
         setError("SQL query successfully executed. However, the result set is empty.");
@@ -394,14 +397,15 @@ Kindly note the differences in schema for Oracle:
       
       const parsedRes =
       selectedDialect !== "oracle"
-      ? parseTableString(testRes.data.stdout)
-      :  setError("Oracle query successfully executed. You can proceed with submission");;
+      ? parseTableString(testRes.data.stdout) : null;
+  
       
       setResult(parsedRes);
       if (type === "test"){
         setCanSubmit(true);
         return;
       }
+      console.log('sending request for selected query ',selectedQuery);
       const response = await axios.post(
         "/api/submitFile",
         JSON.stringify({
@@ -512,11 +516,11 @@ Can you master the **Grand Line of Joins** and claim victory?
                 <div className="w-4 h-4 bg-red-500 rounded-full absolute top-0"></div>
               </div>
             </div>
-            <p className="mt-2 mb-4 text-white font-bold whitespace-pre-line text-center">
+            <div className="mt-2 mb-4 text-white font-bold whitespace-pre-line text-center">
                Maintain a submission acceptance streak for a surprise 😎 
               <p> We advise you to view each question in the pdf file via the 'view pdf' button </p>
 
-            </p>
+            </div>
     
           </div>
 
@@ -608,12 +612,12 @@ Can you master the **Grand Line of Joins** and claim victory?
                     value={userAnswer}
                     onChange={(e) => {
                       setUserAnswer(e.target.value);
-                      setError("");
+                      setError(null);
                     }}
                     className="bg-white w-full p-4 rounded-lg text-black text-base whitespace-pre-wrap break-words font-mono h-[180px]"
                   />
                   {error && (
-                    <p className="rounded-md px-2 py-2 bg-white font-bold text-md text-red-600">
+                    <p className=" font-bold text-md text-red-600">
                       {error}
                     </p>
                   )}
@@ -816,7 +820,7 @@ Can you master the **Grand Line of Joins** and claim victory?
             setSelectedQuery(tempQuery ? {...tempQuery} : []);
             setUserAnswer("");
             setResult("");
-            setError("");
+            setError(null);
             setCanSubmit(true);
           }}
         />
