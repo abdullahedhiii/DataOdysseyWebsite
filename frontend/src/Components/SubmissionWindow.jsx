@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FiClock, FiFileText, FiFlag, FiAlertCircle } from 'react-icons/fi';
 import { useUserContext } from '../Contexts/userContext';
 
-const SubmissionWindow = ({ query,dialect, toggleWindow,toggledSelected }) => {
+const SubmissionWindow = ({ query,dialect, toggleWindow,toggledSelected, setCanSubmit }) => {
 
   const [status,setStatus] = useState('submitting');
   const {user,socket} = useUserContext();
@@ -11,6 +11,7 @@ const SubmissionWindow = ({ query,dialect, toggleWindow,toggledSelected }) => {
     if(queryStatus.email === user.email && queryStatus.status !== status){
       setStatus(prev => queryStatus.status);
       if(queryStatus.status === 'accepted') toggledSelected()
+      else if (queryStatus.status === 'rejected') setCanSubmit(true);
     }
   }
 

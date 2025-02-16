@@ -150,7 +150,7 @@ const answers = {
 };
 
 const oracleTabularAnswers = {
-    4609: `\nORDER_DATE\n---------------------------------------------------------------------------\nSTATUS\n--------------------\n01-FEB-25 10.30.00.000000 AM\nShipped\n\n13-FEB-24 07.25.00.000000 AM\nPending\n\n02-MAR-24 10.45.00.000000 AM\nDelivered\n\n`,
+    4609: `\nSTATUS\n--------------------\nORDER_DATE\n---------------------------------------------------------------------------\nshipped\n01-FEB-25 10.30.00.000000 AM\n\npending\n13-FEB-24 07.25.00.000000 AM\n\ndelivered\n02-MAR-24 10.45.00.000000 AM\n\n`,
     4610 : `\nPRODUCT_ID| SELLER_ID\n----------|----------\nNAME\n--------------------------------------------------------------------------------\nDESCRIPTION\n--------------------------------------------------------------------------------\n     PRICE|STOCK_QUANTITY\n----------|--------------\n\t 9|\t    5\nGaming Console\nNext-gen gaming console\n    499.99|\t\t8\n\n`,
     4611 : `\nNAME|TOTAL_REVENUE\n----|-------------\nZara|\t    2222.1\n`,
     4612 : `\nNAME\n--------------------------------------------------------------------------------\nTOTAL_QUANTITY\n--------------\nT-shirt\n\t    15\n\nPants\n\t    14\n\nGaming Chair\n\t    14\n\nJeans\n\t    14\n\nPull overs\n\t    14\n\n`,
@@ -256,7 +256,7 @@ function sendStatus(email, status, level = 0) {
 }
 
 function deepEqual(queryId, b, selectedDialect) {
-  console.log(queryId, b);
+  console.log(queryId, b, oracleTabularAnswers[queryId]);
   try {
     if(selectedDialect === 'oracle' && oracleTabularAnswers[queryId] == b) return true;
     if (tabularAnswers[queryId] == b) return true;

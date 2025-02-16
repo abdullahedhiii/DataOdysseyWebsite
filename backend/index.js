@@ -47,6 +47,8 @@ io.on('connection', (socket) => {
 });
   
 server.listen(PORT, () => {
+    console.log('connected at ',PORT);
+    
 }).on('error', (err) => {
     if (err.code === 'EADDRINUSE') {
         console.error(`Port ${PORT} is already in use.`);

@@ -50,6 +50,7 @@ const QueryPage = () => {
   const [error, setError] = useState(null);
   const [result, setResult] = useState(null);
   const [message, setMessage] = useState(null);
+  const [canSubmit,setCanSubmit] = useState(true);
   
   useEffect(() => {
     const fetchTimings = async () => {
@@ -318,17 +319,20 @@ Kindly note the differences in schema for Oracle:
   }
 
   const handleSubmit = async (type) => {
+    setCanSubmit(false);
     setResult(null);
     setError(null);
-
+    
     if (userAnswer === "") {
       setError("Write a query to proceed further");
+      setCanSubmit(true);
       return;
     } else if (selectedQuery.markDone) {
       setError("Query Already solved");
+      setCanSubmit(true);
       return;
     }
-
+    
     let db = "";
     if (user.level >= 4) {
       if (selectedDialect === "mysql")
@@ -346,13 +350,12 @@ Kindly note the differences in schema for Oracle:
       else if (selectedDialect === "oracle")
         db = import.meta.env.VITE_ECOMMERCE_DB_ORACLE;
     }
-
+    
     const formattedDb =
-      (selectedDialect === "oracle" ? 'SET COLSEP "|";\n' : "") +
-      db +
-      userAnswer +
-      (selectedDialect === "oracle" ? ";\nEXIT;" : "");
-
+    db +
+    userAnswer +
+    (selectedDialect === "oracle" ? ";\nEXIT;" : "");
+    
     // console.log('trying to submitt ',formattedDb);
     const options = {
       method: "POST",
@@ -373,7 +376,7 @@ Kindly note the differences in schema for Oracle:
         ],
       },
     };
-
+    
     try {
       const testRes = await axios.request(options);
       if (
@@ -383,6 +386,7 @@ Kindly note the differences in schema for Oracle:
       ) {
         console.log("setting error ?", "but why?");
         setError(testRes.data.stderr);
+        setCanSubmit(true);
         return;
       } else if (
         selectedDialect === "oracle" &&
@@ -390,20 +394,25 @@ Kindly note the differences in schema for Oracle:
       ) {
         setError(testRes.data.stdout);
       } else console.log(testRes.data);
-
+      
       if (testRes.data.stdout === null) {
         setError("SQL query successfully executed. However, the result set is empty.");
+        setCanSubmit(true);
         return;
       }
+      // console.log(testRes.data.stdout);
+      
       const parsedRes =
-        selectedDialect !== "oracle"
-          ? parseTableString(testRes.data.stdout)
-          : null;
-
+      selectedDialect !== "oracle"
+      ? parseTableString(testRes.data.stdout)
+      : null;
+      
       setResult(parsedRes);
       console.log("back from parsingg");
-      if (type === "test") return;
-
+      if (type === "test"){
+        setCanSubmit(true);
+        return;
+      }
       const response = await axios.post(
         "/api/submitFile",
         JSON.stringify({
@@ -424,6 +433,7 @@ Kindly note the differences in schema for Oracle:
       setShowSubmissionWindow(true);
     } catch (err) {
       alert("Failed to upload file: " + err.message);
+      setCanSubmit(true);
     }
   };
 
@@ -628,9 +638,9 @@ Can you master the **Grand Line of Joins** and claim victory?
                 <div className="flex space-x-4">
                   <button
                     type="button"
-                    className={`w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition-colors`}
+                    className={`w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition-colors ${!canSubmit && 'cursor-wait'}`}
                     onClick={() => handleSubmit("test")}
-                    // disabled = {selectedDialect === 'oracle' ? true : false}
+                    disabled = {!canSubmit}
                   >
                     <FiPlay className="w-5 h-5" />
                     Test
@@ -638,9 +648,9 @@ Can you master the **Grand Line of Joins** and claim victory?
                   <button
                     type="submit"
                     className={`w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition-colors ${
-                      showSubmissionWindow && "cursor-not-allowed"
+                      (!canSubmit) && "cursor-wait"
                     }`}
-                    disabled={showSubmissionWindow}
+                    disabled={!canSubmit}
                     onClick={() => handleSubmit("submit")}
                   >
                     <FiCheck className="w-5 h-5" />
@@ -802,21 +812,30 @@ Can you master the **Grand Line of Joins** and claim victory?
         <SubmissionWindow
           query={selectedQuery}
           dialect={selectedDialect}
+          setCanSubmit={setCanSubmit}
           toggleWindow={() => {
             setShowSubmissionWindow((prev) => !prev);
           }}
           toggledSelected={() => {
             setQueries((prev) =>
-              prev.map((query) =>
-                query.queryId === selectedQuery.queryId
-                  ? { ...query, markDone: true }
-                  : query
+              prev.map((query) =>{
+                return  query.queryId === selectedQuery.queryId
+                          ? { ...query, markDone: true }
+                          : query
+                }
               )
             );
-            setSelectedQuery([]);
+            
+            const tempQuery = queries.filter(query => (query.queryId !== selectedQuery.queryId && query.markDone === false))[0]
+            
+            
+            console.log('this is the facet ',queries,tempQuery);
+            
+            setSelectedQuery(tempQuery ? {...tempQuery} : []);
             setUserAnswer("");
             setResult("");
             setError("");
+            setCanSubmit(true);
           }}
         />
       )}

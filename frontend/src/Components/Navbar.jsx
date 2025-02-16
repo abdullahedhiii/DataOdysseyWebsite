@@ -9,7 +9,7 @@ const Navbar = () => {
   const [openDashboard,setDashboard] = useState(false);
   const { user, logUserOut } = useUserContext();
   const location = useLocation();
-  const isManage = location.pathname.includes('manageCompetition');
+  const onlyBoard = location.pathname.includes('manageCompetition') || location.pathname.includes('upcomingCompetition');
   const isLeaderBoard = location.pathname.includes('leaderboard');
   return (
     <nav className="bg-black border-b border-gray-800">
@@ -23,9 +23,9 @@ const Navbar = () => {
 
           <div className="hidden md:flex justify-center flex-1">
             {isLeaderBoard ? null :
-            (user.loggedIn || isManage )&& (
+            (user.loggedIn || onlyBoard )&& (
               <>
-              {!isManage && <button
+              {!onlyBoard && <button
                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white hover:text-red-500 transition-colors"
                 onClick={() => setDashboard(true)}
               >
@@ -40,7 +40,7 @@ const Navbar = () => {
                 <FiAward className="h-4 w-4" />
                 Leaderboard
               </a>
-              {!isManage && <NavLink
+              {!onlyBoard && <NavLink
                 to="/competition"
                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white hover:text-red-500 transition-colors"
               >

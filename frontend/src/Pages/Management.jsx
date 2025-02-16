@@ -50,8 +50,8 @@ const Management = () => {
     return (
         <div className="min-h-screen bg-black flex items-center justify-center px-4">
             <div className="max-w-lg w-full bg-gray-900 p-6 rounded-2xl border border-gray-800">
-                <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
-                    <FiEdit3 className="text-red-500" /> Set Competition Timings
+                <h2 className="text-2xl font-bold text-white mb-4 flex justify-between items-center gap-2">
+                    Set Competition Timings<FiEdit3 className="text-red-500" /> 
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                      <div>
@@ -70,28 +70,34 @@ const Management = () => {
                             type="text"
                             value={competitionName}
                             onChange={(e) => {setCompetitionName(e.target.value)  ;setError('')}}
-                            className="w-full p-2 bg-gray-600 text-white rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                            className="w-full p-2 bg-gray-800 text-white rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
                             readOnly
                         />
                     </div>
                     <div>
-                        <label className="text-gray-400 block mb-1">Competition Date</label>
+                        <label className="text-gray-400 mb-1 flex gap-2 items-center">
+                            <h1 className='my-auto'>
+                                Competition Date
+                            </h1>
+                            <FiCalendar className="text-red-500 my-auto text-base" />
+                        </label>
                         <div className="flex items-center gap-2">
-                            <FiCalendar className="text-red-500" />
                             <input
                                 type="date"
                                 value={competitionDate}
                                 onChange={(e) => {setCompetitionDate(e.target.value)  ;setError('')}}
-                                className="w-full p-2 bg-gray-600 text-white rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                                className="w-full p-2 bg-gray-800 text-white rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
                                 readOnly
                             />
                         </div>
                     </div>
 
                     <div>
-                        <label className="text-gray-400 block mb-1">Start Time</label>
+                        <label className="text-gray-400 mb-1 flex items-center gap-2">
+                            <h1>Start Time</h1>
+                            <FiClock className="text-red-500 text-base" />
+                        </label>
                         <div className="flex items-center gap-2">
-                            <FiClock className="text-red-500" />
                             <input
                                 type="time"
                                 value={startTime}
@@ -102,9 +108,11 @@ const Management = () => {
                     </div>
 
                     <div>
-                        <label className="text-gray-400 block mb-1">End Time</label>
+                        <label className="text-gray-400 mb-1 flex gap-2 items-center">
+                            <h1>End Time</h1>
+                            <FiClock className="text-red-500 text-base mt-1" />
+                        </label>
                         <div className="flex items-center gap-2">
-                            <FiClock className="text-red-500" />
                             <input
                                 type="time"
                                 value={endTime}
@@ -113,10 +121,11 @@ const Management = () => {
                             />
                         </div>
                     </div>
-
-                    <button type="submit" className="w-full bg-red-600 text-white p-2 rounded-lg font-semibold hover:bg-red-700 transition">
+                    <div></div>
+                    <button type="submit" className="w-full bg-red-600 text-white p-2 rounded-lg font-semibold hover:bg-red-700 transition my-10">
                         Save Competition Details
                     </button>
+                    <div></div>
                     {error !== ''  && <p className='rounded-lg text-red-600 px-2 py-2 bg-white'>{error}</p>}
                 </form>
             </div>
