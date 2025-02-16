@@ -572,7 +572,7 @@ Can you master the **Grand Line of Joins** and claim victory?
                 </div>
 
                 <div className="bg-gray-800 rounded-lg p-4">
-                  <pre className="text-white text-sm whitespace-pre-wrap break-words font-mono">
+                  <pre className="text-white text-sm whitespace-pre-wrap break-words ">
                     {selectedQuery.description}
                   </pre>
                 </div>
