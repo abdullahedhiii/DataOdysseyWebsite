@@ -103,12 +103,17 @@ Kindly note the differences in schema for Oracle:
         
     } else setMessage(null);
   }, [selectedDialect]);
+  
+  
 
   const levelChanger = ({ email, level }) => {
-    if (email == user.email && level < 8) {
+    if (email == user.email && level <=8) {
       setUser((prev) => ({ ...prev, level: level }));
       zoomToLevel(2.5, levels[level - 1].x, levels[level - 1].y);
-    }
+    }else {
+      window.alert('you completed all the levels, check out the leaderboard now!');
+      navigate("/leaderboard");
+   }
   };
 
   useEffect(() => {

@@ -16,7 +16,10 @@ const Login = () => {
   const {user, logUserIn, registerUser} = useUserContext();
   
   useEffect(() => {
-    if(user.loggedIn) navigate("/competition");
+    if(user.level > 8) {
+      window.alert('You completed all the levels!');
+      navigate("/leaderboard");}
+    else if(user.loggedIn) navigate("/competition");
     // if(user.loggedIn) navigate("/upcomingCompetition");
   },[user,user.loggedIn])
 

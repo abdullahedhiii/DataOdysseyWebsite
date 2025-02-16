@@ -21,7 +21,7 @@ CREATE TABLE participants (
 ALTER TABLE participants ADD COLUMN team_id INT AUTO_INCREMENT PRIMARY KEY; 
 ALTER TABLE participants auto_increment = 10010;
 alter table  participants add column firstLogin Boolean default TRUE;
-
+alter table participants add column levelCrossedAt TIME default NULL;
 
 CREATE TABLE queries (
     queryId INTEGER PRIMARY KEY AUTO_INCREMENT,
@@ -47,7 +47,6 @@ ALTER TABLE solutions ADD COLUMN submitted_at DATETIME default current_timestamp
 
 
 -------------final queries ---------
-update participants set level=1;
 INSERT INTO queries (title, description, level, difficulty, pdfURL) 
 VALUES ('SQL Investigation Challenge:',
 'A frustrated customer, John Doe, insists he has placed multiple orders—but his account shows nothing.\n\nIs it an error, or is something missing?\n\nYour task: Retrieve all past orders placed by John Doe, including order date and status.\nCan you uncover the lost order history?', 

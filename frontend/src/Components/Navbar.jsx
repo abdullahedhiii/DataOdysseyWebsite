@@ -40,7 +40,7 @@ const Navbar = () => {
                 <FiAward className="h-4 w-4" />
                 Leaderboard
               </a>
-              {!onlyBoard && <NavLink
+              {!onlyBoard && user.level <=8 && <NavLink
                 to="/competition"
                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white hover:text-red-500 transition-colors"
               >

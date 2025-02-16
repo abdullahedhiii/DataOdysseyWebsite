@@ -19,11 +19,13 @@ const LeaderBoard = () => {
       try {
         const response = await axios.get(`/api/getCompetitionTimings`);
         const data = response.data;
-        
-        const competitionDate = data.competitionDate.split('T')[0];
+
+        const competitionDate = data.competitionDate.split("T")[0];
 
         // Calculate actual end time
-        const endTime = new Date(`${competitionDate}T${data.endTime}`).getTime();
+        const endTime = new Date(
+          `${competitionDate}T${data.endTime}`
+        ).getTime();
         const currentTime = new Date().getTime();
 
         // Calculate remaining time in seconds
@@ -51,29 +53,41 @@ const LeaderBoard = () => {
     return () => clearInterval(timer);
   }, []);
 
-
-  const fetchStats = () => {    
+  const fetchStats = () => {
     axios
-      .get('/api/leaderboardData', { withCredentials: true })
-      .then(res => {
+      .get("/api/leaderboardData", { withCredentials: true })
+      .then((res) => {
+        console.log(res.data, "in leaderboard");
         setLeaderBoardData(res.data.teamData);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err.message);
       });
   };
 
-  const formatTime = (seconds) => {
-    if (seconds <= 0) return "00:00:00"; // If time is up, return "00:00:00"
+  useEffect(() => {
+    fetchStats(); 
   
+    const interval = setInterval(() => {
+      fetchStats(); 
+    }, 60000); //1 minute
+  
+    return () => clearInterval(interval);
+  }, []);
+  
+
+  const formatTime = (seconds) => {
+    if (seconds <= 0) return "00:00:00"; 
+
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = Math.floor(seconds % 60);
-  
-    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+
+    return `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
-  
-   
+
   return (
     <div className="min-h-screen bg-black px-4 py-8">
       <div className="max-w-7xl mx-auto">
@@ -101,7 +115,9 @@ const LeaderBoard = () => {
               <FiTrendingUp className="text-red-500 text-3xl" />
               <div>
                 <p className="text-gray-400">Total Teams</p>
-                <p className="text-2xl font-bold text-white">{leaderboardData.length}</p>
+                <p className="text-2xl font-bold text-white">
+                  {leaderboardData.length}
+                </p>
               </div>
             </div>
           </div>
@@ -110,78 +126,121 @@ const LeaderBoard = () => {
               <FiClock className="text-red-500 text-3xl" />
               <div>
                 <p className="text-gray-400">Time Remaining</p>
-                <p className="text-2xl font-bold text-white">{formatTime(timeRemaining)}</p>
+                <p className="text-2xl font-bold text-white">
+                  {formatTime(timeRemaining)}
+                </p>
               </div>
             </div>
           </div>
         </div>
-
         <div className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="bg-gray-800">
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-400">Rank</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-400">Team Name</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-400">Level</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-red-400">Hard</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-yellow-400">Medium</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-green-400">Easy</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-400">Submissions</th>
-                  
-                  <th className="px-6 py-4 text-right text-sm font-semibold text-gray-400">Total Score</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-400">
+                    Rank
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-400">
+                    Team Name
+                  </th>
+
+                  {Array.from({ length: 8 }, (_, i) => (
+                    <th
+                      key={`level-header-${i + 1}`}
+                      className="px-6 py-4 text-center text-sm font-semibold text-gray-400"
+                    >
+                      Level {i + 1}
+                    </th>
+                  ))}
+
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-400">
+                    Submissions
+                  </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-800">
-                {leaderboardData.length > 0 && leaderboardData.map((team,index) => {                  
-                  const isUserTeam = team.team_id === user?.team_id;
-                  return (
-                    <tr
-                      key={(index+1)}
-                      className={`hover:bg-gray-800/50 transition-colors ${
-                        isUserTeam ? "bg-red-600" : ""
-                      }`} // Apply highlight color if team matches user's team_id
-                    >
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          {(index+1) <= 3 && (
-                            <FiAward
-                              className={`${
-                                (index+1) === 1
-                                  ? "text-yellow-500"
-                                  : (index+1) === 2
-                                  ? "text-gray-400"
-                                  : "text-yellow-700"
-                              }`}
-                            />
-                          )}
-                          <span className="text-white font-medium">#{(index+1)}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="text-white font-medium">{team.teamName}</span>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <span className="text-white font-medium">{team.currentLevel}</span>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <span className="text-red-400 font-medium">{team.queriesSolved.hard}</span>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <span className="text-yellow-400 font-medium">{team.queriesSolved.medium}</span>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <span className="text-green-400 font-medium">{team.queriesSolved.easy}</span>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <span className="text-white font-medium">{team.submissions}</span>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <span className="text-white font-medium">{team.totalScore}</span>
-                      </td>
-                    </tr>
-                  );
-                })}
+
+              <tbody className="divide-y divide-gray-700">
+                {leaderboardData.length > 0 &&
+                  leaderboardData.map((team, index) => {
+                    const isUserTeam = team.team_id === user?.team_id;
+
+                    return (
+                      <tr
+                        key={index + 1}
+                        className={`hover:bg-gray-800/50 transition-colors 
+            `} // Slight transparency for user's team
+                      >
+                        <td className="px-6 py-4 ">
+                          <div className="flex items-center gap-2">
+                            {index + 1 <= 3 && (
+                              <FiAward
+                                className={`${
+                                  index + 1 === 1
+                                    ? "text-yellow-400"
+                                    : index + 1 === 2
+                                    ? "text-gray-300"
+                                    : "text-yellow-700"
+                                }`}
+                              />
+                            )}
+                            <span className="text-white font-semibold">
+                              #{index + 1}
+                            </span>
+                          </div>
+                        </td>
+
+                        <td className="px-6 py-4 ">
+                          <span className="text-white font-medium">
+                            {team.teamName} {isUserTeam ? "(You)" : null}
+                          </span>
+                        </td>
+
+                        {Array.from({ length: 8 }, (_, i) => {
+                          const levelNumber = i + 1;
+                          const levelStatus = team[`Level ${levelNumber}`];
+
+                          let bgColor = ""; // Default: Not Attempted
+                          let textColor = "text-white";
+                          let displayText = "";
+
+                          if (levelStatus === "Passed") {
+                            bgColor = "bg-purple-500/20";
+                            textColor = "text-white font-semibold";
+                            displayText =
+                              levelNumber === team.lastLevelPassed
+                                ? team.lastPassedTime
+                                : "🚀";
+                          } else if (levelStatus === "Attempting") {
+                            textColor = "text-black font-semibold";
+                            displayText = (
+                              <div className="flex items-center justify-center gap-2">
+                                <span className="animate-spin text-xl">🏴‍☠️</span>{" "}
+                              </div>
+                            );
+                          } else {
+                          }
+
+                          return (
+                            <td
+                              key={levelNumber}
+                              className={`px-6 py-4 text-center ${bgColor} border-r border-white/10`}
+                            >
+                              <span className={`${textColor} text-center`}>
+                                {displayText}
+                              </span>
+                            </td>
+                          );
+                        })}
+
+                        <td className="px-6 py-4 text-center border-gray-700">
+                          <span className="text-white font-medium">
+                            {team.submissions}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>
