@@ -11,6 +11,7 @@ import Banner from './Components/Banner';
 import { useUserContext } from './Contexts/userContext';
 import Management from './Pages/Management';
 import EndPage from './Components/EndPage';
+import ErrorPage from './Components/ErrorPage';
 
 const Layout = () => {
   return (
@@ -26,6 +27,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
+    errorElement: <ErrorPage />, 
     children: [
       {
         path: "",

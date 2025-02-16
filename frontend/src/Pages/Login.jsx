@@ -3,10 +3,13 @@ import { FiMail, FiLock, FiUser, FiArrowRight } from 'react-icons/fi';
 import axios from 'axios';
 import { useUserContext } from '../Contexts/userContext';
 import { useNavigate } from 'react-router-dom';
+import CompletionPopup from '../Components/CompletionPopup';
 
 const Login = () => {
 
   const [isLogin, setIsLogin] = useState(true);
+  const [showPopup, setShowPopup] = useState(false); 
+
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
@@ -17,8 +20,8 @@ const Login = () => {
   
   useEffect(() => {
     if(user.level > 8) {
-      window.alert('You completed all the levels!');
-      navigate("/leaderboard");}
+      setShowPopup(true);
+    }
     else if(user.loggedIn) navigate("/competition");
     // if(user.loggedIn) navigate("/upcomingCompetition");
   },[user,user.loggedIn])
@@ -53,6 +56,8 @@ const Login = () => {
   return (
     <div className="min-h-screen bg-black flex items-center justify-center px-4">
       <div className="max-w-md w-full space-y-8">
+      {showPopup && <CompletionPopup onClose={() => {setShowPopup(false); navigate('/leaderboard') }} />}
+
         <div className="text-center">
           <h2 className="text-4xl font-bold text-white">
             {isLogin ? 'Welcome Back' : 'Join the Competition'}

@@ -16,6 +16,7 @@ import { useUserContext } from "../Contexts/userContext";
 import { useNavigate } from "react-router-dom";
 import SubmissionWindow from "../Components/SubmissionWindow";
 import Demo from "../Components/Demo";
+import CompletionPopup from "../Components/CompletionPopup";
 
 
 const OraclePopup = ({ message, onClose }) => {
@@ -51,6 +52,7 @@ const QueryPage = () => {
   const [result, setResult] = useState(null);
   const [message, setMessage] = useState(null);
   const [canSubmit,setCanSubmit] = useState(true);
+    const [showPopup, setShowPopup] = useState(false); 
   
   useEffect(() => {
     const fetchTimings = async () => {
@@ -111,8 +113,7 @@ Kindly note the differences in schema for Oracle:
       setUser((prev) => ({ ...prev, level: level }));
       zoomToLevel(2.5, levels[level - 1].x, levels[level - 1].y);
     }else {
-      window.alert('you completed all the levels, check out the leaderboard now!');
-      navigate("/leaderboard");
+      setShowPopup(true);
    }
   };
 
@@ -482,6 +483,8 @@ Kindly note the differences in schema for Oracle:
 
   return (
     <div className="min-h-screen bg-black px-4 py-8">
+                  {showPopup && <CompletionPopup onClose={() => {setShowPopup(false); navigate('/leaderboard') }} />}
+
       <div className={`max-w-7xl mx-auto space-y-6`}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-gray-900 rounded-xl p-6 border border-gray-800">    
