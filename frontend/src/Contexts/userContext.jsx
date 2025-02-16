@@ -14,10 +14,8 @@ export const UserProvider = ({ children }) => {
     if(!socket){
       socket = io('http://localhost:8800', { withCredentials: true });
     }
-    console.log('socket set and initialized');
     
     return ()=>{
-      console.log('disconnecting socket');
       socket.disconnect();
       socket = null;
     }

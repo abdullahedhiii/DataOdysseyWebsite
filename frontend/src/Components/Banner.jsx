@@ -29,7 +29,6 @@ const Banner = () => {
          try{
             const response = await axios.get(`/api/getCompetitionTimings`);
             const data = response.data;
-            console.log('bannerr ',response.data);
             const formattedDate = `${data.competitionDate.split('T')[0]}T${data.startTime}`;
             const formattedStart =formatTime(response.data.startTime);
             const formattedEnd = formatTime(response.data.endTime);
@@ -49,7 +48,6 @@ const Banner = () => {
 
     useEffect(() => {
       socket.on("competitionTimingsUpdated", (data) => {
-          console.log("Updated competition timings received:", data);
             const formattedDate = `${data.competitionDate}T${data.startTime}`;
   
           setCompetitionDetails({

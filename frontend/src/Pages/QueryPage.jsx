@@ -56,7 +56,6 @@ const QueryPage = () => {
     const fetchTimings = async () => {
        try{
           const response = await axios.get(`/api/getCompetitionTimings`);
-          console.log('request response' ,response.data);
 
           setCompetitionDetails(response.data);
        }   
@@ -129,7 +128,6 @@ Kindly note the differences in schema for Oracle:
         //  setSelectedQuery(res.data.queries[0]);
       })
       .catch((err) => {
-        console.log("error why", err.message);
       });
   };
 
@@ -379,21 +377,13 @@ Kindly note the differences in schema for Oracle:
     
     try {
       const testRes = await axios.request(options);
-      if (
-        testRes.data.exception ||
-        testRes.data.stderr ||
-        testRes.data.status == "failed"
-      ) {
-        console.log("setting error ?", "but why?");
+      if (testRes.data.exception || testRes.data.stderr || testRes.data.status == "failed") {
         setError(testRes.data.stderr);
         setCanSubmit(true);
         return;
-      } else if (
-        selectedDialect === "oracle" &&
-        testRes.data?.stdout?.includes("ERROR")
-      ) {
+      } else if (selectedDialect === "oracle" &&testRes.data?.stdout?.includes("ERROR")) {
         setError(testRes.data.stdout);
-      } else console.log(testRes.data);
+      } 
       
       if (testRes.data.stdout === null) {
         setError("SQL query successfully executed. However, the result set is empty.");
@@ -405,10 +395,9 @@ Kindly note the differences in schema for Oracle:
       const parsedRes =
       selectedDialect !== "oracle"
       ? parseTableString(testRes.data.stdout)
-      : null;
+      :  setError("Oracle query successfully executed. You can proceed with submission");;
       
       setResult(parsedRes);
-      console.log("back from parsingg");
       if (type === "test"){
         setCanSubmit(true);
         return;
@@ -471,12 +460,6 @@ Kindly note the differences in schema for Oracle:
 
   useEffect(() => {
     // zoomToLevel(2.5,0.178,0.053);
-    console.log(
-      "zooming to current level " +
-        levels[user.level - 1].x +
-        " " +
-        levels[user.level - 1].y
-    );
     const currLevel = levels[user.level - 1];
     zoomToLevel(2.5, currLevel.x, currLevel.y);
   }, []);
@@ -630,7 +613,7 @@ Can you master the **Grand Line of Joins** and claim victory?
                     className="bg-white w-full p-4 rounded-lg text-black text-base whitespace-pre-wrap break-words font-mono h-[180px]"
                   />
                   {error && (
-                    <p className="rounded-md px-2 py-2 bg-white font-bold text-red-600">
+                    <p className="rounded-md px-2 py-2 bg-white font-bold text-md text-red-600">
                       {error}
                     </p>
                   )}
@@ -829,7 +812,6 @@ Can you master the **Grand Line of Joins** and claim victory?
             const tempQuery = queries.filter(query => (query.queryId !== selectedQuery.queryId && query.markDone === false))[0]
             
             
-            console.log('this is the facet ',queries,tempQuery);
             
             setSelectedQuery(tempQuery ? {...tempQuery} : []);
             setUserAnswer("");

@@ -11,7 +11,6 @@ const Dashboard = ({onClose}) => {
       try{
          const response = await axios.get(`/api/getMyDashboard/${user.team_id}`);
          setSubmissions(response.data);
-         console.log(response.data)
       }
       catch(err){   console.log(err);
       }
@@ -33,7 +32,6 @@ const Dashboard = ({onClose}) => {
   };
 
   const getDifficultyColor = (difficulty) => {
-    console.log(difficulty);
     
     switch (difficulty) {
       case 'hard':

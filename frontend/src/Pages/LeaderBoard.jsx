@@ -25,8 +25,6 @@ const LeaderBoard = () => {
         const start = new Date(`${competitionDate}T${data.startTime}`).getTime();
         const end = new Date(`${competitionDate}T${data.endTime}`).getTime();
   
-        console.log("Start Time:", new Date(start));
-        console.log("End Time:", new Date(end));
   
         const remainingSeconds = Math.max((end - start) / 1000, 0);
   
@@ -37,7 +35,6 @@ const LeaderBoard = () => {
   
         setTimeRemaining(remainingSeconds);
       } catch (err) {
-        console.error("Error fetching competition timings", err);
       }
     };
   

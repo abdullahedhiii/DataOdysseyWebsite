@@ -30,12 +30,6 @@ const Management = () => {
 
     const handleSubmit = async(e) => {
         e.preventDefault();
-        console.log('Competition Details:', {
-            competitionName,
-            competitionDate,
-            startTime,
-            endTime,secretKey
-        });
         try{
             const response =await axios.post(`/api/updateTimings`,{competitionName,competitionDate,startTime,endTime,secretKey});
             if(!response.data.sucesss){
